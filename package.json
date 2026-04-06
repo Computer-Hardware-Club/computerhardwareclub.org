@@ -1,0 +1,14 @@
+{
+  "name": "chc",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build:types": "tsc --project tsconfig.json",
+    "build": "node build.mjs && npm run build:types"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  },
+  "private": true
+}
