@@ -1,14 +1,14 @@
 {
-  "name": "chc",
+  "name": "computerhardwareclub-org",
   "version": "1.0.0",
-  "description": "",
+  "description": "Static website for the Computer Hardware Club at Oregon State University.",
   "scripts": {
-    "build:types": "tsc --project tsconfig.json",
-    "build": "node build.mjs && npm run build:types"
+    "test": "node --test",
+    "build": "node build.mjs",
+    "verify": "npm test && npm run build"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^5.5.3"
-  },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
 }

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Club email
+    url: mailto:computerhardware.clubs@oregonstate.edu
+    about: Use email for sensitive or administrative questions that do not belong in a public issue.
+  - name: Club Discord
+    url: https://discord.gg/bfxjgvzCSf
+    about: Use Discord for fast coordination on club activities and website changes.

@@ -1,0 +1,33 @@
+name: Content update
+description: Request a website content change for club information, copy, or media.
+title: "[Content]: "
+labels:
+  - content
+body:
+  - type: textarea
+    id: request
+    attributes:
+      label: Requested change
+      description: Describe what should be updated.
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Where should it change?
+      description: Add the page, section, or file if you know it.
+      placeholder: Homepage meeting card, About page officer section, images/club/, etc.
+  - type: textarea
+    id: source
+    attributes:
+      label: Source material
+      description: Include the approved wording, names, dates, links, or image references.
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      options:
+        - Low
+        - Medium
+        - High
+

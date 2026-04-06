@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a problem with the club website or deployment workflow.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the page URL or file path if known.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. Notice ...
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Explain whether this affects visitors, contributors, or deployment.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, console errors, or other useful notes.
+
