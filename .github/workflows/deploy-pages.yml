@@ -1,6 +1,6 @@
 name: Deploy GitHub Pages
 
-on:
+"on":
   push:
     branches:
       - main
@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
   pages: write
-  id-token: write
+  "id-token": write
 
 concurrency:
   group: pages
