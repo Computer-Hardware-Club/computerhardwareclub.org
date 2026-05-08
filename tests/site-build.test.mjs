@@ -22,7 +22,7 @@ test('build.mjs creates the core static site bundle', () => {
         'dist/CNAME',
         'dist/styles/main.css',
         'dist/scripts/site.js',
-        'dist/images/club/group_photo.JPG'
+        'dist/images/club/group_photo.jpeg'
     ];
 
     expectedFiles.forEach((relativePath) => {

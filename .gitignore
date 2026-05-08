@@ -1,5 +1,30 @@
+# Build output
 dist/
+
+# Dependencies
 node_modules/
-.omx/
+
+# OS files
 .DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
+*.swp
+*.swo
+*~
+
+# IDE settings
+.vscode/
+
+# CLI state
+.omx/
+.openclaude/
+
+# Environment
+.env
+
+# Logs
+*.log
 
