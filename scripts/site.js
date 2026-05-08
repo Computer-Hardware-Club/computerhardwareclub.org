@@ -57,8 +57,25 @@
                 link.addEventListener('click', () => setMenu(false));
             });
 
+            const dropdownBtns = menu.querySelectorAll('.nav-dropdown-btn');
+            dropdownBtns.forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parent = btn.closest('.nav-dropdown');
+                    const wasOpen = parent.classList.contains('is-open');
+                    menu.querySelectorAll('.nav-dropdown.is-open').forEach((dd) => {
+                        dd.classList.remove('is-open');
+                        dd.querySelector('.nav-dropdown-btn')?.classList.remove('is-open');
+                    });
+                    if (!wasOpen) {
+                        parent.classList.add('is-open');
+                        btn.classList.add('is-open');
+                    }
+                });
+            });
+
             document.addEventListener('click', (event) => {
-                if (!nav.classList.contains('menu-open')) {
+                if (!nav.classList.contains('menu-open') && !menu.querySelector('.nav-dropdown.is-open')) {
                     return;
                 }
 
@@ -68,17 +85,30 @@
                 }
 
                 setMenu(false);
+                menu.querySelectorAll('.nav-dropdown.is-open').forEach((dd) => {
+                    dd.classList.remove('is-open');
+                    dd.querySelector('.nav-dropdown-btn')?.classList.remove('is-open');
+                });
             });
+
+            const closeDropdowns = () => {
+                menu.querySelectorAll('.nav-dropdown.is-open').forEach((dd) => {
+                    dd.classList.remove('is-open');
+                    dd.querySelector('.nav-dropdown-btn')?.classList.remove('is-open');
+                });
+            };
 
             window.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     setMenu(false);
+                    closeDropdowns();
                 }
             });
 
             window.addEventListener('resize', () => {
                 if (window.innerWidth > 860) {
                     setMenu(false);
+                    closeDropdowns();
                 }
             });
         }
