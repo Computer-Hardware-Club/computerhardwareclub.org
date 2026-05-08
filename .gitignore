@@ -21,6 +21,7 @@ Thumbs.db
 # CLI state
 .omx/
 .openclaude/
+.playwright-mcp/
 
 # Environment
 .env

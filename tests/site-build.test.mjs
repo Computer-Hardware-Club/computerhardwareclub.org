@@ -37,6 +37,9 @@ test('build.mjs creates the core static site bundle', () => {
     const homePage = readFileSync(join(projectRoot, 'dist/index.html'), 'utf8');
     const aboutPage = readFileSync(join(projectRoot, 'dist/about/index.html'), 'utf8');
     const utilitiesPage = readFileSync(join(projectRoot, 'dist/utilities/index.html'), 'utf8');
+    const troubleshootPage = readFileSync(join(projectRoot, 'dist/workshops/troubleshoot.html'), 'utf8');
+    const serverbuildPage = readFileSync(join(projectRoot, 'dist/workshops/serverbuild.html'), 'utf8');
+    const primesPage = readFileSync(join(projectRoot, 'dist/workshops/primes.html'), 'utf8');
     const cname = readFileSync(join(projectRoot, 'dist/CNAME'), 'utf8').trim();
 
     assert.match(homePage, /Computer Hardware Club/);
@@ -48,4 +51,27 @@ test('build.mjs creates the core static site bundle', () => {
     assert.match(utilitiesPage, /QR Generator/i);
     assert.match(utilitiesPage, /Random Number Generator/i);
     assert.equal(cname, 'computerhardwareclub.org');
+
+    // All 4 dark-theme pages have nav-dropdown
+    assert.match(utilitiesPage, /nav-dropdown/, 'Utilities page should have nav-dropdown');
+    assert.match(troubleshootPage, /nav-dropdown/, 'Troubleshoot page should have nav-dropdown');
+    assert.match(serverbuildPage, /nav-dropdown/, 'Server Build page should have nav-dropdown');
+    assert.match(primesPage, /nav-dropdown/, 'Primes page should have nav-dropdown');
+
+    const workshopNames = ['1-Second Prime Showdown', 'Troubleshooting Workshop', 'Server Build Competition'];
+    workshopNames.forEach((name) => {
+        assert.ok(troubleshootPage.includes(name), `Troubleshoot dropdown should link to ${name}`);
+        assert.ok(serverbuildPage.includes(name), `Server Build dropdown should link to ${name}`);
+        assert.ok(primesPage.includes(name), `Primes dropdown should link to ${name}`);
+    });
+
+    // Unified footer links on all pages
+    const footerLinks = [/GitHub/, /Discord/, /Email/];
+    const allPages = [homePage, aboutPage, utilitiesPage, troubleshootPage, serverbuildPage, primesPage];
+    allPages.forEach((page, i) => {
+        const pageName = ['Home', 'About', 'Utilities', 'Troubleshoot', 'Server Build', 'Primes'][i];
+        footerLinks.forEach((link) => {
+            assert.match(page, link, `${pageName} page should have footer link matching ${link.source}`);
+        });
+    });
 });
