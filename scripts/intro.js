@@ -1,5 +1,8 @@
 "use strict";
 (() => {
+    const SETTLE_DURATION = 2000;
+    const SCAN_DURATION = 3000;
+    const SCAN_START = 2000;
     const VISIT_KEY = 'chc:crt-intro:v1';
     const root = document.documentElement;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -116,24 +119,29 @@
             return skip();
         }
         if (finished) return;
-        root.dataset.introPhase = 'power';
+        // Resource readiness gets its own watchdog; it must not truncate the longer boot.
+        clearTimers();
+        later(skip, SETTLE_DURATION + SCAN_START + SCAN_DURATION + 1800);
         later(() => {
-            root.dataset.introPhase = 'loading';
-            const frames = [
-                '[>         ]', '[=>        ]', '[==>       ]',
-                '[===>      ]', '[====>     ]', '[=====>    ]',
-                '[======>   ]', '[=======>  ]', '[========> ]', '[==========]'
-            ];
-            frames.forEach((frame, index) => later(() => {
-                loader.textContent = 'BOOTING PETER_\n' + frame;
-            }, index * 120));
-        }, 800);
-        later(() => { root.dataset.introPhase = 'scanning'; }, 2000);
-        later(() => { root.dataset.introPhase = 'ready'; }, 3400);
-        later(() => finish(true), 3600);
+            root.dataset.introPhase = 'power';
+            later(() => {
+                root.dataset.introPhase = 'loading';
+                const frames = [
+                    '[>         ]', '[=>        ]', '[==>       ]',
+                    '[===>      ]', '[====>     ]', '[=====>    ]',
+                    '[======>   ]', '[=======>  ]', '[========> ]', '[==========]'
+                ];
+                frames.forEach((frame, index) => later(() => {
+                    loader.textContent = 'BOOTING PETER_\n' + frame;
+                }, index * 120));
+            }, 800);
+            later(() => { root.dataset.introPhase = 'scanning'; }, SCAN_START);
+            later(() => { root.dataset.introPhase = 'ready'; }, SCAN_START + SCAN_DURATION);
+            later(() => finish(true), SCAN_START + SCAN_DURATION + 200);
+        }, SETTLE_DURATION);
     };
-    if (document.readyState === 'loading') {
-        listen(document, 'DOMContentLoaded', start, { once: true });
+    if (document.readyState !== 'complete') {
+        listen(window, 'load', start, { once: true });
     } else {
         start();
     }

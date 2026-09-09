@@ -21,7 +21,7 @@ export function renderCrt(source) {
         for (let col = 0; col < line.length; col++) {
             // Dashes encode the exporter's black background. Keep the original TXT intact.
             const glyph = line[col] === '-' ? ' ' : line[col];
-            if (row === 57 && col === 123) {
+            if ((row === 57 || row === 58) && col === 123) {
                 const power = line.slice(col, col + 3);
                 if (power !== '+++') throw new Error('Expected three power-light cells in the lower-right CRT bezel.');
                 html += `<span class="crt-power" data-cell="${row}:${col}">${power}</span>`;

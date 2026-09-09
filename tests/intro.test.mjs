@@ -95,7 +95,7 @@ function createVisit(options = {}) {
         get fontWaits() { return fontWaits; },
         async advance(milliseconds = 0) {
             // Font readiness resumes on a microtask before the browser's next timer.
-            await Promise.resolve();
+            await new Promise(resolve => setImmediate(resolve));
             const end = now + milliseconds;
             while (true) {
                 const next = [...timers.entries()]
@@ -105,10 +105,10 @@ function createVisit(options = {}) {
                 now = next[1].at;
                 timers.delete(next[0]);
                 next[1].callback();
-                await Promise.resolve();
+                await new Promise(resolve => setImmediate(resolve));
             }
             now = end;
-            await Promise.resolve();
+            await new Promise(resolve => setImmediate(resolve));
         },
         assertOpen() {
             assert.equal(classes.has('intro-pending'), false, 'page must not remain hidden');
@@ -127,7 +127,10 @@ test('first visit boots the CRT in order, fills the loader, and fades in the pag
     const visit = createVisit();
     assert.equal(visit.storage.get(visitKey), 'seen');
     assert.equal(visit.root.classList.contains('intro-pending'), true);
-    await visit.advance();
+    await visit.advance(1999);
+    assert.equal(visit.root.dataset.introPhase, 'waiting');
+    assert.equal(visit.loader.textContent, '');
+    await visit.advance(1);
     assert.equal(visit.root.dataset.introPhase, 'power');
     await visit.advance(800);
     assert.equal(visit.root.dataset.introPhase, 'loading');
@@ -138,7 +141,7 @@ test('first visit boots the CRT in order, fills the loader, and fades in the pag
     assert.match(visit.loader.textContent, /\[=+\]/);
     await visit.advance(120);
     assert.equal(visit.root.dataset.introPhase, 'scanning');
-    await visit.advance(1400);
+    await visit.advance(3000);
     assert.equal(visit.root.dataset.introPhase, 'ready');
     await visit.advance(200);
     assert.equal(visit.root.classList.contains('intro-pending'), false);
@@ -152,7 +155,7 @@ test('same-tab return does not replay after completion or a skip', async () => {
     for (const skip of [false, true]) {
         const first = createVisit();
         if (skip) first.window.dispatch('keydown', { key: 'Escape' });
-        await first.advance(5000);
+        await first.advance(8000);
         const returning = createVisit({ storage: first.storage });
         await returning.advance(10000);
         returning.assertOpen();
@@ -163,9 +166,9 @@ test('same-tab return does not replay after completion or a skip', async () => {
 
 test('a new session plays again', async () => {
     const first = createVisit();
-    await first.advance(5000);
+    await first.advance(8000);
     const nextSession = createVisit();
-    await nextSession.advance();
+    await nextSession.advance(2000);
     assert.equal(nextSession.root.dataset.introPhase, 'power');
 });
 
@@ -182,7 +185,7 @@ test('scrolling and touch leave every animation stage running', async t => {
         }
     };
     for (const [gesture, act] of Object.entries(gestures)) {
-        for (const elapsed of [0, 1000, 2500, 3450, 3700]) {
+        for (const elapsed of [0, 2000, 3000, 5500, 7050, 7300]) {
             await t.test(`${gesture} at ${elapsed}ms`, async () => {
                 const visit = createVisit();
                 await visit.advance(elapsed);
@@ -193,7 +196,7 @@ test('scrolling and touch leave every animation stage running', async t => {
                 assert.equal(visit.root.dataset.introPhase, phase);
                 assert.equal(visit.root.classList.contains('intro-pending'), pending);
                 assert.equal(visit.root.classList.contains('intro-revealing'), fading);
-                await visit.advance(5000);
+                await visit.advance(8000);
                 visit.assertOpen();
                 visit.assertClean();
             });
@@ -203,7 +206,7 @@ test('scrolling and touch leave every animation stage running', async t => {
 
 test('upward gestures and minor touch movement do not skip', async () => {
     const visit = createVisit();
-    await visit.advance();
+    await visit.advance(2000);
     visit.window.dispatch('wheel', { deltaY: -100 });
     visit.window.dispatch('touchstart', { touches: [{ clientY: 200 }] });
     visit.window.dispatch('touchmove', { touches: [{ clientY: 197 }] });
@@ -248,9 +251,9 @@ test('deep links bypass the intro, while a scrolled position does not cancel it'
     linked.assertOpen();
     linked.assertClean();
     const scrolled = createVisit({ scrollY: 400 });
-    await scrolled.advance();
+    await scrolled.advance(2000);
     assert.equal(scrolled.root.dataset.introPhase, 'power');
-    await scrolled.advance(5000);
+    await scrolled.advance(8000);
     scrolled.assertOpen();
 });
 
@@ -288,16 +291,16 @@ test('font readiness gates the sequence, while browsers without the font API can
     assert.equal(visit.root.dataset.introPhase, 'waiting');
     assert.equal(visit.loader.textContent, '');
     resolveFonts();
-    await visit.advance();
+    await visit.advance(2000);
     assert.equal(visit.root.dataset.introPhase, 'power');
-    await visit.advance(4200);
+    await visit.advance(5800);
     visit.assertOpen();
     visit.assertClean();
 
     const fallback = createVisit({ missingFontAPI: true });
-    await fallback.advance();
+    await fallback.advance(2000);
     assert.equal(fallback.root.dataset.introPhase, 'power');
-    await fallback.advance(4200);
+    await fallback.advance(5800);
     fallback.assertOpen();
     fallback.assertClean();
 });
@@ -316,7 +319,7 @@ test('skipping before fonts are ready prevents a late start', async () => {
 
 test('pagehide and bfcache restoration clean up both boot and the final fade', async () => {
     for (const type of ['pagehide', 'pageshow']) {
-        for (const elapsed of [1000, 3700]) {
+        for (const elapsed of [1000, 7300]) {
             const visit = createVisit();
             await visit.advance(elapsed);
             visit.window.dispatch(type, { persisted: true });
@@ -327,18 +330,21 @@ test('pagehide and bfcache restoration clean up both boot and the final fade', a
     }
 });
 
-test('DOMContentLoaded starts once, but skipping before it arrives keeps the page open', async () => {
+test('full window load starts once, but skipping before it arrives keeps the page open', async () => {
     const visit = createVisit({ readyState: 'loading' });
     assert.equal(visit.fontWaits, 0);
     visit.document.dispatch('DOMContentLoaded');
-    visit.document.dispatch('DOMContentLoaded');
-    await visit.advance();
+    await visit.advance(1000);
+    assert.equal(visit.fontWaits, 0, 'DOM readiness alone must not start the boot');
+    visit.window.dispatch('load');
+    visit.window.dispatch('load');
+    await visit.advance(2000);
     assert.equal(visit.fontWaits, 1);
     assert.equal(visit.root.dataset.introPhase, 'power');
 
     const skipped = createVisit({ readyState: 'loading' });
     skipped.window.dispatch('keydown', { key: 'Escape' });
-    skipped.document.dispatch('DOMContentLoaded');
+    skipped.window.dispatch('load');
     await skipped.advance(10000);
     assert.equal(skipped.fontWaits, 0);
     skipped.assertOpen();
@@ -367,12 +373,12 @@ test('hard-refresh shortcuts arm exactly the next reload without cancelling nati
         old.window.dispatch('keydown', { ...shortcut, preventDefault() { assert.fail('native hard refresh must remain intact'); } });
         assert.equal(old.storage.get(replayKey), '10000');
         const fresh = createVisit({ storage: old.storage, navigationType: 'reload', now: 10100, scrollY: 500 });
-        await fresh.advance();
+        await fresh.advance(2000);
         assert.equal(fresh.root.dataset.introPhase, 'power');
         assert.equal(fresh.window.scrollY, 0);
         assert.equal(fresh.window.history.scrollRestoration, 'manual');
         assert.equal(fresh.storage.has(replayKey), false);
-        await fresh.advance(5000);
+        await fresh.advance(8000);
         fresh.assertOpen();
         assert.equal(fresh.window.history.scrollRestoration, 'auto');
         const regular = createVisit({ storage: fresh.storage, navigationType: 'reload', now: 10200 });

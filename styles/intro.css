@@ -4,7 +4,7 @@
     width: 125%;
     margin: -15% -12.5%;
     container-type: inline-size;
-    --scan-duration: 1400ms;
+    --scan-duration: 3000ms;
 }
 .crt-ascii {
     margin: 0;
@@ -34,7 +34,8 @@
 }
 .crt-beaver { color: var(--accent, #ff6b2c); }
 .crt-power { color: #ff4848; }
-.intro-pending .crt-beaver { opacity: 0; }
+[data-intro-phase='waiting'] .crt-power { color: #333; }
+.intro-pending .crt-beaver { visibility: hidden; }
 .intro-pending :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
     opacity: 0;
     visibility: hidden;
@@ -46,10 +47,12 @@
 }
 [data-intro-phase='loading'] .crt-loader { display: block; }
 [data-intro-phase='scanning'] .crt-beaver {
-    animation: crt-character-on 1ms steps(1, end) both;
+    /* Cell delays follow the raster: left to right, then the next row.
+       A short phosphor trail makes the active scan line legible. */
+    animation: crt-character-on 120ms linear both;
     animation-delay: calc(var(--scan-duration) * var(--scan-progress));
 }
-[data-intro-phase='ready'] .crt-beaver { opacity: 1; }
+[data-intro-phase='ready'] .crt-beaver { visibility: visible; }
 .intro-revealing :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
     animation: crt-page-in 500ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
@@ -59,8 +62,9 @@
     25%, 75% { color: #f2f2ee; }
 }
 @keyframes crt-character-on {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    0% { visibility: hidden; }
+    1% { visibility: visible; color: #ffe1c2; text-shadow: 0 0 .35em #ff9a52; }
+    100% { visibility: visible; color: var(--accent, #ff6b2c); text-shadow: none; }
 }
 @keyframes crt-page-in {
     from { opacity: 0; }
@@ -68,7 +72,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
     .crt-loader { display: none !important; }
-    .intro-pending .crt-beaver { opacity: 1; }
+    .intro-pending .crt-beaver { visibility: visible; }
     .crt-ascii .crt-power { color: #ff4848; animation: none; }
     .intro-pending :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
         opacity: 1;

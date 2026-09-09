@@ -35,15 +35,16 @@ test('the supplied 156 by 91 export survives rendering with only background dash
     assert.equal(renderCrt(source.replaceAll('\n', '\r\n')).html, result.html, 'Windows newlines retain the same grid');
 });
 
-test('the power light uses three real plus glyphs at row 57, column 123', () => {
+test('the power light uses two aligned rows of three source glyphs', () => {
     const html = artContent(renderCrt(source).html);
     const power = [...html.matchAll(/<span class="crt-power" data-cell="(\d+):(\d+)">([^<]*)<\/span>/g)];
-    assert.equal(power.length, 1);
-    assert.equal(Number(power[0][1]), 57);
-    assert.equal(Number(power[0][2]), 123);
-    assert.equal(power[0][3], '+++');
-    assert.equal(power[0][3], lines[57].slice(123, 126));
-    assert.equal(reconstruct(renderCrt(source).html).split('\n')[57].slice(123, 126), '+++');
+    assert.equal(power.length, 2);
+    assert.deepEqual(power.map(span => [Number(span[1]), Number(span[2])]), [[57, 123], [58, 123]]);
+    for (const [, row, , glyphs] of power) {
+        assert.equal(glyphs, '+++');
+        assert.equal(glyphs, lines[Number(row)].slice(123, 126));
+        assert.equal(reconstruct(renderCrt(source).html).split('\n')[Number(row)].slice(123, 126), '+++');
+    }
 });
 
 test('every beaver span preserves one source glyph and reveals in row-major order', () => {
@@ -94,9 +95,11 @@ test('invalid grid dimensions or moved power cells require explicit recalibratio
     for (const malformed of ['', lines.slice(1).join('\n'), [...lines, lines[0]].join('\n'), shortRow.join('\n'), longRow.join('\n')]) {
         assert.throws(() => renderCrt(malformed), /156 columns.*91 rows/);
     }
-    const movedPower = [...lines];
-    movedPower[57] = movedPower[57].slice(0, 123) + '-' + movedPower[57].slice(124);
-    assert.throws(() => renderCrt(movedPower.join('\n')), /power-light cells/);
+    for (const row of [57, 58]) {
+        const movedPower = [...lines];
+        movedPower[row] = movedPower[row].slice(0, 123) + '-' + movedPower[row].slice(124);
+        assert.throws(() => renderCrt(movedPower.join('\n')), /power-light cells/);
+    }
 });
 
 test('page generation replaces only the marked artwork and is repeatable', () => {
