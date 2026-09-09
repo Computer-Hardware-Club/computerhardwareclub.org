@@ -1,0 +1,73 @@
+/* Palette-only treatment for the original workshop documents.
+   Imported from their existing style blocks; preserve their layout and type scales. */
+html:root {
+    color-scheme: dark;
+    --osu-orange: #ff6b2c;
+    --orange-light: #ff8b58;
+    --orange-glow: rgba(255, 107, 44, .12);
+    --bg-deep: #000;
+    --bg-surface: #080808;
+    --bg-raised: #141414;
+    --bg-code: #080808;
+    --text-primary: #f2f2ee;
+    --text-secondary: #a1a1a1;
+    --text-dim: #909090;
+    --border: #303030;
+    --border-light: #404040;
+}
+html body { background: #000; color: #f2f2ee; }
+body .hero::before { display: none; }
+body .terminal-green, body .terminal-blue, body .accent-orange { color: #ff6b2c; }
+body .terminal-border, body .code-block, body .part-thumb, body .part-thumb-placeholder { border-color: #303030; }
+body .code-block, body .part-thumb-placeholder, body .json-modal-box { background-color: #080808; }
+body .part-thumb { background-color: #000; }
+body .nav-dropdown-list { background: #080808; border-color: #303030; }
+body .nav-dropdown-btn, body .nav-dropdown-list a { color: #a1a1a1; border-color: #303030; }
+body .nav-dropdown-btn:hover, body .nav-dropdown-btn:focus-visible,
+body .nav-dropdown.is-open .nav-dropdown-btn { color: #f2f2ee; border-color: #ff6b2c; }
+body .nav-dropdown-list a:hover, body .nav-dropdown-list a:focus-visible,
+body .nav-dropdown-list a.active-link { color: #ff6b2c; background: rgba(255,107,44,.1); }
+body input::placeholder, body textarea::placeholder { color: #909090; }
+body :is(button, a, input, textarea, select):focus-visible { outline-color: #ff6b2c; }
+body input:focus, body textarea:focus { border-color: #ff6b2c !important; box-shadow: 0 0 0 1px #ff6b2c; }
+body ::selection { background: #ff6b2c; color: #000; }
+html ::-webkit-scrollbar-track { background: #000; }
+html ::-webkit-scrollbar-thumb { background: #303030; }
+html ::-webkit-scrollbar-thumb:hover { background: #ff6b2c; }
+
+/* Restyle existing Tailwind color utilities without rewriting their HTML classes. */
+body [class~="bg-[#0d1117]"] { background-color: #000; }
+body [class~="bg-[#161b22]"] { background-color: #080808; }
+body [class~="bg-[#21262d]"] { background-color: #141414; }
+body [class~="border-[#30363d]"] { border-color: #303030; }
+body [class~="text-[#c9d1d9]"], body .text-gray-300 { color: #f2f2ee; }
+body [class~="text-[#8b949e]"], body .text-gray-400, body .text-gray-500 { color: #a1a1a1; }
+body [class~="text-[#58a6ff]"], body [class~="text-[#f0883e]"],
+body [class~="text-[#bc8cff]"], body [class~="text-[#f778ba]"],
+body [class~="text-[#79c0ff]"], body .text-blue-400, body .text-purple-400 { color: #ff6b2c; }
+body [class~="bg-[#f0883e]"], body [class~="bg-[#2ea043]"],
+body [class~="bg-[#58a6ff]"] { background-color: #ff6b2c; }
+body [class~="hover:border-[#58a6ff]"]:hover { border-color: #ff6b2c; }
+
+/* Let the original filename header and controls wrap on smaller screens. */
+@media (max-width: 1100px) {
+    body > header > div.flex { flex-wrap: wrap; gap: 12px; }
+    body > header > div.flex > div { min-width: 0; max-width: 100%; }
+    body > header > div.flex > div:last-child { flex-wrap: wrap; }
+    body > header h1 { overflow-wrap: anywhere; }
+}
+@media (max-width: 640px) {
+    body > header > div.flex h1 { font-size: 14px; }
+    body > header:not(.hero) .nav-dropdown { position: static; }
+    body > header:not(.hero) .nav-dropdown-list {
+        left: 16px;
+        right: 16px;
+        top: 100%;
+        min-width: 0;
+    }
+}
+
+/* Keep long reference snippets inside their original cards on narrow screens. */
+body .docs-result-list { grid-template-columns: minmax(0, 1fr); }
+body .docs-card { min-width: 0; }
+body .docs-title { max-width: 100%; overflow-wrap: anywhere; }

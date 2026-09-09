@@ -1,0 +1,154 @@
+- generic [active] [ref=f10e1]:
+  - banner [ref=f10e2]:
+    - generic [ref=f10e3]:
+      - link "chc@osu:~$" [ref=f10e4] [cursor=pointer]:
+        - /url: ../
+      - generic [ref=f10e5]:
+        - generic [ref=f10e6]: Loaded saved build
+        - link "Home" [ref=f10e12] [cursor=pointer]:
+          - /url: ../
+        - link "About" [ref=f10e13] [cursor=pointer]:
+          - /url: ../about/
+        - link "Utilities" [ref=f10e14] [cursor=pointer]:
+          - /url: ../utilities/
+        - button "Workshops" [ref=f10e16] [cursor=pointer]
+        - button "Toggle fullscreen" [ref=f10e17] [cursor=pointer]: Expand
+  - generic [ref=f10e23]:
+    - paragraph [ref=f10e28]: ./server_build_competition.html
+    - heading "Server Build Competition" [level=1] [ref=f10e29]
+  - main [ref=f10e30]:
+    - generic [ref=f10e31]:
+      - generic [ref=f10e32]:
+        - heading "Objective" [level=2] [ref=f10e33]
+        - paragraph [ref=f10e38]: Your goal is to partner up and scour the second-hand market for the most interesting server/PC components. You will keep track of your parts, links, and running cost with the provided part tracker below. Each team will have the chance to present and explain their machine and the parts they picked. The winning machine will be determined via vote at the end of the workshop.
+      - generic [ref=f10e39]:
+        - generic [ref=f10e40]:
+          - heading "Rules" [level=3] [ref=f10e41]
+          - list [ref=f10e45]:
+            - listitem [ref=f10e46]:
+              - generic [ref=f10e47]: "01."
+              - generic [ref=f10e48]: Teams of 2-3 only
+            - listitem [ref=f10e49]:
+              - generic [ref=f10e50]: "02."
+              - generic [ref=f10e51]: You must use the provided part tracker
+            - listitem [ref=f10e52]:
+              - generic [ref=f10e53]: "03."
+              - generic [ref=f10e54]:
+                - text: Second-hand market only, no new parts (Chinese markets
+                - strong [ref=f10e55]: allowed
+                - text: )
+            - listitem [ref=f10e56]:
+              - generic [ref=f10e57]: "04."
+              - generic [ref=f10e58]: Everyone must vote at the end. You cannot vote for yourself
+        - generic [ref=f10e59]:
+          - heading "Tips" [level=3] [ref=f10e60]
+          - list [ref=f10e63]:
+            - listitem [ref=f10e64]:
+              - generic [ref=f10e65]: •
+              - text: Don't min/max price to performance, build something interesting
+            - listitem [ref=f10e66]:
+              - generic [ref=f10e67]: •
+              - text: For parts, anything goes. Think outside the box
+            - listitem [ref=f10e68]:
+              - generic [ref=f10e69]: •
+              - text: There is no budget, but total cost will factor into final verdict, so stay thrifty
+            - listitem [ref=f10e70]:
+              - generic [ref=f10e71]: •
+              - text: Pander to your fellow members
+    - generic [ref=f10e72]:
+      - generic [ref=f10e73]:
+        - heading "Workshop Timer" [level=3] [ref=f10e74]
+        - generic [ref=f10e78]:
+          - timer "Workshop countdown timer" [ref=f10e79]:
+            - textbox "Timer minutes" [ref=f10e80]: "45"
+            - generic [ref=f10e81]: ":"
+            - textbox "Timer seconds" [ref=f10e82]: "00"
+          - generic [ref=f10e83]:
+            - button "Start timer" [ref=f10e84] [cursor=pointer]: Start
+            - button "Stop timer" [disabled] [ref=f10e87]: Stop
+            - button "Reset timer" [ref=f10e91] [cursor=pointer]: Reset
+      - generic [ref=f10e95]:
+        - heading "Part Tracker" [level=2] [ref=f10e96]
+        - generic [ref=f10e100]:
+          - button "Copy shareable link for your build" [ref=f10e101] [cursor=pointer]: Copy Shareable Link
+          - button "Load build from pasted JSON" [ref=f10e105] [cursor=pointer]: Load JSON
+          - button "Clear all parts and reset tracker" [ref=f10e109] [cursor=pointer]: Clear
+      - generic [ref=f10e114]:
+        - generic [ref=f10e115]:
+          - generic [ref=f10e116]: Team Name
+          - textbox "Team Name" [ref=f10e117]:
+            - /placeholder: e.g. "Team Peter"
+        - generic [ref=f10e118]:
+          - generic [ref=f10e119]: Server Name
+          - textbox "Server Name" [ref=f10e120]:
+            - /placeholder: e.g. "The Competer"
+      - generic [ref=f10e121]:
+        - generic [ref=f10e122]:
+          - generic [ref=f10e123]: CPU
+          - generic [ref=f10e136]:
+            - textbox "CPU part name" [ref=f10e137]:
+              - /placeholder: Part name
+            - generic [ref=f10e138]:
+              - textbox "CPU price" [ref=f10e139]:
+                - /placeholder: Price ($)
+              - textbox "CPU image URL" [ref=f10e140]:
+                - /placeholder: Image URL
+            - textbox "CPU product link" [ref=f10e141]:
+              - /placeholder: Product link
+            - textbox "CPU notes" [ref=f10e142]:
+              - /placeholder: Notes (optional)
+        - generic [ref=f10e143]:
+          - generic [ref=f10e144]: GPU
+          - generic [ref=f10e156]:
+            - textbox "GPU part name" [ref=f10e157]:
+              - /placeholder: Part name
+            - generic [ref=f10e158]:
+              - textbox "GPU price" [ref=f10e159]:
+                - /placeholder: Price ($)
+              - textbox "GPU image URL" [ref=f10e160]:
+                - /placeholder: Image URL
+            - textbox "GPU product link" [ref=f10e161]:
+              - /placeholder: Product link
+            - textbox "GPU notes" [ref=f10e162]:
+              - /placeholder: Notes (optional)
+        - generic [ref=f10e163]:
+          - generic [ref=f10e164]: RAM
+          - generic [ref=f10e176]:
+            - textbox "RAM part name" [ref=f10e177]:
+              - /placeholder: Part name
+            - generic [ref=f10e178]:
+              - textbox "RAM price" [ref=f10e179]:
+                - /placeholder: Price ($)
+              - textbox "RAM image URL" [ref=f10e180]:
+                - /placeholder: Image URL
+            - textbox "RAM product link" [ref=f10e181]:
+              - /placeholder: Product link
+            - textbox "RAM notes" [ref=f10e182]:
+              - /placeholder: Notes (optional)
+        - generic [ref=f10e183]:
+          - generic [ref=f10e184]: Case / Chassis
+          - generic [ref=f10e197]:
+            - textbox "Case / Chassis part name" [ref=f10e198]:
+              - /placeholder: Part name
+            - generic [ref=f10e199]:
+              - textbox "Case / Chassis price" [ref=f10e200]:
+                - /placeholder: Price ($)
+              - textbox "Case / Chassis image URL" [ref=f10e201]:
+                - /placeholder: Image URL
+            - textbox "Case / Chassis product link" [ref=f10e202]:
+              - /placeholder: Product link
+            - textbox "Case / Chassis notes" [ref=f10e203]:
+              - /placeholder: Notes (optional)
+      - button "Add another custom part slot" [ref=f10e205] [cursor=pointer]: Add "Other" Part
+      - generic [ref=f10e208]:
+        - generic [ref=f10e209]: Total Cost
+        - generic "Total build cost" [ref=f10e213]: $0.00
+    - generic [ref=f10e214]:
+      - generic [ref=f10e215]: Server Build — Computer Hardware Club
+      - generic [ref=f10e216]:
+        - link "GitHub" [ref=f10e217] [cursor=pointer]:
+          - /url: https://github.com/Computer-Hardware-Club
+        - link "Email" [ref=f10e218] [cursor=pointer]:
+          - /url: mailto:computerhardware.clubs@oregonstate.edu
+        - link "Discord" [ref=f10e219] [cursor=pointer]:
+          - /url: https://discord.gg/bfxjgvzCSf

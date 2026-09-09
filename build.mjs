@@ -1,8 +1,9 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { renderCrtIntoPage } from './render-crt.mjs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 const distDir = 'dist';
-const siteEntries = ['404.html', '500.html', 'CNAME', 'about', 'utilities', 'workshops', 'images', 'index.html', 'scripts', 'styles'];
+const siteEntries = ['404.html', '500.html', 'CNAME', 'about', 'workshops', 'images', 'index.html', 'scripts', 'styles'];
 
 const shouldCopyFile = (filePath) => !filePath.endsWith('.ts') && !filePath.endsWith('.tsx');
 
@@ -20,7 +21,11 @@ const copyStatic = (fromPath, toPath) => {
     }
 
     mkdirSync(dirname(toPath), { recursive: true });
-    cpSync(fromPath, toPath);
+    if (fromPath === 'index.html') {
+        writeFileSync(toPath, renderCrtIntoPage(readFileSync(fromPath, 'utf8'), readFileSync('images/ascii/beaver-crt.txt', 'utf8')));
+    } else {
+        cpSync(fromPath, toPath);
+    }
 };
 
 if (existsSync(distDir)) {

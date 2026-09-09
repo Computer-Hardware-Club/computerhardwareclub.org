@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Build Competition</title>
+    <meta name="description" content="Partner up, spec an absurd server, present to the club, and vote for the best build.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%239c5f2d'/%3E%3Cpath d='M20 20h24v24H20z' fill='%23f4efe7' opacity='.92'/%3E%3Cpath d='M26 26h12v12H26z' fill='%239c5f2d'/%3E%3C/svg%3E">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url("../styles/workshop-theme.css?v=4");
+        body { font-family: 'JetBrains Mono', monospace; background-color: #0d1117; color: #c9d1d9; }
+        .terminal-green { color: #2ea043; }
+        .terminal-blue { color: #58a6ff; }
+        .accent-orange { color: #d77b3f; }
+        .terminal-border { border: 1px solid #30363d; }
+        .code-block { background-color: #161b22; border: 1px solid #30363d; border-radius: 6px; }
+
+        /* Focus-visible for keyboard accessibility */
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid #58a6ff;
+            outline-offset: 2px;
+        }
+
+        input::placeholder { color: #6e7681; }
+        input:focus { outline: none; border-color: #58a6ff !important; box-shadow: 0 0 0 1px #58a6ff; }
+        textarea:focus { outline: none; border-color: #58a6ff !important; box-shadow: 0 0 0 1px #58a6ff; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #58a6ff; }
+        .part-thumb { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; }
+        .part-thumb-placeholder { width: 100%; aspect-ratio: 1; border-radius: 6px; border: 1px solid #30363d; background: #161b22; display: flex; align-items: center; justify-content: center; color: #6e7681; }
+
+        /* Toast with safe-area-inset support */
+        #link-copied-toast {
+            bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+            right: 1.5rem;
+        }
+
+        @keyframes pulse-total {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .pulse-update { animation: pulse-total 0.3s ease-in-out; }
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-in { animation: slide-in 0.2s ease-out; }
+        @keyframes timer-end-flash {
+            0%, 100% { color: #f85149; }
+            50% { color: #fff; }
+        }
+        .timer-end { animation: timer-end-flash 1s ease-in-out infinite; }
+        input#timer-minutes:disabled, input#timer-seconds:disabled { opacity: 0.9; border-color: transparent !important; }
+
+        /* ── Unified dropdown nav overlay ── */
+        /* === Fullscreen mode styles (CSS-driven, not inline JS) === */
+        .fs-mode main,
+        .fs-mode header > div { max-width: 96vw !important; }
+        .fs-mode .objective-card { padding: 1.25rem 1.5rem !important; }
+        .fs-mode .objective-card h2 { font-size: 1.5rem !important; }
+        .fs-mode .objective-card p { font-size: 1.1rem !important; }
+        .fs-mode .rules-tips-grid { gap: 1.5rem !important; }
+        .fs-mode .rules-tips-card { padding: 1.25rem 1.5rem !important; }
+        .fs-mode .rules-tips-card h3 { font-size: 1rem !important; }
+        .fs-mode .rules-tips-card ol,
+        .fs-mode .rules-tips-card ul { font-size: 0.9rem !important; }
+        .fs-mode #total-display { font-size: 3rem !important; }
+        .fs-mode .build-h2 { font-size: 1.5rem !important; }
+        .fs-mode .name-card { padding: 1.25rem 1.5rem !important; }
+        .fs-mode .part-card { padding: 1.25rem 1.5rem !important; }
+        .fs-mode .part-card input,
+        .fs-mode .part-card textarea { font-size: 1rem !important; padding: 0.65rem 0.75rem !important; }
+        .fs-mode .part-card .part-grid { gap: 0.75rem !important; }
+        .fs-mode .part-card .part-label { font-size: 1rem !important; }
+
+        #auto-save-indicator {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #auto-save-indicator.show {
+            opacity: 1;
+        }
+        #auto-save-indicator.fade {
+            opacity: 0;
+        }
+
+        /* ── JSON load modal ── */
+        .json-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .json-modal-overlay.is-open {
+            display: flex;
+        }
+        .json-modal-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 1.5rem;
+            width: min(90vw, 560px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        }
+        .json-modal-box h3 {
+            margin: 0 0 0.75rem;
+            font-size: 1rem;
+        }
+        .json-modal-box textarea {
+            width: 100%;
+            min-height: 200px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            resize: vertical;
+        }
+        .json-modal-box textarea:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 1px #58a6ff;
+        }
+        .json-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        #json-error-msg {
+            display: none;
+            color: #f85149;
+            font-size: 0.78rem;
+            margin-top: 0.5rem;
+        }
+        #json-error-msg.show {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="../styles/workshop-remaster.css?v=1">
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="site-header">
+  <nav class="site-nav container" aria-label="Primary navigation">
+    <a class="brand" href="../" aria-label="Computer Hardware Club home"><span class="brand-host">chc</span><span>@oregonstate:~</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../about/" >About</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-controls="workshop-links">Workshops</button>
+        <ul class="nav-dropdown-list" id="workshop-links">
+          <li><a href="../workshops/primes.html">1-Second Prime Showdown</a></li>
+          <li><a href="../workshops/troubleshoot.html">Troubleshooting Workshop</a></li>
+          <li><a href="../workshops/serverbuild.html">Server Build Competition</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+    <div class="workshop-page-title">
+            <div class="workshop-file">
+                <i data-lucide="server" class="accent-orange w-6 h-6"></i>
+                <p class="workshop-filename">
+                    <span class="accent-orange">./</span>server_build_competition.html
+                </p>
+            </div>
+        <h1>Server Build Competition</h1>
+        <div class="workshop-page-actions"><div id="auto-save-indicator" class="text-xs flex items-center gap-1.5 text-gray-500 shrink-0" aria-live="polite">
+                    <i data-lucide="save" class="w-3 h-3"></i>
+                    <span id="auto-save-text">Saved</span>
+                </div>
+<button onclick="toggleFullscreen()" id="fs-btn" class="text-xs text-gray-400 border border-[#30363d] px-2 py-1 rounded hover:text-white hover:border-[#58a6ff] transition-colors flex items-center gap-1" aria-label="Toggle fullscreen" title="Toggle fullscreen">
+                    <i data-lucide="maximize-2" class="w-3 h-3"></i> Expand
+                </button></div>
+    </div>
+
+    <main class="flex-grow max-w-5xl mx-auto px-4 py-8 space-y-10 w-full">
+
+        <div id="viewing-banner" class="hidden p-4 rounded-lg bg-[#161b22] border border-[#f0883e]/30 shadow-lg relative overflow-hidden" role="alert">
+            <div class="absolute top-0 left-0 w-1 h-full bg-[#f0883e]"></div>
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="eye" class="w-5 h-5 text-[#f0883e]"></i>
+                    <div>
+                        <span class="text-sm text-gray-400">Viewing build by</span>
+                        <span id="viewing-team" class="ml-1 font-bold text-white"></span>
+                        <span class="text-sm text-gray-400 mx-1">—</span>
+                        <span id="viewing-server" class="font-bold terminal-blue"></span>
+                    </div>
+                </div>
+                <button onclick="closeViewingMode()" class="text-xs border border-[#30363d] px-3 py-1.5 rounded text-gray-400 hover:text-white hover:border-[#58a6ff] transition-colors flex items-center gap-1" aria-label="Close viewing mode and return to editor">
+                    <i data-lucide="x" class="w-3 h-3"></i> Close
+                </button>
+            </div>
+        </div>
+
+        <section class="space-y-4" id="instructions-section">
+            <div class="objective-card p-4 rounded-lg bg-[#161b22] border border-[#30363d] shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-[#d77b3f]"></div>
+                <h2 class="text-2xl font-bold accent-orange mb-2 flex items-center">
+                    <i data-lucide="target" class="w-6 h-6 mr-2"></i> Objective
+                </h2>
+                <p class="text-base text-gray-400 leading-relaxed">
+                    Your goal is to partner up and scour the second-hand market for the most interesting server/PC components. You will keep track of your parts, links, and running cost with the provided part tracker below. Each team will have the chance to present and explain their machine and the parts they picked. The winning machine will be determined via vote at the end of the workshop.
+                </p>
+            </div>
+
+            <div class="rules-tips-grid grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rules-tips-card p-4 rounded-lg code-block relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                    <h3 class="text-base font-bold terminal-green mb-3 flex items-center">
+                        <i data-lucide="list-checks" class="w-5 h-5 mr-2"></i> Rules
+                    </h3>
+                    <ol class="text-sm text-gray-400 space-y-2 list-none">
+                        <li class="flex items-start gap-2"><span class="terminal-green font-bold">01.</span><span>Teams of 2-3 only</span></li>
+                        <li class="flex items-start gap-2"><span class="terminal-green font-bold">02.</span><span>You must use the provided part tracker</span></li>
+                        <li class="flex items-start gap-2"><span class="terminal-green font-bold">03.</span><span>Second-hand market only, no new parts (Chinese markets <strong class="terminal-blue">allowed</strong>)</span></li>
+                        <li class="flex items-start gap-2"><span class="terminal-green font-bold">04.</span><span>Everyone must vote at the end. You cannot vote for yourself</span></li>
+                    </ol>
+                </div>
+                <div class="rules-tips-card p-4 rounded-lg code-block relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-[#58a6ff]"></div>
+                    <h3 class="text-base font-bold terminal-blue mb-3 flex items-center">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-2"></i> Tips
+                    </h3>
+                    <ul class="text-sm text-gray-400 space-y-2 list-none">
+                        <li class="flex items-start gap-2"><span class="terminal-blue">•</span> Don't min/max price to performance, build something interesting</li>
+                        <li class="flex items-start gap-2"><span class="terminal-blue">•</span> For parts, anything goes. Think outside the box</li>
+                        <li class="flex items-start gap-2"><span class="terminal-blue">•</span> There is no budget, but total cost will factor into final verdict, so stay thrifty</li>
+                        <li class="flex items-start gap-2"><span class="terminal-blue">•</span> Pander to your fellow members</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="space-y-4" id="build-form-section">
+            <div class="p-4 rounded-lg code-block relative overflow-hidden" id="timer-card">
+                <div class="absolute top-0 left-0 w-1 h-full bg-[#bc8cff]"></div>
+                <h3 class="text-base font-bold text-[#bc8cff] mb-3 flex items-center">
+                    <i data-lucide="timer" class="w-5 h-5 mr-2"></i> Workshop Timer
+                </h3>
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div id="timer-display" class="text-4xl md:text-5xl font-bold tabular-nums tracking-wider flex items-center" role="timer" aria-live="polite" aria-label="Workshop countdown timer">
+                        <input id="timer-minutes" type="text" inputmode="numeric" value="45" maxlength="2" class="w-16 bg-transparent border-b border-[#30363d] text-4xl md:text-5xl font-bold text-white tabular-nums tracking-wider focus:border-[#bc8cff] focus:outline-none transition-colors" oninput="updateTimerFromInput(this)" onfocus="this.select()" aria-label="Timer minutes">
+                        <span class="text-4xl md:text-5xl font-bold text-gray-500 mx-1 select-none">:</span>
+                        <input id="timer-seconds" type="text" inputmode="numeric" value="00" maxlength="2" class="w-16 bg-transparent border-b border-[#30363d] text-4xl md:text-5xl font-bold text-white tabular-nums tracking-wider focus:border-[#bc8cff] focus:outline-none transition-colors" oninput="updateTimerFromInput(this)" onfocus="this.select()" aria-label="Timer seconds">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="startTimer()" id="timer-start" class="terminal-border px-3 py-1.5 rounded text-xs text-gray-400 hover:text-white hover:border-[#bc8cff] transition-colors flex items-center gap-1" aria-label="Start timer">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                        </button>
+                        <button onclick="stopTimer()" id="timer-stop" class="terminal-border px-3 py-1.5 rounded text-xs text-gray-400 hover:text-white hover:border-[#bc8cff] transition-colors flex items-center gap-1" disabled aria-label="Stop timer">
+                            <i data-lucide="pause" class="w-3.5 h-3.5"></i> Stop
+                        </button>
+                        <button onclick="resetTimer()" id="timer-reset" class="terminal-border px-3 py-1.5 rounded text-xs text-gray-400 hover:text-white hover:border-[#bc8cff] transition-colors flex items-center gap-1" aria-label="Reset timer">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <h2 class="text-xl font-bold terminal-green build-h2 flex items-center">
+                    <i data-lucide="cpu" class="w-5 h-5 mr-2"></i> Part Tracker
+                </h2>
+                <div class="flex items-center gap-2" id="action-buttons">
+                    <button onclick="copyShareableLink()" class="text-xs terminal-border px-3 py-1.5 rounded text-gray-400 hover:text-white hover:border-[#58a6ff] transition-colors flex items-center gap-1" id="share-btn" aria-label="Copy shareable link for your build">
+                        <i data-lucide="link-2" class="w-3.5 h-3.5"></i> Copy Shareable Link
+                    </button>
+                    <button onclick="openJsonModal()" class="text-xs terminal-border px-3 py-1.5 rounded text-gray-400 hover:text-white hover:border-[#bc8cff] transition-colors flex items-center gap-1" aria-label="Load build from pasted JSON">
+                        <i data-lucide="upload" class="w-3.5 h-3.5"></i> Load JSON
+                    </button>
+                    <button onclick="clearBuild()" class="text-xs terminal-border px-3 py-1.5 rounded text-gray-400 hover:text-red-400 hover:border-red-400/50 transition-colors flex items-center gap-1" aria-label="Clear all parts and reset tracker">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div id="link-copied-toast" class="hidden fixed bg-[#161b22] border border-green-500/50 text-green-400 text-xs px-4 py-2 rounded-lg shadow-xl z-50 flex items-center gap-2 slide-in" role="status" aria-live="polite">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span id="toast-message"></span>
+            </div>
+
+            <div id="json-modal" class="json-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="json-modal-title">
+                <div class="json-modal-box">
+                    <h3 class="text-white font-bold flex items-center gap-2" id="json-modal-title">
+                        <i data-lucide="file-json" class="w-5 h-5 text-[#bc8cff]"></i> Load Build from JSON
+                    </h3>
+                    <textarea id="json-input" placeholder='Paste build JSON here...' aria-label="Paste build JSON"></textarea>
+                    <div id="json-error-msg"></div>
+                    <div class="json-modal-actions">
+                        <button onclick="closeJsonModal()" class="text-xs terminal-border px-3 py-1.5 rounded text-gray-400 hover:text-white hover:border-[#58a6ff] transition-colors">Cancel</button>
+                        <button onclick="loadBuildFromJsonModal()" class="text-xs px-3 py-1.5 rounded bg-[#bc8cff]/20 text-[#bc8cff] hover:bg-[#bc8cff]/30 border border-[#bc8cff]/50 transition-colors flex items-center gap-1">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Load
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="name-card p-4 rounded-lg code-block space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block" for="team-name">Team Name</label>
+                        <input type="text" id="team-name" placeholder='e.g. "Team Peter"' maxlength="100" class="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white" oninput="markChanged()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block" for="server-name">Server Name</label>
+                        <input type="text" id="server-name" placeholder='e.g. "The Competer"' maxlength="100" class="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white" oninput="markChanged()">
+                    </div>
+                </div>
+            </div>
+
+            <div id="parts-container" class="space-y-4"></div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+                <button onclick="addOtherSlot()" class="text-sm terminal-border px-3 py-2 rounded text-gray-400 hover:text-white hover:border-[#58a6ff] transition-colors flex items-center gap-1.5" aria-label="Add another custom part slot">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add "Other" Part
+                </button>
+            </div>
+
+            <div class="p-5 rounded-lg bg-[#161b22] border border-[#30363d]">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-5 h-5 accent-orange"></i>
+                        <span class="text-sm text-gray-400 uppercase tracking-wider">Total Cost</span>
+                    </div>
+                    <div id="total-display" class="text-3xl md:text-4xl font-bold accent-orange tabular-nums" aria-label="Total build cost">$0.00</div>
+                </div>
+            </div>
+
+            <div id="summary-card" class="hidden p-5 rounded-lg code-block relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-[#d77b3f]"></div>
+                <h3 class="text-lg font-bold accent-orange mb-4 flex items-center">
+                    <i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i> Summary
+                </h3>
+                <ul id="summary-list" class="text-base text-gray-300 space-y-3 list-none"></ul>
+            </div>
+        </section>
+
+    </main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span data-year>2026</span> Computer Hardware Club</p>
+    <ul class="footer-links">
+      <li><a href="https://github.com/Computer-Hardware-Club" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+      <li><a href="mailto:computerhardware.clubs@oregonstate.edu">Email ↗</a></li>
+      <li><a href="https://discord.gg/bfxjgvzCSf" target="_blank" rel="noopener noreferrer">Discord ↗</a></li>
+    </ul>
+  </div>
+</footer>
+
+    
+    <script>
+        /* ===== Constants ===== */
+        const FIXED_SLOTS = [
+            { key: 'cpu', label: 'CPU', icon: 'cpu' },
+            { key: 'gpu', label: 'GPU', icon: 'monitor' },
+            { key: 'ram', label: 'RAM', icon: 'hard-drive' },
+            { key: 'case', label: 'Case / Chassis', icon: 'box' }
+        ];
+
+        /* ===== State ===== */
+        let otherCount = 0;
+        let isViewingMode = false;
+        let lucideNeedsRefresh = false;
+
+        /* ===== Lucide icon batching ===== */
+        function scheduleLucideRefresh() {
+            lucideNeedsRefresh = true;
+        }
+
+        function flushLucideRefresh() {
+            if (lucideNeedsRefresh) {
+                lucideNeedsRefresh = false;
+                lucide.createIcons();
+            }
+        }
+
+        /* ===== Fullscreen (CSS class toggling, no inline styles) ===== */
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function updateFullscreenState() {
+            const enabled = !!document.fullscreenElement;
+            document.body.classList.toggle('fs-mode', enabled);
+            const btn = document.getElementById('fs-btn');
+            if (btn) {
+                btn.innerHTML = enabled
+                     ? '<i data-lucide="minimize-2" class="w-3 h-3"></i> Collapse'
+                     : '<i data-lucide="maximize-2" class="w-3 h-3"></i> Expand';
+                scheduleLucideRefresh();
+                flushLucideRefresh();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', updateFullscreenState);
+
+        /* ===== UTF-8 safe base64 (replaces deprecated unescape/escape) ===== */
+        function encodeToBase64(str) {
+            const bytes = new TextEncoder().encode(str);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        function decodeFromBase64(b64) {
+            const binary = atob(b64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return new TextDecoder().decode(bytes);
+        }
+
+        /* ===== HTML escaping ===== */
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        /* ===== URL sanitizer ===== */
+        function isValidHttpUrl(url) {
+            if (!url) return false;
+            try {
+                const parsed = new URL(url);
+                return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        /* ===== localStorage auto-save ===== */
+        const SAVE_KEY = 'serverbuild_data';
+        const TIMER_KEY = 'serverbuild_timer';
+        let saveTimer = null;
+        const DEBOUNCE_MS = 300;
+
+        function showSaveIndicator(action) {
+            const indicator = document.getElementById('auto-save-indicator');
+            const textEl = document.getElementById('auto-save-text');
+            textEl.textContent = (action === 'loading' ? 'Loaded saved build' : 'Auto-saved');
+            indicator.classList.remove('fade');
+            indicator.classList.add('show');
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(function () {
+                indicator.classList.add('fade');
+                indicator.classList.remove('show');
+            }, 1800);
+        }
+
+        function saveBuild() {
+            if (isViewingMode) return;
+            const skipIndicator = arguments[0] === true;
+            try {
+                const build = collectBuild();
+                const json = JSON.stringify(build);
+                localStorage.setItem(SAVE_KEY, json);
+                document.getElementById('share-btn').classList.remove('terminal-blue');
+                if (!skipIndicator) showSaveIndicator('saving');
+            } catch (e) {
+                console.warn('Failed to auto-save build', e);
+                var indicator = document.getElementById('auto-save-indicator');
+                var textEl = document.getElementById('auto-save-text');
+                textEl.textContent = 'Failed to save';
+                indicator.classList.remove('fade');
+                indicator.classList.add('show');
+                indicator.style.color = '#f85149';
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(function () {
+                    indicator.classList.add('fade');
+                    indicator.classList.remove('show');
+                    indicator.style.color = '';
+                }, 3000);
+            }
+        }
+
+        function scheduleSave() {
+            if (isViewingMode) return;
+            clearTimeout(window._saveDebounce);
+            window._saveDebounce = setTimeout(saveBuild, DEBOUNCE_MS);
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const json = localStorage.getItem(SAVE_KEY);
+                if (!json) return false;
+                const build = JSON.parse(json);
+                if (!build || !Array.isArray(build.parts)) return false;
+
+                document.getElementById('team-name').value = build.team || '';
+                document.getElementById('server-name').value = build.server || '';
+
+                const container = document.getElementById('parts-container');
+
+                const fixedParts = {};
+                const otherParts = [];
+
+                for (let i = 0; i < build.parts.length; i++) {
+                    const part = build.parts[i];
+                    const isFixed = FIXED_SLOTS.some(function (s) { return s.key === part.key; });
+                    if (isFixed) fixedParts[part.key] = part;
+                    else otherParts.push(part);
+                }
+
+                for (let j = 0; j < FIXED_SLOTS.length; j++) {
+                    if (fixedParts[FIXED_SLOTS[j].key]) {
+                        setPartValues(FIXED_SLOTS[j].key, fixedParts[FIXED_SLOTS[j].key]);
+                    }
+                }
+
+                for (let k = 0; k < otherParts.length; k++) {
+                    addOtherSlot();
+                    const otherCards = container.querySelectorAll('div[id^="part-other-"]');
+                    const lastOther = otherCards[otherCards.length - 1];
+                    if (lastOther) {
+                        setPartValues(lastOther.id.replace('part-', ''), otherParts[k]);
+                    }
+                }
+
+                updateTotal();
+                flushLucideRefresh();
+                showSaveIndicator('loading');
+                return true;
+            } catch (e) {
+                console.warn('Failed to load saved build from localStorage', e);
+                return false;
+            }
+        }
+
+        function clearLocalStorage() {
+            try {
+                localStorage.removeItem(SAVE_KEY);
+            } catch (e) {
+                console.warn('Failed to clear localStorage', e);
+            }
+        }
+
+        /* ===== Init ===== */
+        function init() {
+            renderFixedSlots();
+            const hash = window.location.hash;
+            if (hash.startsWith('#build=')) {
+                // Shared link takes priority
+                loadBuildFromHash(hash.slice(7));
+            } else {
+                // Restore local auto-save
+                loadFromLocalStorage();
+            }
+            loadTimerState();
+            lucide.createIcons();
+        }
+
+        /* ===== Part card rendering ===== */
+        function renderFixedSlots() {
+            const container = document.getElementById('parts-container');
+            container.innerHTML = '';
+            for (let i = 0; i < FIXED_SLOTS.length; i++) {
+                const slot = FIXED_SLOTS[i];
+                container.appendChild(createPartCard(slot.key, slot.label, slot.icon, false));
+            }
+        }
+
+        function createPartCard(key, label, icon, removable) {
+            const card = document.createElement('div');
+            card.id = 'part-' + key;
+            card.className = 'p-4 rounded-lg code-block slide-in part-card';
+
+            const sIcon = escapeHtml(icon);
+            const sLabel = escapeHtml(label);
+            const sKey = escapeHtml(key);
+
+            let html = '<div class="flex items-center justify-between mb-3">' +
+                '<div class="flex items-center gap-2">' +
+                '<i data-lucide="' + sIcon + '" class="w-4 h-4 terminal-blue"></i>';
+
+            if (removable) {
+                html += '<input type="text" id="' + sKey + '-custom-label" value="' + sLabel + '" ' +
+                    'class="bg-transparent border-b border-transparent text-sm font-bold text-white part-label focus:border-[#58a6ff] focus:outline-none transition-colors" ' +
+                    'aria-label="Custom part label" oninput="markChanged(); autoResizeInput(this);" style="width: ' + (label.length + 2) + 'ch;">';
+            } else {
+                html += '<span class="text-sm font-bold text-white part-label">' + sLabel + '</span>';
+            }
+
+            html += '</div>';
+
+            if (removable) {
+                html += '<button onclick="removePart(\'' + sKey + '\')" ' +
+                    'class="text-gray-500 hover:text-red-400 transition-colors" ' +
+                    'aria-label="Remove ' + sLabel + ' part"><i data-lucide="x" class="w-4 h-4"></i></button>';
+            }
+            html += '</div>';
+
+            html += '<div class="grid grid-cols-1 md:grid-cols-4 gap-3 part-grid">' +
+                '<div class="md:col-span-1 flex-shrink-0">' +
+                '<div id="' + sKey + '-thumb-wrap" class="part-thumb-placeholder text-xs">' +
+                '<i data-lucide="image" class="w-8 h-8 opacity-30"></i>' +
+                '</div></div>' +
+                '<div class="md:col-span-3 space-y-2">' +
+                '<input type="text" id="' + sKey + '-name" placeholder="Part name" ' +
+                'class="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white" ' +
+                'aria-label="' + sLabel + ' part name" oninput="updateTotal(); updateImageAlt(\'' + sKey + '\')">' +
+                '<div class="grid grid-cols-2 gap-2">' +
+                '<input type="text" id="' + sKey + '-price" placeholder="Price ($)" inputmode="decimal" ' +
+                'class="bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white tabular-nums" ' +
+                'aria-label="' + sLabel + ' price" oninput="sanitizePrice(this); updateTotal()">' +
+                '<input type="url" id="' + sKey + '-image" placeholder="Image URL" ' +
+                'class="bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white" ' +
+                'aria-label="' + sLabel + ' image URL" oninput="updateImage(\'' + sKey + '\'); markChanged()">' +
+                '</div>' +
+                '<input type="url" id="' + sKey + '-link" placeholder="Product link" ' +
+                'class="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white" ' +
+                'aria-label="' + sLabel + ' product link" oninput="markChanged()">' +
+                '<textarea id="' + sKey + '-notes" placeholder="Notes (optional)" rows="2" ' +
+                'class="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-sm text-white resize-y" ' +
+                'aria-label="' + sLabel + ' notes" oninput="markChanged()"></textarea>' +
+                '</div></div>';
+
+            card.innerHTML = html;
+            return card;
+        }
+
+        /* ===== Image preview ===== */
+        function updateImage(key) {
+            const imgUrl = document.getElementById(key + '-image').value.trim();
+            const wrap = document.getElementById(key + '-thumb-wrap');
+
+            if (!imgUrl) {
+                wrap.className = 'part-thumb-placeholder text-xs';
+                wrap.innerHTML = '<i data-lucide="image" class="w-8 h-8 opacity-30"></i>';
+                scheduleLucideRefresh();
+                return;
+            }
+
+            if (!isValidHttpUrl(imgUrl)) {
+                wrap.className = 'part-thumb-placeholder text-xs';
+                wrap.innerHTML = '<span class="text-red-400 text-xs">Invalid URL</span>';
+                return;
+            }
+
+            wrap.className = '';
+            wrap.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = imgUrl;
+            img.className = 'part-thumb';
+            img.loading = 'lazy';
+            const nameEl = document.getElementById(key + '-name');
+            img.alt = (nameEl && nameEl.value) ? nameEl.value : 'Part image';
+            img.onerror = function () {
+                wrap.className = 'part-thumb-placeholder text-xs';
+                wrap.innerHTML = '<span class="text-red-400 text-xs">Failed to load</span>';
+            };
+            wrap.appendChild(img);
+        }
+
+        /* ===== Update image alt when name changes ===== */
+        function updateImageAlt(key) {
+            const nameEl = document.getElementById(key + '-name');
+            const wrap = document.getElementById(key + '-thumb-wrap');
+            if (!nameEl || !wrap) return;
+            const img = wrap.querySelector('img');
+            if (img) {
+                img.alt = nameEl.value || 'Part image';
+            }
+        }
+
+        /* ===== Auto resize ===== */
+        function autoResizeInput(el) {
+            el.style.width = Math.max(8, (el.value || el.placeholder || '').length + 2) + 'ch';
+        }
+
+        /* ===== Price helpers ===== */
+        function parsePrice(val) {
+            if (!val) return 0;
+            const cleaned = val.toString().replace(/[^0-9.]/g, '');
+            const num = parseFloat(cleaned);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatPrice(num) {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function sanitizePrice(el) {
+            let val = el.value.replace(/[^0-9.]/g, '');
+            const dots = val.split('.').length - 1;
+            if (dots > 1) {
+                const parts = val.split('.');
+                val = parts[0] + '.' + parts.slice(1).join('');
+            }
+            if (val === '.') { val = '0' + val; }
+            if (val.startsWith('.')) { val = '0' + val; }
+            el.value = val ? '$ ' + val : '';
+        }
+
+        /* ===== Total cost ===== */
+        function updateTotal() {
+            const cards = document.querySelectorAll('#parts-container > div');
+            let total = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const id = cards[i].id.replace('part-', '');
+                const priceInput = document.getElementById(id + '-price');
+                if (priceInput) {
+                    total += parsePrice(priceInput.value);
+                }
+            }
+            const display = document.getElementById('total-display');
+            display.textContent = '$' + formatPrice(total);
+            display.classList.remove('pulse-update');
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    display.classList.add('pulse-update');
+                });
+            });
+            markChanged();
+        }
+
+        /* ===== Changed indicator (debounced save) ===== */
+        function markChanged() {
+            if (!isViewingMode) {
+                document.getElementById('share-btn').classList.add('terminal-blue');
+                scheduleSave();
+            }
+        }
+
+        /* ===== Add / remove slots ===== */
+        function addOtherSlot() {
+            otherCount++;
+            const key = 'other-' + otherCount;
+            const container = document.getElementById('parts-container');
+            const card = createPartCard(key, 'Other Part #' + otherCount, 'package', true);
+            container.appendChild(card);
+            scheduleLucideRefresh();
+            flushLucideRefresh();
+            markChanged();
+        }
+
+        function removePart(key) {
+            const el = document.getElementById('part-' + key);
+            if (el) {
+                el.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(20px)';
+                setTimeout(function () {
+                    el.remove();
+                    updateTotal();
+                    scheduleSave();
+                }, 150);
+            }
+        }
+
+        /* ===== Collect / share / load build ===== */
+        function collectBuild() {
+            const cards = document.querySelectorAll('#parts-container > div');
+            const parts = [];
+            for (let i = 0; i < cards.length; i++) {
+                const id = cards[i].id.replace('part-', '');
+                const nameEl = document.getElementById(id + '-name');
+                const priceEl = document.getElementById(id + '-price');
+                const linkEl = document.getElementById(id + '-link');
+                const imageEl = document.getElementById(id + '-image');
+                const notesEl = document.getElementById(id + '-notes');
+                const labelEl = document.getElementById(id + '-custom-label');
+                parts.push({
+                    key: id,
+                    name: nameEl ? nameEl.value.trim() : '',
+                    price: parsePrice(priceEl ? priceEl.value : ''),
+                    link: linkEl ? linkEl.value.trim() : '',
+                    image: imageEl ? imageEl.value.trim() : '',
+                    notes: notesEl ? notesEl.value.trim() : '',
+                    customLabel: labelEl ? labelEl.value.trim() : ''
+                });
+            }
+            return {
+                team: document.getElementById('team-name').value.trim(),
+                server: document.getElementById('server-name').value.trim(),
+                parts: parts
+            };
+        }
+
+        function buildHash(build) {
+            const json = JSON.stringify(build);
+            const encoded = encodeToBase64(json);
+            return '#build=' + encoded;
+        }
+
+        function copyShareableLink() {
+            const build = collectBuild();
+            const hasData = build.team || build.server || build.parts.some(function (p) {
+                return p.name || p.price > 0 || p.notes || p.link;
+            });
+            if (!hasData) {
+                showToast('Nothing to share yet — add some parts or notes first.', '#f0883e');
+                return;
+            }
+            const hash = buildHash(build);
+            const url = window.location.origin + window.location.pathname + hash;
+
+            if (url.length > 2000) {
+                if (confirm('Build is too large for a URL link. Copy build data as JSON to clipboard instead?')) {
+                    copyBuildAsJson(build);
+                }
+                return;
+            }
+
+            navigator.clipboard.writeText(url).then(function () {
+                showToast('Link copied to clipboard!', '#2ea043');
+                document.getElementById('share-btn').classList.remove('terminal-blue');
+            }).catch(function () {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('Link copied to clipboard!', '#2ea043');
+                document.getElementById('share-btn').classList.remove('terminal-blue');
+            });
+        }
+
+        function copyBuildAsJson(build) {
+            var json = JSON.stringify(build, null, 2);
+            navigator.clipboard.writeText(json).then(function () {
+                showToast('Build JSON copied to clipboard!', '#2ea043');
+                document.getElementById('share-btn').classList.remove('terminal-blue');
+            }).catch(function () {
+                var textarea = document.createElement('textarea');
+                textarea.value = json;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Build JSON copied to clipboard!', '#2ea043');
+                document.getElementById('share-btn').classList.remove('terminal-blue');
+            });
+        }
+
+        function showToast(msg, color) {
+            const toast = document.getElementById('link-copied-toast');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = msg;
+            toast.style.borderColor = color + '/50';
+            toast.style.color = color;
+            toast.classList.remove('hidden');
+            scheduleLucideRefresh();
+            setTimeout(function () { toast.classList.add('hidden'); }, 2500);
+        }
+
+        function loadBuildFromHash(hash) {
+            try {
+                const decoded = decodeFromBase64(hash);
+                const build = JSON.parse(decoded);
+
+                isViewingMode = true;
+                document.getElementById('instructions-section').style.display = 'none';
+                document.getElementById('timer-card').style.display = 'none';
+                document.getElementById('action-buttons').style.display = 'none';
+                document.getElementById('team-name').value = build.team || '';
+                document.getElementById('server-name').value = build.server || '';
+                document.getElementById('team-name').readOnly = true;
+                document.getElementById('server-name').readOnly = true;
+
+                document.getElementById('viewing-team').textContent = build.team || 'Unknown';
+                document.getElementById('viewing-server').textContent = '"' + (build.server || 'Untitled') + '"';
+                document.getElementById('viewing-banner').classList.remove('hidden');
+
+                document.getElementById('build-form-section').classList.add('pointer-events-none');
+
+                if (build.parts) {
+                    renderFixedSlots();
+
+                    const fixedParts = {};
+                    const otherParts = [];
+
+                    for (let i = 0; i < build.parts.length; i++) {
+                        const part = build.parts[i];
+                        const isFixed = FIXED_SLOTS.some(function (s) { return s.key === part.key; });
+                        if (isFixed) {
+                            fixedParts[part.key] = part;
+                        } else {
+                            otherParts.push(part);
+                        }
+                    }
+
+                    for (let j = 0; j < FIXED_SLOTS.length; j++) {
+                        if (fixedParts[FIXED_SLOTS[j].key]) {
+                            setPartValues(FIXED_SLOTS[j].key, fixedParts[FIXED_SLOTS[j].key]);
+                        }
+                    }
+
+                    for (let k = 0; k < otherParts.length; k++) {
+                        addOtherSlot();
+                        const otherCards = document.querySelectorAll('#parts-container > div[id^="part-other-"]');
+                        const lastOther = otherCards[otherCards.length - 1];
+                        if (lastOther) {
+                            setPartValues(lastOther.id.replace('part-', ''), otherParts[k]);
+                        }
+                    }
+                }
+
+                updateTotal();
+                renderSummary(build.parts || []);
+                flushLucideRefresh();
+            } catch (e) {
+                console.warn('Failed to load build from hash', e);
+                showToast('Could not load shared build.', '#f85149');
+            }
+        }
+
+        function renderSummary(parts) {
+            var summaryCard = document.getElementById('summary-card');
+            var summaryList = document.getElementById('summary-list');
+            summaryList.innerHTML = '';
+            var hasItems = false;
+            for (var i = 0; i < parts.length; i++) {
+                var part = parts[i];
+                if (!part.name) continue;
+                var label = FIXED_SLOTS.map(function (s) { return s.key; }).indexOf(part.key) !== -1
+                    ? FIXED_SLOTS.find(function (s) { return s.key === part.key; }).label
+                    : (part.customLabel || part.key);
+                var li = document.createElement('li');
+                li.className = 'flex items-start gap-2';
+                var labelSpan = document.createElement('span');
+                labelSpan.className = 'terminal-green font-semibold text-lg';
+                labelSpan.textContent = label;
+                var colonSpan = document.createElement('span');
+                colonSpan.textContent = ': ';
+                var nameSpan = document.createElement('span');
+                nameSpan.className = 'text-gray-300';
+                nameSpan.textContent = part.name;
+                li.appendChild(labelSpan);
+                li.appendChild(colonSpan);
+                li.appendChild(nameSpan);
+                summaryList.appendChild(li);
+                hasItems = true;
+            }
+            if (hasItems) {
+                summaryCard.classList.remove('hidden');
+            } else {
+                summaryCard.classList.add('hidden');
+            }
+        }
+
+        function setPartValues(key, part) {
+            const nameEl = document.getElementById(key + '-name');
+            const priceEl = document.getElementById(key + '-price');
+            const linkEl = document.getElementById(key + '-link');
+            const imageEl = document.getElementById(key + '-image');
+            const notesEl = document.getElementById(key + '-notes');
+            const labelEl = document.getElementById(key + '-custom-label');
+
+            if (nameEl && part.name) nameEl.value = part.name;
+            if (priceEl && part.price) priceEl.value = '$ ' + part.price;
+            if (linkEl && part.link) linkEl.value = part.link;
+            if (imageEl && part.image) {
+                imageEl.value = part.image;
+                updateImage(key);
+            }
+            if (notesEl && part.notes) notesEl.value = part.notes;
+            if (labelEl && part.customLabel) labelEl.value = part.customLabel;
+        }
+
+        function closeViewingMode() {
+            if (confirm('Close viewing mode? This will return you to the editor.')) {
+                window.location.hash = '';
+                window.location.reload();
+            }
+        }
+
+        function clearBuild() {
+            if (!confirm('Clear all parts? This cannot be undone.')) return;
+
+            // Clear localStorage too
+            clearLocalStorage();
+
+            isViewingMode = false;
+            document.getElementById('viewing-banner').classList.add('hidden');
+            document.getElementById('viewing-team').textContent = '';
+            document.getElementById('viewing-server').textContent = '';
+            document.getElementById('build-form-section').classList.remove('pointer-events-none');
+            document.getElementById('instructions-section').style.display = '';
+            document.getElementById('timer-card').style.display = '';
+            document.getElementById('action-buttons').style.display = '';
+
+            document.getElementById('team-name').value = '';
+            document.getElementById('server-name').value = '';
+            document.getElementById('team-name').readOnly = false;
+            document.getElementById('server-name').readOnly = false;
+
+            otherCount = 0;
+            renderFixedSlots();
+            flushLucideRefresh();
+            updateTotal();
+        }
+
+        /* ===== Timer logic ===== */
+        let timerRemaining = 45 * 60;
+        let timerInterval = null;
+        let timerStarted = false;
+        let timerExpired = false;
+        let lastCustomTimerSeconds = 45 * 60;
+
+        function parseTimerInputs() {
+            const minInput = document.getElementById('timer-minutes').value.replace(/\D/g, '');
+            const secInput = document.getElementById('timer-seconds').value.replace(/\D/g, '');
+            const mins = parseInt(minInput, 10) || 0;
+            const secs = Math.min(59, parseInt(secInput, 10) || 0);
+            return Math.max(0, mins * 60 + secs);
+        }
+
+        function sanitizeTimerInput(el) {
+            el.value = el.value.replace(/[^0-9]/g, '');
+            if (el.value.length > 2) el.value = el.value.slice(0, 2);
+            const num = parseInt(el.value, 10) || 0;
+            if (el.id === 'timer-seconds' && num > 59) {
+                el.value = '59';
+            }
+        }
+
+        function updateTimerFromInput(el) {
+            sanitizeTimerInput(el);
+            lastCustomTimerSeconds = parseTimerInputs();
+            if (!timerInterval) {
+                timerRemaining = lastCustomTimerSeconds;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerRemaining / 60).toString().padStart(2, '0');
+            const s = (timerRemaining % 60).toString().padStart(2, '0');
+            document.getElementById('timer-minutes').value = m;
+            document.getElementById('timer-seconds').value = s;
+        }
+
+        function setTimerInputs(enabled) {
+            document.getElementById('timer-minutes').disabled = !enabled;
+            document.getElementById('timer-seconds').disabled = !enabled;
+        }
+
+        function startTimer() {
+            if (timerInterval) return;
+
+            if (!timerStarted) {
+                timerRemaining = parseTimerInputs();
+                timerStarted = true;
+            }
+
+            // If timer expired, reset it first
+            if (timerExpired) {
+                resetTimer();
+                timerExpired = false;
+                return;
+            }
+
+            if (timerRemaining <= 0) return;
+
+            document.getElementById('timer-start').disabled = true;
+            document.getElementById('timer-stop').disabled = false;
+            setTimerInputs(false);
+            document.getElementById('timer-display').classList.remove('timer-end');
+
+            timerInterval = setInterval(function () {
+                timerRemaining--;
+                if (timerRemaining <= 0) {
+                    timerRemaining = 0;
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timerExpired = true;
+                    updateTimerDisplay();
+                    document.getElementById('timer-display').classList.add('timer-end');
+                    document.getElementById('timer-start').disabled = false;
+                    document.getElementById('timer-stop').disabled = true;
+                    setTimerInputs(true);
+                    timerStarted = false;
+                    return;
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (!timerInterval) return;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('timer-start').disabled = false;
+            document.getElementById('timer-stop').disabled = true;
+            setTimerInputs(true);
+            saveTimerState();
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timerStarted = false;
+            timerExpired = false;
+            timerRemaining = lastCustomTimerSeconds;
+            const m = Math.floor(lastCustomTimerSeconds / 60).toString().padStart(2, '0');
+            const s = (lastCustomTimerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer-start').disabled = false;
+            document.getElementById('timer-minutes').value = m;
+            document.getElementById('timer-seconds').value = s;
+            document.getElementById('timer-display').classList.remove('timer-end');
+            setTimerInputs(true);
+            saveTimerState();
+        }
+
+        function saveTimerState() {
+            try {
+                var state = {
+                    remaining: timerRemaining,
+                    started: timerStarted,
+                    expired: timerExpired,
+                    customSeconds: lastCustomTimerSeconds,
+                    pausedAt: timerInterval ? Date.now() : null
+                };
+                localStorage.setItem(TIMER_KEY, JSON.stringify(state));
+            } catch (e) { /* silently ignore timer save failures */ }
+        }
+
+        function loadTimerState() {
+            try {
+                var json = localStorage.getItem(TIMER_KEY);
+                if (!json) return;
+                var state = JSON.parse(json);
+                if (!state || typeof state.remaining !== 'number') return;
+                timerRemaining = state.remaining;
+                lastCustomTimerSeconds = state.customSeconds || state.remaining;
+
+                if (state.pausedAt && state.started && !state.expired) {
+                    var elapsed = Math.floor((Date.now() - state.pausedAt) / 1000);
+                    timerRemaining = Math.max(0, timerRemaining - elapsed);
+                    if (timerRemaining <= 0) {
+                        timerRemaining = 0;
+                        timerExpired = true;
+                        document.getElementById('timer-display').classList.add('timer-end');
+                    } else {
+                        timerStarted = true;
+                        startTimer();
+                    }
+                } else if (state.expired) {
+                    timerExpired = true;
+                    timerRemaining = 0;
+                } else {
+                    timerStarted = false;
+                    timerExpired = false;
+                }
+
+                if (!timerInterval) {
+                    updateTimerDisplay();
+                }
+            } catch (e) { /* silently ignore timer load failures */ }
+        }
+
+        /* ===== Cleanup on page unload ===== */
+        window.addEventListener('beforeunload', function () {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            // Flush any pending save and do a final save (skip indicator — setTimeout won't fire on unload)
+            clearTimeout(window._saveDebounce);
+            saveBuild(true);
+        });
+
+        /* ===== JSON load modal ===== */
+        function openJsonModal() {
+            document.getElementById('json-modal').classList.add('is-open');
+            document.getElementById('json-input').value = '';
+            document.getElementById('json-error-msg').classList.remove('show');
+            document.getElementById('json-input').focus();
+            lucide.createIcons();
+        }
+
+        function closeJsonModal() {
+            document.getElementById('json-modal').classList.remove('is-open');
+        }
+
+        function loadBuildFromJsonModal() {
+            var raw = document.getElementById('json-input').value.trim();
+            var errorEl = document.getElementById('json-error-msg');
+
+            if (!raw) {
+                errorEl.textContent = 'Please paste JSON data first.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            var build;
+            try {
+                build = JSON.parse(raw);
+            } catch (e) {
+                errorEl.textContent = 'Invalid JSON. Make sure the data is valid.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (!build || !Array.isArray(build.parts)) {
+                errorEl.textContent = 'Invalid build data. Missing team, server, or parts.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            errorEl.classList.remove('show');
+            closeJsonModal();
+
+            // Clear everything and load the build into the editor
+            clearLocalStorage();
+            isViewingMode = false;
+            otherCount = 0;
+            document.getElementById('viewing-banner').classList.add('hidden');
+            document.getElementById('build-form-section').classList.remove('pointer-events-none');
+            document.getElementById('instructions-section').style.display = '';
+            document.getElementById('timer-card').style.display = '';
+            document.getElementById('action-buttons').style.display = '';
+            document.getElementById('team-name').readOnly = false;
+            document.getElementById('server-name').readOnly = false;
+
+            renderFixedSlots();
+            document.getElementById('team-name').value = build.team || '';
+            document.getElementById('server-name').value = build.server || '';
+
+            var fixedParts = {};
+            var otherParts = [];
+            for (var i = 0; i < build.parts.length; i++) {
+                var part = build.parts[i];
+                var isFixed = FIXED_SLOTS.some(function (s) { return s.key === part.key; });
+                if (isFixed) fixedParts[part.key] = part;
+                else otherParts.push(part);
+            }
+            for (var j = 0; j < FIXED_SLOTS.length; j++) {
+                if (fixedParts[FIXED_SLOTS[j].key]) {
+                    setPartValues(FIXED_SLOTS[j].key, fixedParts[FIXED_SLOTS[j].key]);
+                }
+            }
+            for (var k = 0; k < otherParts.length; k++) {
+                addOtherSlot();
+                var otherCards = document.querySelectorAll('#parts-container > div[id^="part-other-"]');
+                var lastOther = otherCards[otherCards.length - 1];
+                if (lastOther) {
+                    setPartValues(lastOther.id.replace('part-', ''), otherParts[k]);
+                }
+            }
+
+            updateTotal();
+            flushLucideRefresh();
+            saveBuild(true);
+            showToast('Build loaded from JSON!', '#2ea043');
+        }
+
+        /* ===== Boot ===== */
+        init();
+
+    </script>
+<script src="../scripts/site.js" defer></script>
+</body>
+</html>

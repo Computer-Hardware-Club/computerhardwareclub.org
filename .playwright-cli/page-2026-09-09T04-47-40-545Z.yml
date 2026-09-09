@@ -1,0 +1,63 @@
+- generic [active] [ref=f18e1]:
+  - link "Skip to content" [ref=f18e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f18e3]:
+    - navigation "Primary navigation" [ref=f18e4]:
+      - link "Computer Hardware Club home" [ref=f18e5] [cursor=pointer]:
+        - /url: ../
+        - generic [ref=f18e6]: chc
+        - generic [ref=f18e7]: "@oregonstate:~"
+      - button "Menu" [ref=f18e8] [cursor=pointer]
+  - main [ref=f18e9]:
+    - generic [ref=f18e10]:
+      - generic [ref=f18e11]:
+        - heading "About the clerb" [level=1] [ref=f18e12]
+        - img "Computer Hardware Club beaver logo" [ref=f18e13]:
+          - generic [aria-hidden] [ref=f18e14]: "====== ===== ==== ==== ===== ==== === ==== = === ==**# == === == == ==* =======- #===== === ==#======= ==========*=== == ==========*=== = -=====*== ====-===*======== -=-===#========="
+      - paragraph [ref=f18e15]: We're the Computer Hardware Club at Oregon State University. A student-run space to learn, ask questions, and geek out about computers with your fellow nerds :]
+    - figure [ref=f18e16]:
+      - img "Club members working together at a soldering workshop" [ref=f18e17]
+    - region [ref=f18e18]:
+      - generic [ref=f18e20]:
+        - heading "Curiosity is the only prerequisite" [level=2] [ref=f18e21]
+        - paragraph [ref=f18e22]: You don't need a custom rig or years of experience. If you want to learn how this stuff works, you're in the right place.
+    - region [ref=f18e23]:
+      - generic [ref=f18e25]:
+        - heading "Officer team" [level=2] [ref=f18e26]
+        - paragraph [ref=f18e27]: The people keeping the workshops running and everything (somewhat) organized.
+      - generic [ref=f18e28]:
+        - article [ref=f18e29]:
+          - img "Scott Campbell" [ref=f18e30]
+          - paragraph [ref=f18e31]: PRESIDENT
+          - heading "Scott Campbell" [level=3] [ref=f18e32]
+        - article [ref=f18e33]:
+          - img "Oliver Dougherty" [ref=f18e34]
+          - paragraph [ref=f18e35]: VICE PRESIDENT
+          - heading "Oliver Dougherty" [level=3] [ref=f18e36]
+        - article [ref=f18e37]:
+          - img "Garison Hofstede" [ref=f18e38]
+          - paragraph [ref=f18e39]: TREASURER
+          - heading "Garison Hofstede" [level=3] [ref=f18e40]
+        - article [ref=f18e41]:
+          - img "Lexi Mellon" [ref=f18e42]
+          - paragraph [ref=f18e43]: WORKSHOP COORDINATOR
+          - heading "Lexi Mellon" [level=3] [ref=f18e44]
+    - region [ref=f18e45]:
+      - heading "Have a question? An inquiry, perhaps?" [level=2] [ref=f18e47]
+      - link "Contact the officers" [ref=f18e48] [cursor=pointer]:
+        - /url: mailto:computerhardware.clubs@oregonstate.edu
+        - text: Contact the officers
+        - generic [aria-hidden] [ref=f18e49]: ↗
+  - contentinfo [ref=f18e50]:
+    - generic [ref=f18e51]:
+      - paragraph [ref=f18e52]: © 2026 Computer Hardware Club
+      - list [ref=f18e53]:
+        - listitem [ref=f18e54]:
+          - link "GitHub ↗" [ref=f18e55] [cursor=pointer]:
+            - /url: https://github.com/Computer-Hardware-Club
+        - listitem [ref=f18e56]:
+          - link "Email ↗" [ref=f18e57] [cursor=pointer]:
+            - /url: mailto:computerhardware.clubs@oregonstate.edu
+        - listitem [ref=f18e58]:
+          - link "Discord ↗" [ref=f18e59] [cursor=pointer]:
+            - /url: https://discord.gg/bfxjgvzCSf

@@ -1,0 +1,78 @@
+/* Every visible glyph comes from the 156 × 91 editable text artwork. */
+.hero-art .crt-display {
+    position: relative;
+    width: 125%;
+    margin: -15% -12.5%;
+    container-type: inline-size;
+    --scan-duration: 1400ms;
+}
+.crt-ascii {
+    margin: 0;
+    width: 100%;
+    color: #f2f2ee;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    /* IBM Plex Mono advances exactly .6em per cell; rows fill the same square. */
+    font-size: calc(100cqw / (var(--crt-columns) * .6));
+    line-height: calc(100cqw / var(--crt-rows));
+    letter-spacing: 0;
+    font-variant-ligatures: none;
+    white-space: pre;
+    user-select: none;
+}
+.crt-loader {
+    display: none;
+    position: absolute;
+    top: 40%;
+    left: 54%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: #f2f2ee;
+    font: 400 2cqw/1.8 'IBM Plex Mono', monospace;
+    white-space: pre;
+    pointer-events: none;
+}
+.crt-beaver { color: var(--accent, #ff6b2c); }
+.crt-power { color: #ff4848; }
+.intro-pending .crt-beaver { opacity: 0; }
+.intro-pending :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
+    opacity: 0;
+    visibility: hidden;
+}
+/* Native scrolling stays available throughout, including the page fade. */
+.intro-pending .hero-art { pointer-events: none; }
+[data-intro-phase='power'] .crt-power {
+    animation: crt-power-on 800ms steps(1, end) both;
+}
+[data-intro-phase='loading'] .crt-loader { display: block; }
+[data-intro-phase='scanning'] .crt-beaver {
+    animation: crt-character-on 1ms steps(1, end) both;
+    animation-delay: calc(var(--scan-duration) * var(--scan-progress));
+}
+[data-intro-phase='ready'] .crt-beaver { opacity: 1; }
+.intro-revealing :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
+    animation: crt-page-in 500ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.intro-revealing :is(.hero-identity, .hero-invite) { animation-delay: 50ms; }
+@keyframes crt-power-on {
+    0%, 50%, 100% { color: #ff4848; }
+    25%, 75% { color: #f2f2ee; }
+}
+@keyframes crt-character-on {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes crt-page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .crt-loader { display: none !important; }
+    .intro-pending .crt-beaver { opacity: 1; }
+    .crt-ascii .crt-power { color: #ff4848; animation: none; }
+    .intro-pending :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
+        opacity: 1;
+        visibility: visible;
+    }
+    .intro-revealing :is(.site-header, .hero-heading, .hero-identity, .hero-invite) { animation: none; }
+}

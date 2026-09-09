@@ -1,0 +1,65 @@
+{
+  "primes": {
+    "main": "8af80c8717df06682c3fbda619f68714d11eff0d332468c5ffb057c8c08a03e5",
+    "scripts": [
+      "c67a73c01e95b93aa66f2d5c2c4899d678a22021c92db59e005e6c850fd1f0e6",
+      "4e1ab5614537bbf289820ff935042f90844c091d355deb7f3489cbdefe65e411"
+    ],
+    "links": [
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%239c5f2d'/%3E%3Cpath d='M20 20h24v24H20z' fill='%23f4efe7' opacity='.92'/%3E%3Cpath d='M26 26h12v12H26z' fill='%239c5f2d'/%3E%3C/svg%3E",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap",
+      "../",
+      "../about/",
+      "primes.html",
+      "troubleshoot.html",
+      "serverbuild.html",
+      "https://github.com/Computer-Hardware-Club",
+      "mailto:computerhardware.clubs@oregonstate.edu",
+      "https://discord.gg/bfxjgvzCSf"
+    ]
+  },
+  "serverbuild": {
+    "main": "c569ebec5028966a228954b5f086ad2413b4d898a133e4a28b331721c0f94d21",
+    "scripts": [
+      "101e9a0602a03dd4126a52f2c46055558fb6c71812c0771826ad5dbfec83e19b",
+      "a90bd911b906db5adc92f8ffa61a9ec4bd25fe4341bd9965c6b69d1d188400b9",
+      "ec5cf66218c6473985cf53cb33164dccdb503524656dbd01758895958df7e2fc",
+      "4e1ab5614537bbf289820ff935042f90844c091d355deb7f3489cbdefe65e411"
+    ],
+    "links": [
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%239c5f2d'/%3E%3Cpath d='M20 20h24v24H20z' fill='%23f4efe7' opacity='.92'/%3E%3Cpath d='M26 26h12v12H26z' fill='%239c5f2d'/%3E%3C/svg%3E",
+      "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap",
+      "../",
+      "../about/",
+      "primes.html",
+      "troubleshoot.html",
+      "serverbuild.html",
+      "https://github.com/Computer-Hardware-Club",
+      "mailto:computerhardware.clubs@oregonstate.edu",
+      "https://discord.gg/bfxjgvzCSf"
+    ]
+  },
+  "troubleshoot": {
+    "main": "e5487956ca26cbc0d6af2b7ca3494f1f6fa6ae726cc9ad5d977766dcd83d5238",
+    "scripts": [
+      "101e9a0602a03dd4126a52f2c46055558fb6c71812c0771826ad5dbfec83e19b",
+      "a90bd911b906db5adc92f8ffa61a9ec4bd25fe4341bd9965c6b69d1d188400b9",
+      "1b1d29d956132b60527ce2631e8fa18a8ddf2acb0680cc1f15e8363a46665e70",
+      "4e1ab5614537bbf289820ff935042f90844c091d355deb7f3489cbdefe65e411"
+    ],
+    "links": [
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%239c5f2d'/%3E%3Cpath d='M20 20h24v24H20z' fill='%23f4efe7' opacity='.92'/%3E%3Cpath d='M26 26h12v12H26z' fill='%239c5f2d'/%3E%3C/svg%3E",
+      "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap",
+      "../",
+      "../about/",
+      "primes.html",
+      "troubleshoot.html",
+      "serverbuild.html",
+      "https://github.com/Computer-Hardware-Club",
+      "mailto:computerhardware.clubs@oregonstate.edu",
+      "https://discord.gg/bfxjgvzCSf"
+    ]
+  }
+}

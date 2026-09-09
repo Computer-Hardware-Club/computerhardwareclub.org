@@ -1,0 +1,176 @@
+- generic [active] [ref=f62e1]:
+  - banner [ref=f62e2]:
+    - navigation "Primary navigation" [ref=f62e3]:
+      - link "Computer Hardware Club home" [ref=f62e4] [cursor=pointer]:
+        - /url: ../
+        - generic [ref=f62e5]: chc
+        - generic [ref=f62e6]: "@oregonstate:~"
+      - button "Menu" [ref=f62e7] [cursor=pointer]
+  - generic [ref=f62e8]:
+    - paragraph [ref=f62e12]: ./troubleshooting_workshop_guide.md
+    - heading "Troubleshooting Workshop" [level=1] [ref=f62e13]
+  - main [ref=f62e14]:
+    - generic [ref=f62e16]:
+      - heading "Your Mission" [level=2] [ref=f62e17]
+      - paragraph [ref=f62e20]: There is an Nginx web server installed on your machine. It is currently broken.
+      - generic [ref=f62e21]:
+        - heading "The Rules of Engagement:" [level=3] [ref=f62e22]
+        - list [ref=f62e23]:
+          - listitem [ref=f62e24]:
+            - strong [ref=f62e25]: "Goal:"
+            - text: Get
+            - code [ref=f62e26]: curl localhost
+            - text: to show the "Victory" message.
+          - listitem [ref=f62e27]:
+            - strong [ref=f62e28]: "Tools:"
+            - text: Google, ChatGPT, and AI are ALLOWED.
+          - listitem [ref=f62e29]:
+            - strong [ref=f62e30]: "Win Condition:"
+            - text: Raise your hand when fixed. You must
+            - strong [ref=f62e31]: EXPLAIN
+            - text: the bugs to the judge. If you can't explain why it works, you don't win.
+    - generic [ref=f62e32]:
+      - heading "01. The Crash Course" [level=2] [ref=f62e33]:
+        - generic [ref=f62e34]: "01."
+        - text: The Crash Course
+      - paragraph [ref=f62e35]: Don't panic. Here is everything you need to know.
+      - generic [ref=f62e36]:
+        - generic [ref=f62e37]:
+          - heading "The Superuser (sudo)" [level=3] [ref=f62e38]
+          - generic [ref=f62e41]:
+            - paragraph [ref=f62e42]:
+              - strong [ref=f62e43]: "Analogy:"
+              - text: "\"Administrator Mode\" or \"Simon Says\"."
+            - paragraph [ref=f62e44]: Linux protects system files (like web configs) from accidental damage. If you try to edit them as a normal user, it will say "Permission Denied."
+            - paragraph [ref=f62e45]:
+              - text: Typing
+              - code [ref=f62e46]: sudo
+              - text: "before a command tells the computer: \"I know what I'm doing, do it anyway.\""
+          - generic [ref=f62e47]: "# Edit a protected file sudo nano /etc/hosts # Install software sudo apt install nginx"
+        - generic [ref=f62e48]:
+          - heading "Services (systemctl)" [level=3] [ref=f62e49]
+          - generic [ref=f62e53]:
+            - paragraph [ref=f62e54]:
+              - strong [ref=f62e55]: "Analogy:"
+              - text: A restaurant kitchen.
+            - paragraph [ref=f62e56]:
+              - text: Most programs stop when you close them. "Services" (or Daemons) run in the background forever, waiting for customers (web visitors). You control them with
+              - code [ref=f62e57]: systemctl
+              - text: .
+            - paragraph [ref=f62e58]:
+              - text: "Important: If you change a config file, the service won't know until you"
+              - strong [ref=f62e59]: restart
+              - text: it!
+          - generic [ref=f62e60]:
+            - generic [ref=f62e61]: "# Is it running or dead? systemctl status nginx"
+            - generic [ref=f62e62]: "# Apply your changes sudo systemctl restart nginx"
+        - generic [ref=f62e63]:
+          - heading "Permissions (chmod)" [level=3] [ref=f62e64]
+          - generic [ref=f62e68]:
+            - paragraph [ref=f62e69]:
+              - strong [ref=f62e70]: "Analogy:"
+              - text: ID Card Access.
+            - paragraph [ref=f62e71]:
+              - text: "Every file has 3 rights:"
+              - strong [ref=f62e72]: R
+              - text: ead (4),
+              - strong [ref=f62e73]: W
+              - text: rite (2), e
+              - strong [ref=f62e74]: X
+              - text: ecute (1).
+            - paragraph [ref=f62e75]: "Permissions are often shown as numbers:"
+            - list [ref=f62e76]:
+              - listitem [ref=f62e77]:
+                - code [ref=f62e78]: "7"
+                - text: (4+2+1) = Read, Write, Execute
+              - listitem [ref=f62e79]:
+                - code [ref=f62e80]: "6"
+                - text: (4+2) = Read, Write
+              - listitem [ref=f62e81]:
+                - code [ref=f62e82]: "4"
+                - text: (4) = Read only
+          - generic [ref=f62e83]: "# Give owner RW, others R (Standard) sudo chmod 644 filename.html # Give everyone everything (Unsafe) sudo chmod 777 filename.html"
+        - generic [ref=f62e84]:
+          - heading "Logs" [level=3] [ref=f62e85]
+          - generic [ref=f62e89]:
+            - paragraph [ref=f62e90]:
+              - strong [ref=f62e91]: "Analogy:"
+              - text: The Black Box Recorder.
+            - paragraph [ref=f62e92]: Linux is often silent. If you run a command and nothing happens, it usually worked.
+            - paragraph [ref=f62e93]: If it fails, it writes the reason into a log file. You just have to find it.
+          - generic [ref=f62e94]:
+            - generic [ref=f62e95]: "# Show errors for the last boot journalctl -xe"
+            - generic [ref=f62e96]: "# Read the last 20 lines of a file tail -n 20 /var/log/nginx/error.log"
+    - generic [ref=f62e97]:
+      - heading "02. Helpful Commands" [level=2] [ref=f62e98]:
+        - generic [ref=f62e99]: "02."
+        - text: Helpful Commands
+      - table [ref=f62e101]:
+        - rowgroup [ref=f62e102]:
+          - row [ref=f62e103]:
+            - columnheader "Command" [ref=f62e104]
+            - columnheader "Category" [ref=f62e105]
+            - columnheader "What it does" [ref=f62e106]
+        - rowgroup [ref=f62e107]:
+          - row [ref=f62e108]:
+            - cell "nano / vim" [ref=f62e109]
+            - cell "Editing" [ref=f62e110]
+            - cell "Text editors to change config files." [ref=f62e111]
+          - row [ref=f62e112]:
+            - cell "cat" [ref=f62e113]
+            - cell "Reading" [ref=f62e114]
+            - cell "Prints file contents to screen." [ref=f62e115]
+          - row [ref=f62e116]:
+            - cell "grep" [ref=f62e117]
+            - cell "Search" [ref=f62e118]
+            - cell "Searches for a specific word inside a file." [ref=f62e119]
+          - row [ref=f62e120]:
+            - cell "curl" [ref=f62e121]
+            - cell "Network" [ref=f62e122]
+            - cell "Fetches a webpage from command line." [ref=f62e123]
+          - row [ref=f62e124]:
+            - cell "ss -tuln" [ref=f62e125]
+            - cell "Network" [ref=f62e126]
+            - cell "Shows open ports. Crucial for servers." [ref=f62e127]
+          - row [ref=f62e128]:
+            - cell "ps aux" [ref=f62e129]
+            - cell "Process" [ref=f62e130]
+            - cell "Shows all currently running programs." [ref=f62e131]
+    - generic [ref=f62e132]:
+      - heading "03. The OODA Loop" [level=2] [ref=f62e133]:
+        - generic [ref=f62e134]: "03."
+        - text: The OODA Loop
+      - generic [ref=f62e135]:
+        - generic [ref=f62e137]:
+          - generic [ref=f62e138]: "1"
+          - generic [ref=f62e139]:
+            - heading "Observe" [level=3] [ref=f62e140]
+            - paragraph [ref=f62e141]: Run the command. What exact error message did you get?
+        - generic [ref=f62e142]:
+          - generic [ref=f62e143]: "2"
+          - generic [ref=f62e144]:
+            - heading "Orient" [level=3] [ref=f62e145]
+            - paragraph [ref=f62e146]: Read the error, and copy it. Paste it into Google or ChatGPT for additional help (if necessary).
+        - generic [ref=f62e147]:
+          - generic [ref=f62e148]: "3"
+          - generic [ref=f62e149]:
+            - heading "Decide" [level=3] [ref=f62e150]
+            - paragraph [ref=f62e151]: Based on the search (or your own knowledge), what file needs editing? What command fixes it?
+        - generic [ref=f62e152]:
+          - generic [ref=f62e153]: "4"
+          - generic [ref=f62e154]:
+            - heading "Act & Loop" [level=3] [ref=f62e155]
+            - paragraph [ref=f62e156]: Execute the fix. Test again. If it fails, go to Step 1.
+  - contentinfo [ref=f62e157]:
+    - generic [ref=f62e158]:
+      - paragraph [ref=f62e159]: © 2026 Computer Hardware Club
+      - list [ref=f62e160]:
+        - listitem [ref=f62e161]:
+          - link "GitHub ↗" [ref=f62e162] [cursor=pointer]:
+            - /url: https://github.com/Computer-Hardware-Club
+        - listitem [ref=f62e163]:
+          - link "Email ↗" [ref=f62e164] [cursor=pointer]:
+            - /url: mailto:computerhardware.clubs@oregonstate.edu
+        - listitem [ref=f62e165]:
+          - link "Discord ↗" [ref=f62e166] [cursor=pointer]:
+            - /url: https://discord.gg/bfxjgvzCSf

@@ -1,0 +1,319 @@
+- generic [active] [ref=f17e1]:
+  - banner [ref=f17e2]:
+    - generic [ref=f17e3]:
+      - link "chc@osu:~$" [ref=f17e4] [cursor=pointer]:
+        - /url: ../
+      - generic "Workshop navigation" [ref=f17e5]:
+        - link "Home" [ref=f17e6] [cursor=pointer]:
+          - /url: ../
+        - link "About" [ref=f17e7] [cursor=pointer]:
+          - /url: ../about/
+        - link "Utilities" [ref=f17e8] [cursor=pointer]:
+          - /url: ../utilities/
+        - button "Workshops" [ref=f17e10] [cursor=pointer]
+  - banner [ref=f17e11]:
+    - generic [ref=f17e12]: Computer Hardware Club
+    - heading "1-Second Prime Showdown" [level=1] [ref=f17e13]
+    - paragraph [ref=f17e14]:
+      - text: Write a Python algorithm that finds the
+      - strong [ref=f17e15]: highest number of primes
+      - text: in exactly
+      - strong [ref=f17e16]: 1.0 second
+      - text: . Don't be lame, don't cheat.
+  - main [ref=f17e17]:
+    - generic [ref=f17e18]:
+      - generic [ref=f17e19]:
+        - generic [ref=f17e20]: "01"
+        - generic [ref=f17e21]: The Mission
+      - paragraph [ref=f17e22]: Finding prime numbers is a foundational concept in computer science, deeply tied to cryptography and hardware benchmarking. Today, we're testing not just your math skills, but how well you can optimize code to utilize CPU cycles and memory most efficiently.
+    - generic [ref=f17e23]:
+      - generic [ref=f17e24]:
+        - generic [ref=f17e25]: "02"
+        - generic [ref=f17e26]: The Rules
+      - list [ref=f17e27]:
+        - listitem [ref=f17e28]:
+          - generic [ref=f17e29]: A
+          - generic [ref=f17e30]:
+            - strong [ref=f17e31]: "Closed Book:"
+            - text: No Google, StackOverflow, ChatGPT, Claude, etc. If it feels like cheating, it probably is. The only reference you can use is the offline documentation search at the bottom of this page.
+        - listitem [ref=f17e32]:
+          - generic [ref=f17e33]: B
+          - generic [ref=f17e34]:
+            - strong [ref=f17e35]: "The Defense:"
+            - text: To claim the winning title, you must explain exactly
+            - emphasis [ref=f17e36]: how
+            - text: and
+            - emphasis [ref=f17e37]: why
+            - text: your optimization works (similar to the Troubleshooting Workshop). If you can't explain your code, you will be banned from the club forever and expelled from OSU. No pressure though.
+        - listitem [ref=f17e38]:
+          - generic [ref=f17e39]: C
+          - generic [ref=f17e40]:
+            - strong [ref=f17e41]: "Time Limit:"
+            - text: Your code must stop executing exactly 1 second after the calculation loop begins (handled by the starter code).
+        - listitem [ref=f17e42]:
+          - generic [ref=f17e43]: D
+          - generic [ref=f17e44]:
+            - strong [ref=f17e45]: "Output:"
+            - text: Your script must print the
+            - strong [ref=f17e46]: total count
+            - text: of primes found. No hardcoded arrays.
+        - listitem [ref=f17e47]:
+          - generic [ref=f17e48]: E
+          - generic [ref=f17e49]:
+            - strong [ref=f17e50]: "Language:"
+            - text: Python 3. Yes, Python is slow. Shut up CS nerd.
+        - listitem [ref=f17e51]:
+          - generic [ref=f17e52]: F
+          - generic [ref=f17e53]:
+            - strong [ref=f17e54]: "Sequentiality:"
+            - text: Primes must be computed sequentially. This means you can just jump to 1 billion and start there. First prime computed must be 2.
+        - listitem [ref=f17e55]:
+          - generic [ref=f17e56]: G
+          - generic [ref=f17e57]:
+            - strong [ref=f17e58]: "Final Test:"
+            - text: All submissions will be tested on the host's laptop for fairness. The highest valid count wins.
+    - generic [ref=f17e59]:
+      - generic [ref=f17e60]:
+        - generic [ref=f17e61]: "03"
+        - generic [ref=f17e62]: Starter Code
+      - paragraph [ref=f17e63]:
+        - text: This baseline works, but it's incredibly slow. Copy it into a file named
+        - code [ref=f17e64]: prime.py
+        - text: and run it to see your starting score.
+      - generic [ref=f17e65]:
+        - generic [ref=f17e66]:
+          - generic [ref=f17e67]: prime.py
+          - button "Copy code to clipboard" [ref=f17e68] [cursor=pointer]: Copy
+        - code [ref=f17e70]: "import time def is_prime(n): \"\"\"A very naive and slow way to check for a prime number.\"\"\" if n <= 1: return False # Checks every single number up to n for i in range(2, n): if n % i == 0: return False return True def main(): print(\"Starting Prime Hunt for exactly 1.0 second...\") start_time = time.time() duration = 1.0 prime_count = 0 current_number = 2 # Run the loop until 1 second has passed while (time.time() - start_time) < duration: if is_prime(current_number): prime_count += 1 current_number += 1 print(\"\\n--- TIME'S UP! ---\") print(f\"Total primes found: {prime_count}\") print(f\"Highest number checked: {current_number - 1}\") if __name__ == \"__main__\": main()"
+    - generic [ref=f17e71]:
+      - generic [ref=f17e72]:
+        - generic [ref=f17e73]: "04"
+        - generic [ref=f17e74]: Optimization Trajectory
+      - paragraph [ref=f17e75]: "The starter code won't win. It relies on brute force. To reach the millions, you need to fundamentally change the way you think about prime numbers. Discuss these concepts with your team, and use them as a springboard to get your development started:"
+      - generic [ref=f17e76]:
+        - generic [ref=f17e77]:
+          - generic [ref=f17e78]: Phase 1
+          - heading "Stop Doing Expensive Math" [level=3] [ref=f17e79]
+          - list [ref=f17e80]:
+            - listitem [ref=f17e81]:
+              - text: The starter code uses the modulo operator (
+              - code [ref=f17e82]: "%"
+              - text: ) inside a nested loop. Division and modulo are computationally expensive for a CPU.
+            - listitem [ref=f17e83]:
+              - text: Addition (
+              - code [ref=f17e84]: +
+              - text: ) is incredibly fast. Is there a way to find prime numbers using
+              - emphasis [ref=f17e85]: only
+              - text: addition? Think about how multiples work.
+        - generic [ref=f17e86]:
+          - generic [ref=f17e87]: Phase 2
+          - heading "Invert the Problem" [level=3] [ref=f17e88]
+          - list [ref=f17e89]:
+            - listitem [ref=f17e90]:
+              - text: Right now, the code takes a number (like 97) and looks
+              - emphasis [ref=f17e91]: backwards
+              - text: to see if it has any divisors. This is wasted effort.
+            - listitem [ref=f17e92]:
+              - text: What if you start at the bottom with known primes (2, 3, 5) and look
+              - emphasis [ref=f17e93]: forwards
+              - text: "? If you know 2 is prime, you immediately know that 4, 6, 8, and 10 are not."
+            - listitem [ref=f17e94]: How can you "cross out" multiples as you go, rather than checking individual numbers?
+          - paragraph:
+            - emphasis
+        - generic [ref=f17e95]:
+          - generic [ref=f17e96]: Phase 3
+          - heading "The Memory Bottleneck" [level=3] [ref=f17e97]
+          - list [ref=f17e98]:
+            - listitem [ref=f17e99]: If you use the Phase 2 method, you will need to keep a massive "ledger" to track which numbers are crossed out and which are still prime.
+            - listitem [ref=f17e100]: If you build a list of millions of standard Python booleans, the memory footprint will exceed your CPU's L1/L2 cache. The CPU will waste precious milliseconds waiting for data to fetch from main RAM.
+            - listitem [ref=f17e101]:
+              - text: Search your
+              - strong [ref=f17e102]: Offline Documentation
+              - text: below for ways to store a massive array of true/false values using the smallest amount of memory possible.
+    - generic [ref=f17e103]:
+      - generic [ref=f17e104]:
+        - generic [ref=f17e105]: "05"
+        - generic [ref=f17e106]: Run & Test
+      - paragraph [ref=f17e107]: "Open your terminal, navigate to your folder, and run:"
+      - code [ref=f17e110]: $ python3 prime.py
+      - paragraph [ref=f17e111]: What number did it return? Great, make it go higher.
+    - generic [ref=f17e112]:
+      - generic [ref=f17e113]:
+        - generic [ref=f17e114]: "06"
+        - generic [ref=f17e115]: Offline Documentation
+      - paragraph [ref=f17e116]: Search this local Python reference by concept, syntax, or optimization keyword. No internet needed.
+      - generic [ref=f17e117]:
+        - generic [ref=f17e118]:
+          - textbox "Search offline Python documentation" [ref=f17e119]:
+            - /placeholder: "Try: square root, byterray, range step, comprehension..."
+          - button "Clear search": Clear
+        - paragraph [ref=f17e120]:
+          - text: "Keyboard:"
+          - code [ref=f17e121]: /
+          - text: focus,
+          - code [ref=f17e122]: ↑/↓
+          - text: move,
+          - code [ref=f17e123]: Enter
+          - text: expand,
+          - code [ref=f17e124]: Esc
+          - text: clear.
+        - generic [ref=f17e125]:
+          - generic "Filter offline docs by category" [ref=f17e126]:
+            - button "All (95)" [ref=f17e127] [cursor=pointer]
+            - button "Prime Math & Bounds (10)" [ref=f17e128] [cursor=pointer]
+            - button "Sieve Patterns (10)" [ref=f17e129] [cursor=pointer]
+            - button "Memory & Cache (8)" [ref=f17e130] [cursor=pointer]
+            - button "Bitwise & Numeric Ops (6)" [ref=f17e131] [cursor=pointer]
+            - button "Loops & range() (18)" [ref=f17e132] [cursor=pointer]
+            - button "Core Python Syntax (23)" [ref=f17e133] [cursor=pointer]
+            - button "Builtins & Iteration (14)" [ref=f17e134] [cursor=pointer]
+            - button "Timing/Debug/Validation (6)" [ref=f17e135] [cursor=pointer]
+          - generic [ref=f17e136]:
+            - generic [ref=f17e137]: Sort
+            - combobox "Sort documentation results" [ref=f17e138]:
+              - option "Relevance" [selected]
+              - option "Title"
+        - generic [ref=f17e139]: Quick Start • 8 snippets • All Categories • Relevance Sort
+        - generic [ref=f17e140]:
+          - article [ref=f17e141]:
+            - generic [ref=f17e142]:
+              - heading "math.isqrt() vs math.sqrt() for prime bounds" [level=3] [ref=f17e143]
+              - generic [ref=f17e144]:
+                - generic [ref=f17e145]: Prime Math & Bounds
+                - generic [ref=f17e146]: L1
+            - paragraph [ref=f17e147]: Use integer square root bounds to avoid float conversion when checking divisors up to square root.
+            - generic [ref=f17e148]:
+              - generic [ref=f17e149]: math.isqrt
+              - generic [ref=f17e150]: math.sqrt
+              - generic [ref=f17e151]: square root
+              - generic [ref=f17e152]: prime bound
+              - generic [ref=f17e153]: integer math
+            - code [ref=f17e155]: "import math def is_prime(n: int) -> bool: if n < 2: return False if n % 2 == 0: return n == 2 limit = math.isqrt(n) # integer square root for d in range(3, limit + 1, 2): if n % d == 0:"
+            - generic [ref=f17e156]:
+              - generic [ref=f17e157]: Preview shown. Press Enter to expand.
+              - generic [ref=f17e158]:
+                - button "Copy Code" [ref=f17e159] [cursor=pointer]
+                - button "Expand" [ref=f17e160] [cursor=pointer]
+          - article [ref=f17e161]:
+            - generic [ref=f17e162]:
+              - heading "Skip even divisors in primality checks" [level=3] [ref=f17e163]
+              - generic [ref=f17e164]:
+                - generic [ref=f17e165]: Prime Math & Bounds
+                - generic [ref=f17e166]: L1
+            - paragraph [ref=f17e167]: After handling n % 2, only check odd divisors for nearly 2x fewer modulo operations.
+            - generic [ref=f17e168]:
+              - generic [ref=f17e169]: odd divisors
+              - generic [ref=f17e170]: skip evens
+              - generic [ref=f17e171]: modulo
+              - generic [ref=f17e172]: trial division
+            - code [ref=f17e174]: "def is_prime(n: int) -> bool: if n < 2: return False if n % 2 == 0: return n == 2 d = 3 while d * d <= n: if n % d == 0: return False d += 2"
+            - generic [ref=f17e175]:
+              - generic [ref=f17e176]: Preview shown. Press Enter to expand.
+              - generic [ref=f17e177]:
+                - button "Copy Code" [ref=f17e178] [cursor=pointer]
+                - button "Expand" [ref=f17e179] [cursor=pointer]
+          - article [ref=f17e180]:
+            - generic [ref=f17e181]:
+              - heading "Classic Sieve of Eratosthenes with boolean list" [level=3] [ref=f17e182]
+              - generic [ref=f17e183]:
+                - generic [ref=f17e184]: Sieve Patterns
+                - generic [ref=f17e185]: L1
+            - paragraph [ref=f17e186]: Standard sieve pattern for generating all primes up to N in O(N log log N).
+            - generic [ref=f17e187]:
+              - generic [ref=f17e188]: sieve
+              - generic [ref=f17e189]: eratosthenes
+              - generic [ref=f17e190]: boolean list
+              - generic [ref=f17e191]: prime table
+            - code [ref=f17e193]: "def sieve(limit: int): is_prime = [True] * (limit + 1) is_prime[0:2] = [False, False] p = 2 while p * p <= limit: if is_prime[p]: for m in range(p * p, limit + 1, p): is_prime[m] = False p += 1 return is_prime"
+            - generic [ref=f17e195]:
+              - button "Copy Code" [ref=f17e196] [cursor=pointer]
+              - button "Expand" [ref=f17e197] [cursor=pointer]
+          - article [ref=f17e198]:
+            - generic [ref=f17e199]:
+              - heading "Odd-only sieve index compression" [level=3] [ref=f17e200]
+              - generic [ref=f17e201]:
+                - generic [ref=f17e202]: Sieve Patterns
+                - generic [ref=f17e203]: L2
+            - paragraph [ref=f17e204]: "Store only odd numbers: index i represents value 2*i + 1."
+            - generic [ref=f17e205]:
+              - generic [ref=f17e206]: odd-only sieve
+              - generic [ref=f17e207]: index compression
+              - generic [ref=f17e208]: memory reduction
+              - generic [ref=f17e209]: mapping
+            - code [ref=f17e211]: "limit = 1_000_000 size = (limit // 2) + 1 is_prime = bytearray(b\"\\x01\") * size is_prime[0] = 0 # number 1 for i in range(1, int(limit ** 0.5) // 2 + 1): if is_prime[i]: p = 2 * i + 1 start = (p * p) // 2 is_prime[start::p] = b\"\\x00\" * (((size - start - 1) // p) + 1)"
+            - generic [ref=f17e213]:
+              - button "Copy Code" [ref=f17e214] [cursor=pointer]
+              - button "Expand" [ref=f17e215] [cursor=pointer]
+          - article [ref=f17e216]:
+            - generic [ref=f17e217]:
+              - heading "Use bytearray for cache-friendly prime flags" [level=3] [ref=f17e218]
+              - generic [ref=f17e219]:
+                - generic [ref=f17e220]: Memory & Cache
+                - generic [ref=f17e221]: L2
+            - paragraph [ref=f17e222]: bytearray uses compact one-byte entries and avoids Python bool object overhead.
+            - generic [ref=f17e223]:
+              - generic [ref=f17e224]: bytearray
+              - generic [ref=f17e225]: cache efficiency
+              - generic [ref=f17e226]: memory
+              - generic [ref=f17e227]: prime flags
+            - code [ref=f17e229]: "limit = 10_000_000 flags = bytearray(b\"\\x01\") * (limit + 1) flags[0:2] = b\"\\x00\\x00\" for p in range(2, int(limit ** 0.5) + 1): if flags[p]: flags[p * p:limit + 1:p] = b\"\\x00\" * (((limit - p * p) // p) + 1)"
+            - generic [ref=f17e231]:
+              - button "Copy Code" [ref=f17e232] [cursor=pointer]
+              - button "Expand" [ref=f17e233] [cursor=pointer]
+          - article [ref=f17e234]:
+            - generic [ref=f17e235]:
+              - heading "Check odd/even with bitwise AND" [level=3] [ref=f17e236]
+              - generic [ref=f17e237]:
+                - generic [ref=f17e238]: Bitwise & Numeric Ops
+                - generic [ref=f17e239]: L1
+            - paragraph [ref=f17e240]: Use n & 1 for parity checks in tight loops.
+            - generic [ref=f17e241]:
+              - generic [ref=f17e242]: bitwise and
+              - generic [ref=f17e243]: odd even
+              - generic [ref=f17e244]: parity
+              - generic [ref=f17e245]: n & 1
+            - code [ref=f17e247]: "def is_odd(n: int) -> bool: return (n & 1) == 1 def is_even(n: int) -> bool: return (n & 1) == 0"
+            - generic [ref=f17e249]:
+              - button "Copy Code" [ref=f17e250] [cursor=pointer]
+              - button "Expand" [ref=f17e251] [cursor=pointer]
+          - article [ref=f17e252]:
+            - generic [ref=f17e253]:
+              - heading "Use range(start, stop, step) to skip evens" [level=3] [ref=f17e254]
+              - generic [ref=f17e255]:
+                - generic [ref=f17e256]: Loops & range()
+                - generic [ref=f17e257]: L1
+            - paragraph [ref=f17e258]: The step/stride argument is one of the simplest loop speed wins.
+            - generic [ref=f17e259]:
+              - generic [ref=f17e260]: range step
+              - generic [ref=f17e261]: stride
+              - generic [ref=f17e262]: skip evens
+              - generic [ref=f17e263]: odd loop
+            - code [ref=f17e265]: "for n in range(3, limit + 1, 2): # only odd candidates pass"
+            - generic [ref=f17e267]:
+              - button "Copy Code" [ref=f17e268] [cursor=pointer]
+              - button "Expand" [ref=f17e269] [cursor=pointer]
+          - article [ref=f17e270]:
+            - generic [ref=f17e271]:
+              - heading "List comprehension with condition" [level=3] [ref=f17e272]
+              - generic [ref=f17e273]:
+                - generic [ref=f17e274]: Core Python Syntax
+                - generic [ref=f17e275]: L1
+            - paragraph [ref=f17e276]: Comprehensions are concise for filtering and mapping in one expression.
+            - generic [ref=f17e277]:
+              - generic [ref=f17e278]: list comprehension
+              - generic [ref=f17e279]: filter
+              - generic [ref=f17e280]: syntax
+              - generic [ref=f17e281]: for if
+            - code [ref=f17e283]: squares_of_odds = [n * n for n in range(20) if n % 2 == 1] print(squares_of_odds[:5])
+            - generic [ref=f17e285]:
+              - button "Copy Code" [ref=f17e286] [cursor=pointer]
+              - button "Expand" [ref=f17e287] [cursor=pointer]
+  - contentinfo [ref=f17e288]:
+    - paragraph [ref=f17e289]: © 2026 Computer Hardware Club at Oregon State University
+    - generic [ref=f17e290]:
+      - link "GitHub" [ref=f17e291] [cursor=pointer]:
+        - /url: https://github.com/Computer-Hardware-Club
+      - link "Email" [ref=f17e292] [cursor=pointer]:
+        - /url: mailto:computerhardware.clubs@oregonstate.edu
+      - link "Discord" [ref=f17e293] [cursor=pointer]:
+        - /url: https://discord.gg/bfxjgvzCSf

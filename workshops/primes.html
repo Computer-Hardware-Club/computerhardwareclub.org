@@ -1,0 +1,3456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-Second Prime Showdown | Computer Hardware Club</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%239c5f2d'/%3E%3Cpath d='M20 20h24v24H20z' fill='%23f4efe7' opacity='.92'/%3E%3Cpath d='M26 26h12v12H26z' fill='%239c5f2d'/%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @import url("../styles/workshop-theme.css?v=4");
+        :root {
+            --osu-orange: #DC4405;
+            --orange-light: #FF6B35;
+            --orange-glow: rgba(220, 68, 5, 0.15);
+            --bg-deep: #0A0A0A;
+            --bg-surface: #131313;
+            --bg-raised: #1A1A1A;
+            --bg-code: #0F0F0F;
+            --text-primary: #E8E6E3;
+            --text-secondary: #9A9A9A;
+            --text-dim: #5A5A5A;
+            --border: #222222;
+            --border-light: #2A2A2A;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            position: relative;
+            padding: 80px 24px 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(220, 68, 5, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--osu-orange);
+            border: 1px solid rgba(220, 68, 5, 0.3);
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 32px;
+            background: rgba(220, 68, 5, 0.05);
+        }
+
+        .hero h1 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--osu-orange);
+        }
+
+        .hero-description {
+            max-width: 620px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .hero-description strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .hero-links {
+            margin-top: 28px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .hero-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(220, 68, 5, 0.22);
+            background: rgba(220, 68, 5, 0.06);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .hero-link:hover {
+            color: var(--text-primary);
+            border-color: rgba(220, 68, 5, 0.4);
+            background: rgba(220, 68, 5, 0.12);
+        }
+
+        /* ── Unified dropdown nav ── */
+        /* ── Layout ── */
+        .guide {
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 0 24px 100px;
+        }
+
+        /* ── Sections ── */
+        .section {
+            padding: 56px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .section-number {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--osu-orange);
+            background: rgba(220, 68, 5, 0.08);
+            border: 1px solid rgba(220, 68, 5, 0.2);
+            padding: 4px 10px;
+            border-radius: 4px;
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .section h2 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 0.98rem;
+        }
+
+        .section p strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* ── Rules list ── */
+        .rules-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .rules-list li {
+            display: flex;
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .rules-list li:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .rules-list li:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .rules-list li strong {
+            color: var(--text-primary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .rule-marker {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            padding-top: 2px;
+            flex-shrink: 0;
+            min-width: 16px;
+        }
+
+        /* ── Code block ── */
+        .code-block {
+            margin: 24px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-surface);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-filename {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: none;
+            color: var(--text-dim);
+            border: 1px solid var(--border-light);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            color: var(--osu-orange);
+            border-color: rgba(220, 68, 5, 0.3);
+            background: rgba(220, 68, 5, 0.05);
+        }
+
+        .copy-btn.copied {
+            color: #4ade80;
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+
+        pre {
+            background-color: var(--bg-code);
+            padding: 24px;
+            margin: 0;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+
+        pre code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            color: #c0bdb8;
+        }
+
+        /* Syntax colors */
+        .kw { color: #FF6B35; }
+        .fn { color: #E8E6E3; }
+        .st { color: #98c379; }
+        .cm { color: #4a4a4a; font-style: italic; }
+        .nb { color: #d19a66; }
+        .op { color: #8a8a8a; }
+
+        /* Inline code */
+        p code, li code {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85em;
+            background-color: var(--bg-raised);
+            padding: 2px 7px;
+            border-radius: 4px;
+            color: var(--orange-light);
+            border: 1px solid var(--border);
+        }
+
+        /* Inline run command */
+        .run-command {
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .run-command pre {
+            padding: 16px 20px;
+        }
+
+        .run-command code {
+            color: var(--text-secondary);
+        }
+
+        .run-command .prompt {
+            color: var(--text-dim);
+            user-select: none;
+        }
+
+        /* ── Hint levels ── */
+        .levels-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .level-card {
+            position: relative;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px 28px 24px;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .level-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .level-card.l1::before { background: linear-gradient(90deg, #3b82f6, transparent 60%); }
+        .level-card.l2::before { background: linear-gradient(90deg, #a855f7, transparent 60%); }
+        .level-card.l3::before { background: linear-gradient(90deg, var(--osu-orange), transparent 60%); }
+
+        .level-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 4px;
+            margin-bottom: 14px;
+        }
+
+        .l1 .level-tag { color: #60a5fa; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .l2 .level-tag { color: #c084fc; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); }
+        .l3 .level-tag { color: var(--orange-light); background: rgba(220, 68, 5, 0.1); border: 1px solid rgba(220, 68, 5, 0.2); }
+
+        .level-card h3 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .level-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .level-card li {
+            display: list-item;
+            list-style-position: outside;
+            list-style-type: '\203A  ';
+            margin-left: 20px;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.7;
+        }
+
+        .level-card li::marker {
+            color: var(--text-dim);
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .level-card em {
+            color: var(--text-primary);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        /* ── Offline docs ── */
+        .offline-docs-shell {
+            margin-top: 10px;
+        }
+
+        .docs-search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .docs-search-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .docs-search-input:focus {
+            border-color: rgba(220, 68, 5, 0.45);
+            box-shadow: 0 0 0 2px rgba(220, 68, 5, 0.12);
+        }
+
+        .docs-clear-btn {
+            flex-shrink: 0;
+            min-width: 84px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.74rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-clear-btn:hover {
+            border-color: rgba(220, 68, 5, 0.35);
+            color: var(--osu-orange);
+            background: rgba(220, 68, 5, 0.06);
+        }
+
+        .docs-clear-btn.hidden {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .docs-hint {
+            margin-top: 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 0.01em;
+        }
+
+        .docs-toolbar {
+            margin-top: 12px;
+            display: grid;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .docs-category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .docs-category-btn {
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-category-btn:hover {
+            border-color: rgba(220, 68, 5, 0.35);
+            color: var(--osu-orange);
+            background: rgba(220, 68, 5, 0.06);
+        }
+
+        .docs-category-btn.active {
+            color: var(--text-primary);
+            border-color: rgba(220, 68, 5, 0.5);
+            background: rgba(220, 68, 5, 0.15);
+        }
+
+        .docs-sort-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .docs-sort-row label {
+            color: var(--text-dim);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .docs-sort-select {
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.74rem;
+        }
+
+        .docs-results-meta {
+            margin-top: 14px;
+            margin-bottom: 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .docs-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 0;
+            margin-bottom: 10px;
+        }
+
+        .docs-suggestion-btn {
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-suggestion-btn:hover {
+            color: var(--osu-orange);
+            border-color: rgba(220, 68, 5, 0.35);
+            background: rgba(220, 68, 5, 0.06);
+        }
+
+        .docs-result-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .docs-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .docs-card.active {
+            border-color: rgba(220, 68, 5, 0.5);
+            box-shadow: 0 0 0 1px rgba(220, 68, 5, 0.2);
+        }
+
+        .docs-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .docs-title {
+            margin: 0;
+            color: var(--osu-orange);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            line-height: 1.45;
+        }
+
+        .docs-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .docs-badge {
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            white-space: nowrap;
+        }
+
+        .docs-level {
+            color: #9ec7ff;
+            border-color: rgba(96, 165, 250, 0.28);
+            background: rgba(96, 165, 250, 0.08);
+        }
+
+        .docs-score {
+            color: #facc15;
+            border-color: rgba(250, 204, 21, 0.25);
+            background: rgba(250, 204, 21, 0.08);
+        }
+
+        .docs-summary {
+            margin: 0 0 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .docs-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .docs-tag {
+            border: 1px solid var(--border-light);
+            background: rgba(220, 68, 5, 0.06);
+            color: #d7b4a2;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        .docs-code {
+            margin: 0;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-code);
+            overflow: auto;
+            position: relative;
+        }
+
+        .docs-code.collapsed {
+            max-height: 220px;
+            overflow: hidden;
+        }
+
+        .docs-code.collapsed::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 44px;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(15, 15, 15, 0), rgba(15, 15, 15, 1));
+        }
+
+        .docs-code code {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            line-height: 1.65;
+        }
+
+        .docs-card-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .docs-action-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .docs-truncate-note {
+            color: var(--text-dim);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+        }
+
+        .docs-copy-btn {
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-copy-btn:hover {
+            border-color: rgba(220, 68, 5, 0.35);
+            color: var(--osu-orange);
+            background: rgba(220, 68, 5, 0.06);
+        }
+
+        .docs-expand-btn {
+            border: 1px solid var(--border-light);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .docs-expand-btn:hover {
+            border-color: rgba(220, 68, 5, 0.35);
+            color: var(--osu-orange);
+            background: rgba(220, 68, 5, 0.06);
+        }
+
+        .docs-empty {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-surface);
+            padding: 14px;
+        }
+
+        .docs-empty-title {
+            margin: 0 0 6px;
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.82rem;
+        }
+
+        .docs-empty p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        .docs-mark {
+            background: rgba(220, 68, 5, 0.2);
+            color: var(--text-primary);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* ── Footer ── */
+        /* ── Animations ── */
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-badge, .hero h1, .hero-description {
+                animation: fadeUp 0.6s ease both;
+            }
+            .hero h1 { animation-delay: 0.1s; }
+            .hero-description { animation-delay: 0.2s; }
+
+            .section {
+                animation: fadeUp 0.5s ease both;
+            }
+
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(16px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .hero { padding: 56px 20px 44px; }
+            .guide { padding: 0 16px 80px; }
+            .section { padding: 40px 0; }
+            .level-card { padding: 20px; }
+            pre { padding: 16px; }
+            .rules-list li { padding: 12px 14px; gap: 12px; }
+            .docs-search-row { flex-direction: column; align-items: stretch; }
+            .docs-clear-btn { width: 100%; }
+            .docs-sort-row { justify-content: flex-start; }
+            .docs-card-top { flex-direction: column; align-items: flex-start; }
+            .docs-badges { justify-content: flex-start; }
+            .docs-card-actions { flex-direction: column; align-items: flex-start; }
+            .docs-action-group { margin-left: 0; }
+        }
+    </style>
+    <link rel="stylesheet" href="../styles/workshop-remaster.css?v=1">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="site-nav container" aria-label="Primary navigation">
+    <a class="brand" href="../" aria-label="Computer Hardware Club home"><span class="brand-host">chc</span><span>@oregonstate:~</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../about/" >About</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-controls="workshop-links">Workshops</button>
+        <ul class="nav-dropdown-list" id="workshop-links">
+          <li><a href="../workshops/primes.html">1-Second Prime Showdown</a></li>
+          <li><a href="../workshops/troubleshoot.html">Troubleshooting Workshop</a></li>
+          <li><a href="../workshops/serverbuild.html">Server Build Competition</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<header class="hero">
+    <div class="hero-badge">Computer Hardware Club</div>
+    <h1>1-Second <span>Prime</span> Showdown</h1>
+    <p class="hero-description">
+        Write a Python algorithm that finds the <strong>highest number of primes</strong> in exactly
+        <strong>1.0 second</strong>. Don't be lame, don't cheat.
+    </p>
+
+</header>
+
+<!-- ── Guide ── -->
+<main class="guide">
+
+    <!-- Mission -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">01</span>
+            <span class="section-title">The Mission</span>
+        </div>
+        <p>Finding prime numbers is a foundational concept in computer science, deeply tied to cryptography and hardware benchmarking. Today, we're testing not just your math skills, but how well you can optimize code to utilize CPU cycles and memory most efficiently.</p>
+    </section>
+
+    <!-- Rules -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">02</span>
+            <span class="section-title">The Rules</span>
+        </div>
+        <ol class="rules-list">
+            <li>
+                <span class="rule-marker">A</span>
+                <span><strong>Closed Book:</strong> No Google, StackOverflow, ChatGPT, Claude, etc. If it feels like cheating, it probably is. The only reference you can use is the offline documentation search at the bottom of this page.</span>
+            </li>
+            <li>
+                <span class="rule-marker">B</span>
+                <span><strong>The Defense:</strong> To claim the winning title, you must explain exactly <em>how</em> and <em>why</em> your optimization works (similar to the Troubleshooting Workshop). If you can't explain your code, you will be banned from the club forever and expelled from OSU. No pressure though.</span>
+            </li>
+            <li>
+                <span class="rule-marker">C</span>
+                <span><strong>Time Limit:</strong> Your code must stop executing exactly 1 second after the calculation loop begins (handled by the starter code).</span>
+            </li>
+            <li>
+                <span class="rule-marker">D</span>
+                <span><strong>Output:</strong> Your script must print the <strong>total count</strong> of primes found. No hardcoded arrays.</span>
+            </li>
+            <li>
+                <span class="rule-marker">E</span>
+                <span><strong>Language:</strong> Python 3. Yes, Python is slow. Shut up CS nerd.</span>
+            </li>
+            <li>
+                <span class="rule-marker">F</span>
+                <span><strong>Sequentiality:</strong> Primes must be computed sequentially. This means you can just jump to 1 billion and start there. First prime computed must be 2.</span>
+            </li>
+            <li>
+                <span class="rule-marker">G</span>
+                <span><strong>Final Test:</strong> All submissions will be tested on the host's laptop for fairness. The highest valid count wins.</span>
+            </li>
+        </ol>
+    </section>
+
+    <!-- Starter Code -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">03</span>
+            <span class="section-title">Starter Code</span>
+        </div>
+        <p>This baseline works, but it's incredibly slow. Copy it into a file named <code>prime.py</code> and run it to see your starting score.</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-filename">prime.py</span>
+                <button class="copy-btn" onclick="copyCode()" aria-label="Copy code to clipboard">Copy</button>
+            </div>
+            <pre><code id="starter-code"><span class="kw">import</span> time
+
+<span class="kw">def</span> <span class="fn">is_prime</span>(n):
+    <span class="st">"""A very naive and slow way to check for a prime number."""</span>
+    <span class="kw">if</span> n <span class="op">&lt;=</span> <span class="nb">1</span>:
+        <span class="kw">return</span> <span class="nb">False</span>
+    <span class="cm"># Checks every single number up to n</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nb">2</span>, n):
+        <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="nb">0</span>:
+            <span class="kw">return</span> <span class="nb">False</span>
+    <span class="kw">return</span> <span class="nb">True</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="st">"Starting Prime Hunt for exactly 1.0 second..."</span>)
+    start_time <span class="op">=</span> time.<span class="fn">time</span>()
+    duration <span class="op">=</span> <span class="nb">1.0</span>
+
+    prime_count <span class="op">=</span> <span class="nb">0</span>
+    current_number <span class="op">=</span> <span class="nb">2</span>
+
+    <span class="cm"># Run the loop until 1 second has passed</span>
+    <span class="kw">while</span> (time.<span class="fn">time</span>() <span class="op">-</span> start_time) <span class="op">&lt;</span> duration:
+        <span class="kw">if</span> <span class="fn">is_prime</span>(current_number):
+            prime_count <span class="op">+=</span> <span class="nb">1</span>
+        current_number <span class="op">+=</span> <span class="nb">1</span>
+
+    <span class="fn">print</span>(<span class="st">"\n--- TIME'S UP! ---"</span>)
+    <span class="fn">print</span>(<span class="st">f"Total primes found: </span>{prime_count}<span class="st">"</span>)
+    <span class="fn">print</span>(<span class="st">f"Highest number checked: </span>{current_number <span class="op">-</span> <span class="nb">1</span>}<span class="st">"</span>)
+
+<span class="kw">if</span> __name__ <span class="op">==</span> <span class="st">"__main__"</span>:
+    <span class="fn">main</span>()</code></pre>
+        </div>
+    </section>
+
+    <!-- Optimization Hints -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">04</span>
+            <span class="section-title">Optimization Trajectory</span>
+        </div>
+        <p>The starter code won't win. It relies on brute force. To reach the millions, you need to fundamentally change the way you think about prime numbers. Discuss these concepts with your team, and use them as a springboard to get your development started:</p>
+
+        <div class="levels-grid">
+            <div class="level-card l1">
+                <span class="level-tag">Phase 1</span>
+                <h3>Stop Doing Expensive Math</h3>
+                <ul>
+                    <li>The starter code uses the modulo operator (<code>%</code>) inside a nested loop. Division and modulo are computationally expensive for a CPU.</li>
+                    <li>Addition (<code>+</code>) is incredibly fast. Is there a way to find prime numbers using <em>only</em> addition? Think about how multiples work.</li>
+                </ul>
+            </div>
+
+            <div class="level-card l2">
+                <span class="level-tag">Phase 2</span>
+                <h3>Invert the Problem</h3>
+                <ul>
+                    <li>Right now, the code takes a number (like 97) and looks <em>backwards</em> to see if it has any divisors. This is wasted effort.</li>
+                    <li>What if you start at the bottom with known primes (2, 3, 5) and look <em>forwards</em>? If you know 2 is prime, you immediately know that 4, 6, 8, and 10 are not. </li>
+                    <li>How can you "cross out" multiples as you go, rather than checking individual numbers?</li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 0.9em; color: var(--text-dim);"><em></em></p>
+            </div>
+
+            <div class="level-card l3">
+                <span class="level-tag">Phase 3</span>
+                <h3>The Memory Bottleneck</h3>
+                <ul>
+                    <li>If you use the Phase 2 method, you will need to keep a massive "ledger" to track which numbers are crossed out and which are still prime.</li>
+                    <li>If you build a list of millions of standard Python booleans, the memory footprint will exceed your CPU's L1/L2 cache. The CPU will waste precious milliseconds waiting for data to fetch from main RAM.</li>
+                    <li>Search your <strong>Offline Documentation</strong> below for ways to store a massive array of true/false values using the smallest amount of memory possible.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Local Testing -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">05</span>
+            <span class="section-title">Run &amp; Test</span>
+        </div>
+        <p>Open your terminal, navigate to your folder, and run:</p>
+        <div class="run-command">
+            <pre><code><span class="prompt">$ </span>python3 prime.py</code></pre>
+        </div>
+        <p>What number did it return? Great, make it go higher.</p>
+    </section>
+
+    <!-- Offline Documentation -->
+    <section class="section">
+        <div class="section-label">
+            <span class="section-number">06</span>
+            <span class="section-title">Offline Documentation</span>
+        </div>
+        <p>Search this local Python reference by concept, syntax, or optimization keyword. No internet needed.</p>
+        <div class="offline-docs-shell">
+            <div class="docs-search-row">
+                <input
+                    id="offline-docs-search"
+                    class="docs-search-input"
+                    type="text"
+                    placeholder="Try: square root, byterray, range step, comprehension..."
+                    autocomplete="off"
+                    aria-label="Search offline Python documentation"
+                >
+                <button id="offline-docs-clear" class="docs-clear-btn hidden" type="button" aria-label="Clear search">Clear</button>
+            </div>
+            <p class="docs-hint">Keyboard: <code>/</code> focus, <code>↑/↓</code> move, <code>Enter</code> expand, <code>Esc</code> clear.</p>
+            <div class="docs-toolbar">
+                <div id="offline-docs-categories" class="docs-category-list" aria-label="Filter offline docs by category"></div>
+                <div class="docs-sort-row">
+                    <label for="offline-docs-sort">Sort</label>
+                    <select id="offline-docs-sort" class="docs-sort-select" aria-label="Sort documentation results">
+                        <option value="relevance">Relevance</option>
+                        <option value="title">Title</option>
+                    </select>
+                </div>
+            </div>
+            <div id="offline-docs-meta" class="docs-results-meta" aria-live="polite"></div>
+            <div id="offline-docs-suggestions" class="docs-suggestions"></div>
+            <div id="offline-docs-results" class="docs-result-list"></div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span data-year>2026</span> Computer Hardware Club</p>
+    <ul class="footer-links">
+      <li><a href="https://github.com/Computer-Hardware-Club" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+      <li><a href="mailto:computerhardware.clubs@oregonstate.edu">Email ↗</a></li>
+      <li><a href="https://discord.gg/bfxjgvzCSf" target="_blank" rel="noopener noreferrer">Discord ↗</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+    function copyCode() {
+        const codeBlock = document.getElementById('starter-code').innerText;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            btn.textContent = 'Copied';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    function makeDoc(id, category, level, title, summary, tags, aliases, content) {
+        return { id, title, tags, content, aliases, category, summary, level };
+    }
+
+    const primeMathDocs = [
+        makeDoc(
+            'pm-01',
+            'Prime Math & Bounds',
+            'L1',
+            'math.isqrt() vs math.sqrt() for prime bounds',
+            'Use integer square root bounds to avoid float conversion when checking divisors up to square root.',
+            ['math.isqrt', 'math.sqrt', 'square root', 'prime bound', 'integer math'],
+            ['sqrt vs isqrt', 'square root limit', 'radical bound'],
+            `import math
+
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    if n % 2 == 0:
+        return n == 2
+    limit = math.isqrt(n)  # integer square root
+    for d in range(3, limit + 1, 2):
+        if n % d == 0:
+            return False
+    return True`
+        ),
+        makeDoc(
+            'pm-02',
+            'Prime Math & Bounds',
+            'L1',
+            'Skip even divisors in primality checks',
+            'After handling n % 2, only check odd divisors for nearly 2x fewer modulo operations.',
+            ['odd divisors', 'skip evens', 'modulo', 'trial division'],
+            ['even optimization', 'parity filter'],
+            `def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    if n % 2 == 0:
+        return n == 2
+    d = 3
+    while d * d <= n:
+        if n % d == 0:
+            return False
+        d += 2
+    return True`
+        ),
+        makeDoc(
+            'pm-03',
+            'Prime Math & Bounds',
+            'L2',
+            'Use 6k ± 1 stepping for candidate divisors',
+            'After removing factors 2 and 3, every prime factor is 6k - 1 or 6k + 1.',
+            ['6k+-1', 'wheel', 'divisor stepping', 'trial division'],
+            ['six k', 'wheel factorization'],
+            `def is_prime(n: int) -> bool:
+    if n <= 3:
+        return n > 1
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    d = 5
+    while d * d <= n:
+        if n % d == 0 or n % (d + 2) == 0:
+            return False
+        d += 6
+    return True`
+        ),
+        makeDoc(
+            'pm-04',
+            'Prime Math & Bounds',
+            'L1',
+            'Guard clauses for n < 2 and tiny primes',
+            'Short-circuit tiny values first so hot loops run only for real candidates.',
+            ['guard clause', 'base cases', 'n < 2', 'small primes'],
+            ['edge case prime check', 'small-number fast path'],
+            `def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    if n in (2, 3):
+        return True
+    if n % 2 == 0:
+        return False
+    # expensive loop starts only for odd n >= 5
+    return True`
+        ),
+        makeDoc(
+            'pm-05',
+            'Prime Math & Bounds',
+            'L2',
+            'Pre-check divisibility by small prime table',
+            'Filter many composites quickly by testing a short tuple of tiny primes first.',
+            ['small primes', 'pre-check', 'divisibility table', 'fast reject'],
+            ['tiny prime screen', 'quick composite filter'],
+            `SMALL_PRIMES = (3, 5, 7, 11, 13, 17, 19)
+
+def quick_composite(n: int) -> bool:
+    for p in SMALL_PRIMES:
+        if n == p:
+            return False
+        if n % p == 0:
+            return True
+    return False`
+        ),
+        makeDoc(
+            'pm-06',
+            'Prime Math & Bounds',
+            'L1',
+            'Use while d*d <= n as a bound check',
+            'Avoid recalculating square root each iteration by comparing d*d to n.',
+            ['d*d <= n', 'loop bound', 'while loop', 'trial division'],
+            ['square comparison bound', 'without sqrt'],
+            `def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    d = 2
+    while d * d <= n:
+        if n % d == 0:
+            return False
+        d += 1
+    return True`
+        ),
+        makeDoc(
+            'pm-07',
+            'Prime Math & Bounds',
+            'L2',
+            'Generate only odd prime candidates',
+            'Start with 2, then iterate 3, 5, 7, ... to avoid half the candidate checks.',
+            ['odd candidates', 'range step', 'candidate generation', 'prime loop'],
+            ['skip even candidates', 'odd-only stream'],
+            `def candidate_stream(limit: int):
+    yield 2
+    for n in range(3, limit + 1, 2):
+        yield n
+
+for n in candidate_stream(50):
+    pass`
+        ),
+        makeDoc(
+            'pm-08',
+            'Prime Math & Bounds',
+            'L2',
+            'Cache bound once per candidate using isqrt',
+            'Compute integer square root once per n and reuse it for divisor loop bounds.',
+            ['bound caching', 'isqrt', 'square root', 'inner loop'],
+            ['cached divisor bound', 'single sqrt call'],
+            `import math
+
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    bound = math.isqrt(n)
+    for d in range(2, bound + 1):
+        if n % d == 0:
+            return False
+    return True`
+        ),
+        makeDoc(
+            'pm-09',
+            'Prime Math & Bounds',
+            'L2',
+            'Use any() for readable divisibility tests',
+            'Generator-based checks can keep primality code concise for prototypes.',
+            ['any', 'divisibility', 'generator expression', 'readability'],
+            ['any divisor check', 'concise primality'],
+            `import math
+
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    limit = math.isqrt(n)
+    return not any(n % d == 0 for d in range(2, limit + 1))`
+        ),
+        makeDoc(
+            'pm-10',
+            'Prime Math & Bounds',
+            'L3',
+            'Inline primality in a tight counting loop',
+            'In very hot loops, reduce function-call overhead by inlining prime tests.',
+            ['inline loop', 'hot path', 'function overhead', 'prime count'],
+            ['inline primality', 'tight counting loop'],
+            `count = 0
+for n in range(2, 100000):
+    if n % 2 == 0 and n != 2:
+        continue
+    d = 3
+    is_p = n > 1
+    while d * d <= n and is_p:
+        if n % d == 0:
+            is_p = False
+        d += 2
+    count += int(is_p)`
+        )
+    ];
+
+    const sieveDocs = [
+        makeDoc(
+            'sv-01',
+            'Sieve Patterns',
+            'L1',
+            'Classic Sieve of Eratosthenes with boolean list',
+            'Standard sieve pattern for generating all primes up to N in O(N log log N).',
+            ['sieve', 'eratosthenes', 'boolean list', 'prime table'],
+            ['basic sieve', 'classic prime sieve'],
+            `def sieve(limit: int):
+    is_prime = [True] * (limit + 1)
+    is_prime[0:2] = [False, False]
+    p = 2
+    while p * p <= limit:
+        if is_prime[p]:
+            for m in range(p * p, limit + 1, p):
+                is_prime[m] = False
+        p += 1
+    return is_prime`
+        ),
+        makeDoc(
+            'sv-02',
+            'Sieve Patterns',
+            'L1',
+            'Start marking multiples at p*p',
+            'All smaller multiples of p were already marked by smaller factors.',
+            ['p*p', 'marking start', 'sieve optimization', 'multiples'],
+            ['square start', 'start at p squared'],
+            `for p in range(2, int(limit ** 0.5) + 1):
+    if is_prime[p]:
+        start = p * p
+        for m in range(start, limit + 1, p):
+            is_prime[m] = False`
+        ),
+        makeDoc(
+            'sv-03',
+            'Sieve Patterns',
+            'L2',
+            'Odd-only sieve index compression',
+            'Store only odd numbers: index i represents value 2*i + 1.',
+            ['odd-only sieve', 'index compression', 'memory reduction', 'mapping'],
+            ['compressed sieve', 'odd index map'],
+            `limit = 1_000_000
+size = (limit // 2) + 1
+is_prime = bytearray(b"\\x01") * size
+is_prime[0] = 0  # number 1
+
+for i in range(1, int(limit ** 0.5) // 2 + 1):
+    if is_prime[i]:
+        p = 2 * i + 1
+        start = (p * p) // 2
+        is_prime[start::p] = b"\\x00" * (((size - start - 1) // p) + 1)`
+        ),
+        makeDoc(
+            'sv-04',
+            'Sieve Patterns',
+            'L2',
+            'Use step p*2 when skipping even multiples',
+            'If p is odd, increment by p*2 to hit only odd multiples in sieve marking.',
+            ['range step', 'p*2', 'skip evens', 'sieve marking'],
+            ['stride by 2p', 'odd multiples only'],
+            `for p in range(3, int(limit ** 0.5) + 1, 2):
+    if is_prime[p]:
+        for m in range(p * p, limit + 1, p * 2):
+            is_prime[m] = 0`
+        ),
+        makeDoc(
+            'sv-05',
+            'Sieve Patterns',
+            'L3',
+            'Slice assignment for bulk sieve marking',
+            'Assign a repeated byte pattern to mark many multiples at once.',
+            ['slice assignment', 'bulk marking', 'bytearray', 'sieve'],
+            ['vectorized marking', 'extended slice'],
+            `for p in range(3, int(limit ** 0.5) + 1, 2):
+    if flags[p]:
+        start = p * p
+        step = p * 2
+        count = ((limit - start) // step) + 1
+        flags[start:limit + 1:step] = b"\\x00" * count`
+        ),
+        makeDoc(
+            'sv-06',
+            'Sieve Patterns',
+            'L3',
+            'Segmented sieve for large upper bounds',
+            'Process primes in windows to reduce memory pressure and improve cache locality.',
+            ['segmented sieve', 'window', 'block processing', 'cache'],
+            ['block sieve', 'range segmentation'],
+            `def segmented_sieve(low: int, high: int, base_primes):
+    size = high - low
+    block = bytearray(b"\\x01") * size
+    for p in base_primes:
+        start = max(p * p, ((low + p - 1) // p) * p)
+        for m in range(start, high, p):
+            block[m - low] = 0
+    return block`
+        ),
+        makeDoc(
+            'sv-07',
+            'Sieve Patterns',
+            'L2',
+            'Build base primes once for segmented windows',
+            'Precompute primes up to sqrt(high) before running segmented blocks.',
+            ['base primes', 'sqrt(high)', 'segmented precompute', 'sieve'],
+            ['seed primes', 'pre-sieve roots'],
+            `import math
+
+def base_primes_for(high: int):
+    root = math.isqrt(high)
+    flags = [True] * (root + 1)
+    flags[0:2] = [False, False]
+    for p in range(2, math.isqrt(root) + 1):
+        if flags[p]:
+            for m in range(p * p, root + 1, p):
+                flags[m] = False
+    return [i for i, ok in enumerate(flags) if ok]`
+        ),
+        makeDoc(
+            'sv-08',
+            'Sieve Patterns',
+            'L1',
+            'Count primes from a bytearray sieve quickly',
+            'Summing bytes is a fast way to count true flags in bytearray-based sieves.',
+            ['count primes', 'sum bytearray', 'flags', 'sieve result'],
+            ['prime tally', 'byte count'],
+            `flags = bytearray(b"\\x01") * (limit + 1)
+flags[0:2] = b"\\x00\\x00"
+# ... run sieve marking ...
+prime_count = sum(flags)
+print(prime_count)`
+        ),
+        makeDoc(
+            'sv-09',
+            'Sieve Patterns',
+            'L3',
+            'Smallest prime factor (SPF) table',
+            'Store the smallest prime factor for each number for fast factorization.',
+            ['spf', 'smallest prime factor', 'factorization', 'sieve variant'],
+            ['least prime factor', 'factor sieve'],
+            `def build_spf(n: int):
+    spf = list(range(n + 1))
+    for p in range(2, int(n ** 0.5) + 1):
+        if spf[p] == p:
+            for m in range(p * p, n + 1, p):
+                if spf[m] == m:
+                    spf[m] = p
+    return spf`
+        ),
+        makeDoc(
+            'sv-10',
+            'Sieve Patterns',
+            'L3',
+            'Wheel-like candidate skipping (2 and 3)',
+            'Use alternating step sizes to skip numbers divisible by 2 or 3.',
+            ['wheel', 'skip multiples of 2 and 3', 'candidate pattern', 'sieve'],
+            ['2-3 wheel', 'step pattern'],
+            `steps = (2, 4)  # generates 5,7,11,13,17,...
+n = 5
+i = 0
+while n <= limit:
+    # check or mark candidate n
+    n += steps[i]
+    i ^= 1`
+        )
+    ];
+
+    const memoryDocs = [
+        makeDoc(
+            'mc-01',
+            'Memory & Cache',
+            'L2',
+            'Use bytearray for cache-friendly prime flags',
+            'bytearray uses compact one-byte entries and avoids Python bool object overhead.',
+            ['bytearray', 'cache efficiency', 'memory', 'prime flags'],
+            ['byte array flags', 'compact storage'],
+            `limit = 10_000_000
+flags = bytearray(b"\\x01") * (limit + 1)
+flags[0:2] = b"\\x00\\x00"
+
+for p in range(2, int(limit ** 0.5) + 1):
+    if flags[p]:
+        flags[p * p:limit + 1:p] = b"\\x00" * (((limit - p * p) // p) + 1)`
+        ),
+        makeDoc(
+            'mc-02',
+            'Memory & Cache',
+            'L1',
+            'Initialize large boolean lists with multiplication',
+            'Preallocating a boolean list is far faster than appending in a loop.',
+            ['boolean list', 'list init', 'preallocation', 'performance'],
+            ['bool list', 'large list initialization'],
+            `limit = 5_000_000
+is_prime = [True] * (limit + 1)
+is_prime[0] = False
+is_prime[1] = False`
+        ),
+        makeDoc(
+            'mc-03',
+            'Memory & Cache',
+            'L3',
+            'Use memoryview for zero-copy bytearray slicing',
+            'memoryview lets you operate on subranges without allocating new buffers.',
+            ['memoryview', 'zero-copy', 'bytearray slice', 'buffer'],
+            ['view into bytearray', 'no copy slice'],
+            `flags = bytearray(b"\\x01") * 1024
+view = memoryview(flags)
+window = view[100:200]
+window[:] = b"\\x00" * len(window)
+# flags is updated in place`
+        ),
+        makeDoc(
+            'mc-04',
+            'Memory & Cache',
+            'L3',
+            'Store only odd numbers to halve memory usage',
+            'Odd-only storage cuts flag memory roughly in half and improves cache hit rate.',
+            ['odd-only storage', 'memory reduction', 'index mapping', 'sieve'],
+            ['half memory sieve', 'odd compression'],
+            `limit = 1_000_000
+size = (limit // 2) + 1
+flags = bytearray(b"\\x01") * size
+
+def idx_to_num(i: int) -> int:
+    return 2 * i + 1`
+        ),
+        makeDoc(
+            'mc-05',
+            'Memory & Cache',
+            'L2',
+            'Reuse buffers instead of reallocating each run',
+            'Resetting an existing bytearray can reduce allocator churn in repeated tests.',
+            ['reuse buffer', 'allocation', 'benchmark loop', 'bytearray'],
+            ['buffer recycling', 'avoid reallocation'],
+            `flags = bytearray(b"\\x01") * (limit + 1)
+
+def reset_flags(buf: bytearray):
+    buf[:] = b"\\x01" * len(buf)
+    buf[0:2] = b"\\x00\\x00"`
+        ),
+        makeDoc(
+            'mc-06',
+            'Memory & Cache',
+            'L2',
+            'Bind hot variables to local names',
+            'Local variable lookups are cheaper than repeated global or attribute lookups.',
+            ['local bindings', 'hot loop', 'lookup cost', 'micro-optimization'],
+            ['bind locals', 'store references locally'],
+            `append = result.append
+mod = int.__mod__
+for n in nums:
+    if mod(n, 2):
+        append(n)`
+        ),
+        makeDoc(
+            'mc-07',
+            'Memory & Cache',
+            'L2',
+            'Use array module for compact numeric storage',
+            'array("I") stores integers densely compared with normal Python lists.',
+            ['array module', 'compact ints', 'memory', 'numeric buffer'],
+            ['array I', 'typed array'],
+            `from array import array
+
+values = array("I", [0]) * 1_000_000
+values[123] = 7
+print(values[123])`
+        ),
+        makeDoc(
+            'mc-08',
+            'Memory & Cache',
+            'L3',
+            'Bit-pack odd flags into bytes',
+            'Store 8 odd-number flags per byte when you need maximal compression.',
+            ['bit packing', 'compact storage', 'odd flags', 'memory'],
+            ['bitset bytearray', 'packed bits'],
+            `bits = bytearray((limit // 16) + 1)  # 8 odds per byte
+
+def set_composite(n: int):
+    i = n >> 1
+    bits[i >> 3] |= 1 << (i & 7)
+
+def is_composite(n: int) -> bool:
+    i = n >> 1
+    return (bits[i >> 3] >> (i & 7)) & 1 == 1`
+        )
+    ];
+
+    const bitwiseDocs = [
+        makeDoc(
+            'bw-01',
+            'Bitwise & Numeric Ops',
+            'L1',
+            'Check odd/even with bitwise AND',
+            'Use n & 1 for parity checks in tight loops.',
+            ['bitwise and', 'odd even', 'parity', 'n & 1'],
+            ['parity test', 'even check'],
+            `def is_odd(n: int) -> bool:
+    return (n & 1) == 1
+
+def is_even(n: int) -> bool:
+    return (n & 1) == 0`
+        ),
+        makeDoc(
+            'bw-02',
+            'Bitwise & Numeric Ops',
+            'L1',
+            'Use shifts for multiply/divide by 2',
+            'Left shift multiplies by two; right shift floor-divides positive ints by two.',
+            ['left shift', 'right shift', 'multiply by 2', 'divide by 2'],
+            ['bit shifts', '<< and >>'],
+            `n = 37
+double_n = n << 1
+half_n = n >> 1
+print(double_n, half_n)`
+        ),
+        makeDoc(
+            'bw-03',
+            'Bitwise & Numeric Ops',
+            'L2',
+            'Set, clear, and test bits in a bit mask',
+            'Bit masks are useful for compact visited/composite state tracking.',
+            ['bit mask', 'set bit', 'clear bit', 'test bit'],
+            ['bit operations', 'flag masks'],
+            `mask = 0
+i = 5
+mask |= 1 << i      # set
+is_set = (mask >> i) & 1
+mask &= ~(1 << i)   # clear`
+        ),
+        makeDoc(
+            'bw-04',
+            'Bitwise & Numeric Ops',
+            'L3',
+            'Extract low bit with n & -n',
+            'n & -n isolates the lowest set bit and appears in many bit tricks.',
+            ['lowbit', 'n & -n', 'bit trick', 'lowest set bit'],
+            ['lsb extraction', 'two complement bit trick'],
+            `def lowbit(n: int) -> int:
+    return n & -n
+
+print(lowbit(40))  # 8`
+        ),
+        makeDoc(
+            'bw-05',
+            'Bitwise & Numeric Ops',
+            'L2',
+            'Check power of two using bitwise trick',
+            'A positive power of two has exactly one set bit.',
+            ['power of two', 'bit trick', 'n & (n-1)', 'validation'],
+            ['single bit check', 'pow2 test'],
+            `def is_power_of_two(n: int) -> bool:
+    return n > 0 and (n & (n - 1)) == 0`
+        ),
+        makeDoc(
+            'bw-06',
+            'Bitwise & Numeric Ops',
+            'L2',
+            'Use built-in pow(base, exp, mod) for fast modular math',
+            'pow(a, b, m) is optimized and common in primality/probabilistic checks.',
+            ['pow', 'modular exponentiation', 'numeric optimization', 'mod math'],
+            ['fast mod exponent', 'pow three arguments'],
+            `a = 7
+b = 560
+m = 561
+value = pow(a, b, m)
+print(value)`
+        )
+    ];
+
+    const loopDocs = [
+        makeDoc(
+            'lr-01',
+            'Loops & range()',
+            'L1',
+            'Use range(start, stop, step) to skip evens',
+            'The step/stride argument is one of the simplest loop speed wins.',
+            ['range step', 'stride', 'skip evens', 'odd loop'],
+            ['step argument', 'range stride'],
+            `for n in range(3, limit + 1, 2):
+    # only odd candidates
+    pass`
+        ),
+        makeDoc(
+            'lr-02',
+            'Loops & range()',
+            'L1',
+            'Remember range stop is exclusive',
+            'range(a, b) includes a and excludes b, so use +1 when needed.',
+            ['range boundaries', 'exclusive stop', 'off by one', 'loop'],
+            ['range upper bound', 'inclusive end'],
+            `for i in range(2, limit + 1):
+    # i reaches limit
+    pass`
+        ),
+        makeDoc(
+            'lr-03',
+            'Loops & range()',
+            'L1',
+            'Reverse loops with range(high, low, -1)',
+            'Countdown loops are useful for reverse scans and backward checks.',
+            ['reverse range', 'negative step', 'countdown', 'looping'],
+            ['descending loop', 'range backwards'],
+            `for i in range(10, 0, -1):
+    print(i)`
+        ),
+        makeDoc(
+            'lr-04',
+            'Loops & range()',
+            'L2',
+            'Use for-else for primality pattern',
+            'The else block runs only when no break occurs in the divisor loop.',
+            ['for else', 'prime pattern', 'break', 'control flow'],
+            ['loop else clause', 'no-break else'],
+            `def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    for d in range(2, int(n ** 0.5) + 1):
+        if n % d == 0:
+            break
+    else:
+        return True
+    return False`
+        ),
+        makeDoc(
+            'lr-05',
+            'Loops & range()',
+            'L1',
+            'Use continue and break to reduce nesting',
+            'Early continue/break can simplify hot loop logic and reduce branch clutter.',
+            ['continue', 'break', 'loop control', 'branching'],
+            ['early continue', 'early break'],
+            `for n in range(2, limit):
+    if n % 2 == 0 and n != 2:
+        continue
+    if n > threshold:
+        break
+    # process n`
+        ),
+        makeDoc(
+            'lr-06',
+            'Loops & range()',
+            'L2',
+            'Use enumerate and zip in loop-heavy code',
+            'enumerate adds indexes; zip pairs sequences safely and clearly.',
+            ['enumerate', 'zip', 'iteration', 'indexed loop'],
+            ['paired iteration', 'loop with index'],
+            `nums = [3, 5, 7]
+flags = [True, False, True]
+for i, (n, ok) in enumerate(zip(nums, flags), start=1):
+    print(i, n, ok)`
+        ),
+        makeDoc(
+            'lr-07',
+            'Loops & range()',
+            'L1',
+            'Basic for loop over iterable candidates',
+            'Iterate directly over a prepared candidate list before filtering.',
+            ['for loop', 'iterable', 'candidate loop', 'iteration basics'],
+            ['basic for', 'iterate list'],
+            `candidates = [2, 3, 5, 7, 11]
+for n in candidates:
+    if n > 10:
+        break
+    print(n)`
+        ),
+        makeDoc(
+            'lr-08',
+            'Loops & range()',
+            'L1',
+            'Basic while loop with explicit increment',
+            'Use a loop variable and update it each iteration to avoid infinite loops.',
+            ['while loop', 'increment', 'counter', 'loop variable'],
+            ['basic while', 'counter loop'],
+            `limit = 6
+n = 2
+while n <= limit:
+    print(n)
+    n += 1`
+        ),
+        makeDoc(
+            'lr-09',
+            'Loops & range()',
+            'L2',
+            'while True + break for time-budget loops',
+            'Use an open-ended loop and break once the benchmark window expires.',
+            ['while true', 'break', 'time budget', 'sentinel loop'],
+            ['infinite loop break', 'budget loop'],
+            `import time
+
+start = time.perf_counter()
+checks = 0
+while True:
+    checks += 1
+    if time.perf_counter() - start >= 1.0:
+        break
+print(checks)`
+        ),
+        makeDoc(
+            'lr-10',
+            'Loops & range()',
+            'L2',
+            'Nested loops for trial division',
+            'A classic pattern: outer loop for candidates, inner loop for divisors.',
+            ['nested loops', 'trial division', 'divisor loop', 'for loop'],
+            ['double loop', 'candidate divisor loops'],
+            `limit = 20
+for n in range(2, limit + 1):
+    is_prime = True
+    for d in range(2, int(n ** 0.5) + 1):
+        if n % d == 0:
+            is_prime = False
+            break
+    if is_prime:
+        print(n)`
+        ),
+        makeDoc(
+            'lr-11',
+            'Loops & range()',
+            'L1',
+            'range(len(seq)) indexing pattern',
+            'Use index-based loops when you need element positions.',
+            ['range len', 'indexing', 'sequence', 'for loop'],
+            ['index loop', 'position loop'],
+            `primes = [2, 3, 5, 7]
+for i in range(len(primes)):
+    if primes[i] % 2 == 1:
+        print(i, primes[i])`
+        ),
+        makeDoc(
+            'lr-12',
+            'Loops & range()',
+            'L1',
+            'Loop over dict .items() key-value pairs',
+            'items() provides key and value in one unpacking step.',
+            ['dict items', 'mapping loop', 'key value', 'for loop'],
+            ['iterate dict', 'key value loop'],
+            `factor_hits = {2: 5, 3: 4, 5: 2}
+for prime, count in factor_hits.items():
+    print(f"{prime}: {count}")`
+        ),
+        makeDoc(
+            'lr-13',
+            'Loops & range()',
+            'L2',
+            'Early continue to skip obvious composites',
+            'continue keeps the hot path flatter by skipping work quickly.',
+            ['continue', 'composite skip', 'loop control', 'odd candidates'],
+            ['skip composite', 'early continue'],
+            `limit = 20
+for n in range(2, limit + 1):
+    if n % 2 == 0 and n != 2:
+        continue
+    print(n)`
+        ),
+        makeDoc(
+            'lr-14',
+            'Loops & range()',
+            'L2',
+            'Early break on first divisor with a flag',
+            'Track primality with a flag and stop divisor scanning early.',
+            ['break', 'flag variable', 'divisor test', 'loop exit'],
+            ['early break flag', 'first divisor break'],
+            `n = 91
+is_prime = True
+for d in range(2, int(n ** 0.5) + 1):
+    if n % d == 0:
+        is_prime = False
+        break
+print(is_prime)`
+        ),
+        makeDoc(
+            'lr-15',
+            'Loops & range()',
+            'L2',
+            'Track count and highest value in one loop',
+            'Maintain multiple aggregates during one pass over candidates.',
+            ['counting loop', 'max tracking', 'aggregates', 'loop state'],
+            ['count and max', 'single pass stats'],
+            `candidates = [2, 3, 4, 5, 9, 11]
+prime_like_count = 0
+highest_seen = 0
+for n in candidates:
+    if n % 2 == 1 or n == 2:
+        prime_like_count += 1
+        highest_seen = max(highest_seen, n)
+print(prime_like_count, highest_seen)`
+        ),
+        makeDoc(
+            'lr-16',
+            'Loops & range()',
+            'L1',
+            'Use reversed() for descending scans',
+            'reversed(range(...)) is an explicit way to scan from high to low.',
+            ['reversed', 'descending', 'reverse scan', 'range'],
+            ['reverse iterate', 'descending loop'],
+            `limit = 20
+for n in reversed(range(2, limit + 1)):
+    if n % 2 == 1:
+        print(n)
+        break`
+        ),
+        makeDoc(
+            'lr-17',
+            'Loops & range()',
+            'L1',
+            'Use pass as a loop scaffold placeholder',
+            'pass marks intentionally empty blocks while sketching control flow.',
+            ['pass', 'placeholder', 'loop scaffold', 'control flow'],
+            ['noop statement', 'pass keyword'],
+            `for n in range(2, 8):
+    if n < 5:
+        pass
+    else:
+        print(n)`
+        ),
+        makeDoc(
+            'lr-18',
+            'Loops & range()',
+            'L2',
+            'while ... else for no-break success flow',
+            'The else block runs only when the while loop ends without break.',
+            ['while else', 'no break', 'prime pattern', 'control flow'],
+            ['loop else', 'while no break'],
+            `n = 97
+d = 2
+while d * d <= n:
+    if n % d == 0:
+        print("composite")
+        break
+    d += 1
+else:
+    print("prime-like")`
+        )
+    ];
+
+    const coreSyntaxDocs = [
+        makeDoc(
+            'cs-01',
+            'Core Python Syntax',
+            'L1',
+            'Define functions with type hints',
+            'Type hints improve readability and editor support while staying optional at runtime.',
+            ['def', 'type hints', 'function', 'return annotation'],
+            ['annotated function', 'python typing basics'],
+            `def count_primes(limit: int) -> int:
+    total = 0
+    for n in range(2, limit + 1):
+        total += 1
+    return total`
+        ),
+        makeDoc(
+            'cs-02',
+            'Core Python Syntax',
+            'L1',
+            'if / elif / else control flow',
+            'Branch on multiple conditions cleanly with ordered checks.',
+            ['if', 'elif', 'else', 'branching'],
+            ['conditional syntax', 'python branches'],
+            `if n < 2:
+    kind = "non-prime"
+elif n == 2:
+    kind = "prime"
+else:
+    kind = "candidate"`
+        ),
+        makeDoc(
+            'cs-03',
+            'Core Python Syntax',
+            'L1',
+            'List comprehension with condition',
+            'Comprehensions are concise for filtering and mapping in one expression.',
+            ['list comprehension', 'filter', 'syntax', 'for if'],
+            ['comprehension', 'listcomp'],
+            `squares_of_odds = [n * n for n in range(20) if n % 2 == 1]
+print(squares_of_odds[:5])`
+        ),
+        makeDoc(
+            'cs-04',
+            'Core Python Syntax',
+            'L2',
+            'Dictionary comprehension for quick lookup tables',
+            'Use dict comprehensions to build maps from iterable data.',
+            ['dict comprehension', 'mapping', 'lookup table', 'syntax'],
+            ['dictionary comp', 'hash map build'],
+            `prime_map = {p: i for i, p in enumerate([2, 3, 5, 7, 11])}
+print(prime_map[7])`
+        ),
+        makeDoc(
+            'cs-05',
+            'Core Python Syntax',
+            'L1',
+            'Tuple unpacking and variable swap',
+            'Python lets you unpack tuples and swap values without temp variables.',
+            ['tuple unpacking', 'swap', 'multiple assignment', 'syntax'],
+            ['parallel assignment', 'python swap'],
+            `a, b = 3, 5
+a, b = b, a
+x, y, z = (2, 3, 5)
+print(a, b, x, y, z)`
+        ),
+        makeDoc(
+            'cs-06',
+            'Core Python Syntax',
+            'L1',
+            'Slicing syntax: start:stop:step',
+            'Slices work on lists/strings and follow exclusive stop rules.',
+            ['slicing', 'start stop step', 'sequence', 'syntax'],
+            ['slice notation', 'list slice'],
+            `arr = [0, 1, 2, 3, 4, 5, 6]
+print(arr[1:5])   # [1,2,3,4]
+print(arr[::2])   # [0,2,4,6]
+print(arr[::-1])  # reversed`
+        ),
+        makeDoc(
+            'cs-07',
+            'Core Python Syntax',
+            'L2',
+            'Walrus operator (:=) inside loop conditions',
+            'Assignment expressions can reduce repeated calls in loop checks.',
+            ['walrus', ':=', 'assignment expression', 'loop condition'],
+            ['colon equals', 'inline assignment'],
+            `while (line := input().strip()) != "quit":
+    print("got:", line)`
+        ),
+        makeDoc(
+            'cs-08',
+            'Core Python Syntax',
+            'L2',
+            'try / except / else / finally structure',
+            'Handle expected errors while keeping success and cleanup logic explicit.',
+            ['try except', 'error handling', 'finally', 'syntax'],
+            ['exception syntax', 'error flow'],
+            `try:
+    value = int(text)
+except ValueError:
+    value = -1
+else:
+    print("parsed:", value)
+finally:
+    print("done")`
+        ),
+        makeDoc(
+            'cs-09',
+            'Core Python Syntax',
+            'L1',
+            'Assignment and augmented assignment operators',
+            'Use = for assignment and +=, -=, *= for compact state updates.',
+            ['assignment', 'augmented assignment', '+=', 'operators'],
+            ['compound assignment', 'state updates'],
+            `score = 0
+score += 2
+score -= 1
+score *= 3
+print(score)`
+        ),
+        makeDoc(
+            'cs-10',
+            'Core Python Syntax',
+            'L1',
+            'Comparison operators and boolean logic',
+            'Combine comparisons with and/or/not to build precise conditions.',
+            ['comparison', 'boolean logic', 'and or not', 'operators'],
+            ['logical operators', 'bool expressions'],
+            `n = 29
+is_candidate = n > 1 and n % 2 != 0
+is_small_or_even = n < 10 or n % 2 == 0
+print(is_candidate, not is_small_or_even)`
+        ),
+        makeDoc(
+            'cs-11',
+            'Core Python Syntax',
+            'L1',
+            'Single-branch if guard',
+            'Use a one-branch guard when only one condition needs handling.',
+            ['if statement', 'guard', 'control flow', 'branch'],
+            ['single if', 'guard clause'],
+            `n = 1
+if n < 2:
+    print("not prime")`
+        ),
+        makeDoc(
+            'cs-12',
+            'Core Python Syntax',
+            'L2',
+            'Nested if with early return pattern',
+            'Return early inside nested branches to keep later logic simpler.',
+            ['nested if', 'early return', 'branching', 'function flow'],
+            ['if nesting', 'return pattern'],
+            `def classify(n: int) -> str:
+    if n < 2:
+        return "non-prime"
+    if n % 2 == 0:
+        if n == 2:
+            return "prime"
+        return "composite"
+    return "candidate"`
+        ),
+        makeDoc(
+            'cs-13',
+            'Core Python Syntax',
+            'L1',
+            'Conditional expression (x if cond else y)',
+            'Inline conditional expressions are compact for simple value selection.',
+            ['conditional expression', 'ternary', 'if else expression', 'assignment'],
+            ['inline if', 'ternary operator'],
+            `n = 11
+label = "prime" if n in {2, 3, 5, 7, 11} else "candidate"
+print(label)`
+        ),
+        makeDoc(
+            'cs-14',
+            'Core Python Syntax',
+            'L1',
+            'Function parameters: positional, keyword, defaults',
+            'Combine positional and keyword arguments with defaults for flexible APIs.',
+            ['function args', 'default args', 'keyword args', 'parameters'],
+            ['positional args', 'function signature'],
+            `def scan(limit: int, start: int = 2, step: int = 1) -> None:
+    for n in range(start, limit + 1, step):
+        print(n)
+
+scan(8, step=2)`
+        ),
+        makeDoc(
+            'cs-15',
+            'Core Python Syntax',
+            'L2',
+            '*args and **kwargs helper wrapper',
+            'Variadic parameters are useful for lightweight wrappers and adapters.',
+            ['*args', '**kwargs', 'function args', 'wrapper'],
+            ['variadic args', 'kwargs wrapper'],
+            `def run_checks(*nums: int, **opts: int) -> None:
+    step = opts.get("step", 1)
+    for n in nums[::step]:
+        print(n)
+
+run_checks(2, 3, 5, 7, step=2)`
+        ),
+        makeDoc(
+            'cs-16',
+            'Core Python Syntax',
+            'L2',
+            'Local/nonlocal scope in closures',
+            'Use nonlocal to update closure state across repeated calls.',
+            ['nonlocal', 'scope', 'closure', 'nested function'],
+            ['closure state', 'scope rules'],
+            `def make_counter():
+    total = 0
+    def add_one():
+        nonlocal total
+        total += 1
+        return total
+    return add_one`
+        ),
+        makeDoc(
+            'cs-17',
+            'Core Python Syntax',
+            'L1',
+            'Import forms: import, from, and alias as',
+            'Use module imports, symbol imports, and aliasing based on readability needs.',
+            ['import', 'from import', 'as alias', 'module'],
+            ['import syntax', 'module alias'],
+            `import math
+from collections import deque as Deque
+
+root = math.isqrt(97)
+q = Deque([root])
+print(q[0])`
+        ),
+        makeDoc(
+            'cs-18',
+            'Core Python Syntax',
+            'L1',
+            'with open(...) for file read/write',
+            'Context managers ensure files close cleanly even if errors occur.',
+            ['with open', 'file io', 'context manager', 'read write'],
+            ['file handling', 'open as'],
+            `path = "primes.txt"
+with open(path, "w", encoding="utf-8") as fh:
+    fh.write("2,3,5,7\\n")
+with open(path, "r", encoding="utf-8") as fh:
+    data = fh.read().strip()
+print(data)`
+        ),
+        makeDoc(
+            'cs-19',
+            'Core Python Syntax',
+            'L2',
+            'match/case command branching',
+            'Pattern matching is a readable switch-like branch for fixed commands.',
+            ['match case', 'pattern matching', 'branching', 'python 3.10'],
+            ['switch style', 'case statement'],
+            `def action_for(cmd: str) -> str:
+    match cmd:
+        case "next":
+            return "advance candidate"
+        case "reset":
+            return "restart scan"
+        case _:
+            return "unknown"`
+        ),
+        makeDoc(
+            'cs-20',
+            'Core Python Syntax',
+            'L1',
+            'Set comprehension for unique filtered values',
+            'Set comprehensions build deduplicated collections in one expression.',
+            ['set comprehension', 'set', 'comprehension', 'filter'],
+            ['setcomp', 'unique comprehension'],
+            `odd_candidates = {n for n in range(2, 20) if n % 2 == 1}
+print(sorted(odd_candidates)[:5])`
+        ),
+        makeDoc(
+            'cs-21',
+            'Core Python Syntax',
+            'L2',
+            'Generator expression vs list comprehension',
+            'Use generator expressions for streaming counts and list comps for materialized data.',
+            ['generator expression', 'list comprehension', 'memory', 'sum'],
+            ['genexp', 'list vs generator'],
+            `nums = range(2, 20)
+odd_list = [n for n in nums if n % 2 == 1]
+odd_count = sum(1 for n in nums if n % 2 == 1)
+print(len(odd_list), odd_count)`
+        ),
+        makeDoc(
+            'cs-22',
+            'Core Python Syntax',
+            'L2',
+            'yield generator for odd candidate stream',
+            'yield enables lazy candidate generation without building full lists.',
+            ['yield', 'generator', 'lazy sequence', 'candidate stream'],
+            ['yield syntax', 'odd generator'],
+            `def odd_candidates(limit: int):
+    n = 3
+    while n <= limit:
+        yield n
+        n += 2
+
+print(list(odd_candidates(11)))`
+        ),
+        makeDoc(
+            'cs-23',
+            'Core Python Syntax',
+            'L2',
+            '@dataclass for prime run settings',
+            'Dataclasses provide compact classes for structured configuration data.',
+            ['dataclass', 'class syntax', 'config object', 'type hints'],
+            ['@dataclass', 'simple class'],
+            `from dataclasses import dataclass
+
+@dataclass
+class PrimeRun:
+    limit: int
+    step: int = 2`
+        )
+    ];
+
+    const builtinDocs = [
+        makeDoc(
+            'bi-01',
+            'Builtins & Iteration',
+            'L2',
+            'Use any() and all() for boolean aggregation',
+            'any() checks if at least one item is true; all() checks if all are true.',
+            ['any', 'all', 'builtins', 'generator'],
+            ['boolean aggregation', 'all any'],
+            `nums = [3, 5, 8, 11]
+has_even = any(n % 2 == 0 for n in nums)
+all_positive = all(n > 0 for n in nums)`
+        ),
+        makeDoc(
+            'bi-02',
+            'Builtins & Iteration',
+            'L1',
+            'Count with sum() over booleans or generators',
+            'sum(True/False) works because booleans are ints (1/0).',
+            ['sum', 'counting', 'boolean sum', 'generator'],
+            ['count with sum', 'truthy tally'],
+            `nums = [2, 3, 4, 5, 6, 7]
+prime_like = sum(n % 2 == 1 for n in nums)
+print(prime_like)`
+        ),
+        makeDoc(
+            'bi-03',
+            'Builtins & Iteration',
+            'L2',
+            'Use min() / max() with key=',
+            'Select values by derived criteria without sorting everything.',
+            ['min key', 'max key', 'builtins', 'lambda'],
+            ['argmin', 'argmax'],
+            `values = [12, 7, 23, 4]
+closest_to_10 = min(values, key=lambda x: abs(x - 10))
+largest_mod_7 = max(values, key=lambda x: x % 7)`
+        ),
+        makeDoc(
+            'bi-04',
+            'Builtins & Iteration',
+            'L2',
+            'zip() for synchronized iteration',
+            'zip combines iterables element-wise for paired processing.',
+            ['zip', 'paired iteration', 'builtins', 'iteration'],
+            ['parallel loop', 'iterate two lists'],
+            `primes = [2, 3, 5, 7]
+labels = ["a", "b", "c", "d"]
+for label, p in zip(labels, primes):
+    print(label, p)`
+        ),
+        makeDoc(
+            'bi-05',
+            'Builtins & Iteration',
+            'L1',
+            'Use set membership for O(1) average lookups',
+            'Sets are much faster than lists for repeated containment checks.',
+            ['set', 'membership', 'lookup', 'contains'],
+            ['hash set lookup', 'fast in'],
+            `seen = {2, 3, 5, 7, 11}
+if 13 not in seen:
+    seen.add(13)`
+        ),
+        makeDoc(
+            'bi-06',
+            'Builtins & Iteration',
+            'L2',
+            'sorted() with key and reverse',
+            'Sort by custom criteria while keeping original data unchanged.',
+            ['sorted', 'key', 'reverse', 'ordering'],
+            ['custom sort', 'stable sorting'],
+            `vals = [10, 3, 21, 14]
+by_last_digit = sorted(vals, key=lambda x: x % 10)
+descending = sorted(vals, reverse=True)`
+        ),
+        makeDoc(
+            'bi-07',
+            'Builtins & Iteration',
+            'L1',
+            'len() and indexing essentials',
+            'len and index access are foundational for sequence-based algorithms.',
+            ['len', 'indexing', 'list access', 'builtins'],
+            ['length', 'sequence index'],
+            `primes = [2, 3, 5, 7]
+print(len(primes))
+print(primes[0], primes[-1])`
+        ),
+        makeDoc(
+            'bi-08',
+            'Builtins & Iteration',
+            'L1',
+            'append / extend / pop list workflow',
+            'These list methods cover common push, batch-add, and remove patterns.',
+            ['append', 'extend', 'pop', 'list methods'],
+            ['list push pop', 'grow list'],
+            `primes = [2, 3]
+primes.append(5)
+primes.extend([7, 11])
+last = primes.pop()
+print(primes, last)`
+        ),
+        makeDoc(
+            'bi-09',
+            'Builtins & Iteration',
+            'L2',
+            'dict.get and setdefault for counters/cache',
+            'get and setdefault simplify dictionary counting and lazy initialization.',
+            ['dict get', 'setdefault', 'dictionary', 'counter'],
+            ['dict cache', 'safe lookup'],
+            `hits = {}
+for n in [2, 3, 2, 5, 3, 2]:
+    hits[n] = hits.get(n, 0) + 1
+cache = {}
+cache.setdefault(97, True)
+print(hits[2], cache[97])`
+        ),
+        makeDoc(
+            'bi-10',
+            'Builtins & Iteration',
+            'L2',
+            'Set algebra with union, intersection, difference',
+            'Use |, &, and - to compare or merge candidate sets quickly.',
+            ['set algebra', 'union', 'intersection', 'difference'],
+            ['set operators', 'set math'],
+            `a = {2, 3, 5, 7}
+b = {5, 7, 11, 13}
+print(a | b)
+print(a & b)
+print(b - a)`
+        ),
+        makeDoc(
+            'bi-11',
+            'Builtins & Iteration',
+            'L1',
+            'divmod() quotient and remainder pair',
+            'divmod computes quotient and remainder together in one call.',
+            ['divmod', 'quotient remainder', 'builtins', 'numeric'],
+            ['quotient', 'remainder pair'],
+            `n = 97
+q, r = divmod(n, 10)
+print(q, r)`
+        ),
+        makeDoc(
+            'bi-12',
+            'Builtins & Iteration',
+            'L1',
+            'abs() and numeric helper builtins',
+            'abs pairs well with min/max key functions for distance-based choices.',
+            ['abs', 'numeric helpers', 'min key', 'distance'],
+            ['absolute value', 'distance calc'],
+            `delta = abs(97 - 100)
+closest = min([89, 97, 101], key=lambda x: abs(x - 100))
+print(delta, closest)`
+        ),
+        makeDoc(
+            'bi-13',
+            'Builtins & Iteration',
+            'L2',
+            'itertools.islice() to limit generator streams',
+            'islice takes only the first N values without exhausting all input.',
+            ['itertools', 'islice', 'generator', 'limit stream'],
+            ['slice generator', 'take n'],
+            `from itertools import islice
+
+odds = (n for n in range(3, 100, 2))
+print(list(islice(odds, 5)))`
+        ),
+        makeDoc(
+            'bi-14',
+            'Builtins & Iteration',
+            'L2',
+            'collections.deque for queue processing',
+            'deque supports fast append/popleft operations for FIFO workflows.',
+            ['deque', 'queue', 'collections', 'popleft'],
+            ['double ended queue', 'fifo'],
+            `from collections import deque
+
+queue = deque([2, 3, 5])
+queue.append(7)
+first = queue.popleft()
+print(first, list(queue))`
+        )
+    ];
+
+    const timingDocs = [
+        makeDoc(
+            'td-01',
+            'Timing/Debug/Validation',
+            'L1',
+            'Benchmark with time.perf_counter()',
+            'perf_counter gives high-resolution timing suitable for short benchmark windows.',
+            ['perf_counter', 'timing', 'benchmark', 'time module'],
+            ['high resolution timer', 'runtime measurement'],
+            `import time
+
+start = time.perf_counter()
+# run algorithm
+elapsed = time.perf_counter() - start
+print(f"{elapsed:.6f}s")`
+        ),
+        makeDoc(
+            'td-02',
+            'Timing/Debug/Validation',
+            'L2',
+            'Micro-benchmark snippets with timeit',
+            'timeit repeats code many times to smooth out noisy measurements.',
+            ['timeit', 'micro benchmark', 'repeat', 'measurement'],
+            ['benchmark harness', 'timing repeat'],
+            `import timeit
+
+stmt = "sum(i*i for i in range(1000))"
+duration = timeit.timeit(stmt, number=1000)
+print(duration)`
+        ),
+        makeDoc(
+            'td-03',
+            'Timing/Debug/Validation',
+            'L1',
+            'Use assert for fast sanity checks',
+            'Assertions help catch logic bugs early during optimization refactors.',
+            ['assert', 'sanity check', 'validation', 'debugging'],
+            ['invariant check', 'quick validation'],
+            `def nth_candidate(n: int) -> int:
+    value = 2 * n + 1
+    assert value % 2 == 1
+    return value`
+        ),
+        makeDoc(
+            'td-04',
+            'Timing/Debug/Validation',
+            'L1',
+            'Use f-string debug format for quick inspection',
+            'f"{var=}" prints both variable name and value for quick trace logs.',
+            ['f-string', 'debug print', 'logging', 'formatting'],
+            ['formatted debug', 'fstring equals'],
+            `n = 97
+limit = 10_000
+print(f"{n=}, {limit=}")`
+        ),
+        makeDoc(
+            'td-05',
+            'Timing/Debug/Validation',
+            'L3',
+            'Profile hotspots with cProfile',
+            'Use cProfile to identify where optimization effort matters most.',
+            ['cProfile', 'profiling', 'hotspots', 'performance'],
+            ['profile runtime', 'function stats'],
+            `import cProfile
+import pstats
+
+profiler = cProfile.Profile()
+profiler.enable()
+# run algorithm
+profiler.disable()
+pstats.Stats(profiler).sort_stats("cumtime").print_stats(10)`
+        ),
+        makeDoc(
+            'td-06',
+            'Timing/Debug/Validation',
+            'L2',
+            'Simple repeat benchmark helper',
+            'Run a callable multiple times and keep best/avg to compare variants.',
+            ['benchmark helper', 'repeat run', 'best time', 'average'],
+            ['timing utility', 'compare variants'],
+            `import time
+
+def bench(fn, runs=5):
+    times = []
+    for _ in range(runs):
+        start = time.perf_counter()
+        fn()
+        times.append(time.perf_counter() - start)
+    return min(times), sum(times) / len(times)`
+        )
+    ];
+
+    const pythonDocs = [
+        ...primeMathDocs,
+        ...sieveDocs,
+        ...memoryDocs,
+        ...bitwiseDocs,
+        ...loopDocs,
+        ...coreSyntaxDocs,
+        ...builtinDocs,
+        ...timingDocs
+    ];
+
+    const expectedCategoryCounts = {
+        'Prime Math & Bounds': 10,
+        'Sieve Patterns': 10,
+        'Memory & Cache': 8,
+        'Bitwise & Numeric Ops': 6,
+        'Loops & range()': 18,
+        'Core Python Syntax': 23,
+        'Builtins & Iteration': 14,
+        'Timing/Debug/Validation': 6
+    };
+
+    const synonymMap = new Map([
+        ['square', ['sqrt', 'square root', 'root', 'radical', 'isqrt']],
+        ['square root', ['sqrt', 'isqrt', 'math.sqrt', 'math.isqrt']],
+        ['bool list', ['boolean array', 'list init', 'flags']],
+        ['byte array', ['bytearray', 'cache-friendly', 'compact storage']],
+        ['step', ['range step', 'stride', 'skip evens']],
+        ['sq', ['sqrt', 'isqrt', 'square root']],
+        ['sqrt', ['square root', 'isqrt', 'math.sqrt', 'math.isqrt']],
+        ['isqrt', ['integer square root', 'square root']],
+        ['squre', ['square', 'square root', 'sqrt']],
+        ['byterray', ['bytearray', 'byte array']],
+        ['comprehesion', ['comprehension', 'list comprehension', 'dict comprehension']],
+        ['comprehension', ['list comprehension', 'dict comprehension']],
+        ['timing', ['benchmark', 'perf_counter', 'timeit']],
+        ['bit mask', ['bitwise', 'set bit', 'clear bit']],
+        ['for loop', ['for', 'loop', 'iteration']],
+        ['while loop', ['while', 'while true', 'loop condition']],
+        ['if statement', ['if', 'elif', 'else', 'conditional']],
+        ['conditional', ['if statement', 'branching', 'ternary', 'condition']],
+        ['function args', ['parameters', 'arguments', 'default args', 'kwargs']],
+        ['default args', ['function defaults', 'keyword args', 'optional parameters']],
+        ['kwargs', ['**kwargs', 'keyword arguments', 'function args']],
+        ['dictionary', ['dict', 'mapping', 'hash map']],
+        ['dict', ['dictionary', 'mapping', 'key value']],
+        ['set comprehension', ['setcomp', 'comprehension set', 'set builder']],
+        ['generator', ['yield', 'generator expression', 'lazy iteration']],
+        ['yield', ['generator', 'lazy sequence', 'yield keyword']],
+        ['with open', ['file io', 'context manager', 'open file']],
+        ['file io', ['with open', 'read write file', 'filesystem']],
+        ['dataclass', ['class', '@dataclass', 'data class']],
+        ['class', ['dataclass', 'object', 'type definition']],
+        ['snytax', ['syntax', 'python syntax']],
+        ['whlie', ['while', 'while loop']],
+        ['conditonal', ['conditional', 'if statement']],
+        ['snippit', ['snippet', 'code snippet']]
+    ]);
+
+    function normalizeText(text) {
+        return String(text ?? '')
+            .toLowerCase()
+            .normalize('NFKD')
+            .replace(/_/g, ' ')
+            .replace(/[^a-z0-9.\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function splitTokens(text) {
+        const normalized = normalizeText(text);
+        if (!normalized) return [];
+        const parts = normalized.split(/\s+/).filter(Boolean);
+        const tokens = new Set();
+        for (const part of parts) {
+            tokens.add(part);
+            if (part.includes('.')) {
+                for (const piece of part.split('.')) {
+                    if (piece) tokens.add(piece);
+                }
+            }
+        }
+        return [...tokens];
+    }
+
+    function buildReverseSynonyms(map) {
+        const reverse = new Map();
+        for (const [key, values] of map.entries()) {
+            for (const value of values) {
+                const normalizedValue = normalizeText(value);
+                if (!normalizedValue) continue;
+                if (!reverse.has(normalizedValue)) reverse.set(normalizedValue, new Set());
+                reverse.get(normalizedValue).add(normalizeText(key));
+            }
+        }
+        const finalMap = new Map();
+        for (const [key, set] of reverse.entries()) {
+            finalMap.set(key, [...set]);
+        }
+        return finalMap;
+    }
+
+    const reverseSynonymMap = buildReverseSynonyms(synonymMap);
+
+    function buildDocsIndex(docs) {
+        const normalizedDocs = docs.map((doc, idx) => {
+            const normalizedTitle = normalizeText(doc.title);
+            const normalizedSummary = normalizeText(doc.summary);
+            const normalizedContent = normalizeText(doc.content);
+            const normalizedAliases = doc.aliases.map((a) => normalizeText(a));
+            const normalizedTags = doc.tags.map((t) => normalizeText(t));
+
+            const titleTokens = splitTokens(normalizedTitle);
+            const summaryTokens = splitTokens(normalizedSummary);
+            const contentTokens = splitTokens(normalizedContent);
+            const aliasTokens = normalizedAliases.flatMap((a) => splitTokens(a));
+            const tagTokens = normalizedTags.flatMap((t) => splitTokens(t));
+
+            const tagSet = new Set(normalizedTags);
+            const titleTokenSet = new Set(titleTokens);
+            const summaryTokenSet = new Set(summaryTokens);
+            const contentTokenSet = new Set(contentTokens);
+            const aliasTokenSet = new Set(aliasTokens);
+            const tagAliasTokenSet = new Set([...tagTokens, ...aliasTokens]);
+            const nonContentTokenSet = new Set([...titleTokens, ...summaryTokens, ...tagTokens, ...aliasTokens]);
+            const allTokenSet = new Set([...nonContentTokenSet, ...contentTokens]);
+
+            return {
+                ...doc,
+                idx,
+                normalizedTitle,
+                normalizedSummary,
+                normalizedContent,
+                normalizedAliases,
+                normalizedTags,
+                titleTokenSet,
+                summaryTokenSet,
+                contentTokenSet,
+                aliasTokenSet,
+                tagAliasTokenSet,
+                nonContentTokenSet,
+                allTokenSet,
+                tagSet,
+                allTokenArray: [...allTokenSet],
+                nonContentTokenArray: [...nonContentTokenSet],
+                combinedText: `${normalizedTitle} ${normalizedSummary} ${normalizedAliases.join(' ')} ${normalizedTags.join(' ')} ${normalizedContent}`
+            };
+        });
+
+        const invertedIndex = new Map();
+        const termLexicon = new Set();
+
+        function addToIndex(token, idx) {
+            if (!token || token.length < 2) return;
+            termLexicon.add(token);
+            if (!invertedIndex.has(token)) invertedIndex.set(token, new Set());
+            invertedIndex.get(token).add(idx);
+        }
+
+        for (const doc of normalizedDocs) {
+            for (const token of doc.allTokenSet) {
+                addToIndex(token, doc.idx);
+            }
+        }
+
+        return { normalizedDocs, invertedIndex, termLexicon };
+    }
+
+    function validateDocsCorpus() {
+        if (pythonDocs.length !== 95) {
+            console.warn(`pythonDocs length mismatch: expected 95, got ${pythonDocs.length}`);
+        }
+
+        const categoryCounts = {};
+        for (const doc of pythonDocs) {
+            categoryCounts[doc.category] = (categoryCounts[doc.category] || 0) + 1;
+        }
+
+        for (const [category, expected] of Object.entries(expectedCategoryCounts)) {
+            const actual = categoryCounts[category] || 0;
+            if (actual !== expected) {
+                console.warn(`Category count mismatch for "${category}": expected ${expected}, got ${actual}`);
+            }
+        }
+    }
+
+    validateDocsCorpus();
+
+    const docsIndex = buildDocsIndex(pythonDocs);
+    const docsById = new Map(pythonDocs.map((doc) => [doc.id, doc]));
+    const quickStartIds = ['pm-01', 'pm-02', 'sv-01', 'sv-03', 'mc-01', 'bw-01', 'lr-01', 'cs-03'];
+    const categoryOrder = ['All', ...Object.keys(expectedCategoryCounts)];
+    const docsCategoryCounts = pythonDocs.reduce((acc, doc) => {
+        acc[doc.category] = (acc[doc.category] || 0) + 1;
+        return acc;
+    }, {});
+    docsCategoryCounts.All = pythonDocs.length;
+
+    const docsSearchInput = document.getElementById('offline-docs-search');
+    const docsClearButton = document.getElementById('offline-docs-clear');
+    const docsCategoryFilters = document.getElementById('offline-docs-categories');
+    const docsSortSelect = document.getElementById('offline-docs-sort');
+    const docsMeta = document.getElementById('offline-docs-meta');
+    const docsSuggestions = document.getElementById('offline-docs-suggestions');
+    const docsResults = document.getElementById('offline-docs-results');
+
+    const docsState = {
+        mode: 'quickstart',
+        query: '',
+        activeCategory: 'All',
+        sortMode: 'relevance',
+        totalMatches: 0,
+        results: [],
+        activeIndex: -1,
+        highlightTerms: [],
+        suggestions: [],
+        expandedIds: new Set()
+    };
+
+    function expandQuery(tokens, phrases) {
+        const tokenSet = new Set(tokens);
+        const phraseSet = new Set(phrases);
+        const expansionMap = new Map(tokens.map((token) => [token, new Set([token])]));
+        const queue = [...tokens, ...phrases];
+        const seen = new Set(queue.map((q) => normalizeText(q)).filter(Boolean));
+
+        while (queue.length && seen.size < 60) {
+            const currentRaw = queue.shift();
+            const current = normalizeText(currentRaw);
+            if (!current) continue;
+
+            const direct = synonymMap.get(current) || [];
+            const reverse = reverseSynonymMap.get(current) || [];
+            const linked = [...direct, ...reverse];
+
+            for (const link of linked) {
+                const normalizedLink = normalizeText(link);
+                if (!normalizedLink) continue;
+
+                phraseSet.add(normalizedLink);
+                for (const token of splitTokens(normalizedLink)) {
+                    tokenSet.add(token);
+                }
+
+                for (const originalToken of tokens) {
+                    const bucket = expansionMap.get(originalToken);
+                    if (!bucket) continue;
+                    if (bucket.has(current) || originalToken === current) {
+                        bucket.add(normalizedLink);
+                        for (const token of splitTokens(normalizedLink)) {
+                            bucket.add(token);
+                        }
+                    }
+                }
+
+                if (!seen.has(normalizedLink)) {
+                    seen.add(normalizedLink);
+                    queue.push(normalizedLink);
+                }
+            }
+        }
+
+        return {
+            tokens: [...tokenSet],
+            phrases: [...phraseSet],
+            expansionMap
+        };
+    }
+
+    function editDistanceWithin(a, b, maxDistance = 2) {
+        if (a === b) return 0;
+        if (Math.abs(a.length - b.length) > maxDistance) return maxDistance + 1;
+
+        let prev = new Array(b.length + 1);
+        for (let j = 0; j <= b.length; j += 1) prev[j] = j;
+
+        for (let i = 1; i <= a.length; i += 1) {
+            const curr = [i];
+            let rowMin = curr[0];
+            for (let j = 1; j <= b.length; j += 1) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                const value = Math.min(
+                    prev[j] + 1,
+                    curr[j - 1] + 1,
+                    prev[j - 1] + cost
+                );
+                curr.push(value);
+                if (value < rowMin) rowMin = value;
+            }
+            if (rowMin > maxDistance) return maxDistance + 1;
+            prev = curr;
+        }
+
+        return prev[b.length];
+    }
+
+    function findPrefixToken(token, tokenArray) {
+        for (const candidate of tokenArray) {
+            if (candidate.startsWith(token)) {
+                return candidate;
+            }
+        }
+        return '';
+    }
+
+    function findFuzzyToken(token, tokenArray) {
+        let best = '';
+        let bestDistance = 3;
+        for (const candidate of tokenArray) {
+            if (Math.abs(candidate.length - token.length) > 2) continue;
+            const distance = editDistanceWithin(token, candidate, 2);
+            if (distance <= 2 && distance < bestDistance) {
+                bestDistance = distance;
+                best = candidate;
+                if (distance === 1) break;
+            }
+        }
+        return best;
+    }
+
+    function scoreDoc(doc, queryContext) {
+        let score = 0;
+        let hasNonContentMatch = false;
+        let hasContentOnlyMatch = false;
+
+        for (const phrase of queryContext.phrases) {
+            if (!phrase || phrase.length < 2) continue;
+            if (doc.normalizedTitle.includes(phrase)) {
+                score += 120;
+                hasNonContentMatch = true;
+            }
+            if (doc.normalizedAliases.some((alias) => alias.includes(phrase))) {
+                score += 100;
+                hasNonContentMatch = true;
+            }
+            if (doc.tagSet.has(phrase)) {
+                score += 80;
+                hasNonContentMatch = true;
+            }
+        }
+
+        for (const token of queryContext.tokens) {
+            if (!token) continue;
+
+            if (doc.tagSet.has(token)) {
+                score += 80;
+                hasNonContentMatch = true;
+            }
+            if (doc.titleTokenSet.has(token)) {
+                score += 30;
+                hasNonContentMatch = true;
+            }
+            if (doc.tagAliasTokenSet.has(token)) {
+                score += 22;
+                hasNonContentMatch = true;
+            }
+            if (doc.summaryTokenSet.has(token)) {
+                score += 14;
+                hasNonContentMatch = true;
+            }
+            if (doc.contentTokenSet.has(token)) {
+                score += 8;
+                hasContentOnlyMatch = true;
+            }
+
+            if (token.length >= 2) {
+                const prefixed = findPrefixToken(token, doc.allTokenArray);
+                if (prefixed) {
+                    score += 10;
+                    if (doc.nonContentTokenSet.has(prefixed)) hasNonContentMatch = true;
+                    else hasContentOnlyMatch = true;
+                }
+            }
+
+            if (token.length >= 3) {
+                const fuzzy = findFuzzyToken(token, doc.allTokenArray);
+                if (fuzzy) {
+                    score += 6;
+                    if (doc.nonContentTokenSet.has(fuzzy)) hasNonContentMatch = true;
+                    else hasContentOnlyMatch = true;
+                }
+            }
+        }
+
+        if (queryContext.originalPhrase && queryContext.originalPhrase.includes(' ') && doc.combinedText.includes(queryContext.originalPhrase)) {
+            score += 25;
+        }
+
+        if (queryContext.originalTokens.length) {
+            let matchedOriginalCount = 0;
+            for (const originalToken of queryContext.originalTokens) {
+                const equivalents = queryContext.expansionMap.get(originalToken) || new Set([originalToken]);
+                let found = false;
+                for (const term of equivalents) {
+                    if (!term) continue;
+                    if (term.includes(' ')) {
+                        if (doc.combinedText.includes(term)) {
+                            found = true;
+                            break;
+                        }
+                        continue;
+                    }
+                    if (doc.allTokenSet.has(term)) {
+                        found = true;
+                        break;
+                    }
+                    if (term.length >= 2 && findPrefixToken(term, doc.allTokenArray)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) matchedOriginalCount += 1;
+            }
+            if (matchedOriginalCount === queryContext.originalTokens.length) {
+                score += 35;
+            }
+        }
+
+        if (score > 0 && !hasNonContentMatch && hasContentOnlyMatch) {
+            score -= 20;
+        }
+
+        return score;
+    }
+
+    function getDocsForCategory(category) {
+        if (!category || category === 'All') return docsIndex.normalizedDocs;
+        return docsIndex.normalizedDocs.filter((doc) => doc.category === category);
+    }
+
+    function sortScoredResults(scoredResults, sortMode) {
+        if (sortMode === 'title') {
+            scoredResults.sort((a, b) => a.doc.title.localeCompare(b.doc.title) || b.score - a.score);
+            return;
+        }
+        scoredResults.sort((a, b) => b.score - a.score || a.doc.title.localeCompare(b.doc.title));
+    }
+
+    function searchDocs(rawQuery, options = {}) {
+        const category = options.category || 'All';
+        const sortMode = options.sortMode || 'relevance';
+        const normalizedQuery = normalizeText(rawQuery);
+        if (!normalizedQuery) {
+            return {
+                mode: 'quickstart',
+                query: '',
+                totalMatches: 0,
+                results: [],
+                highlightTerms: [],
+                suggestions: [],
+                category,
+                sortMode
+            };
+        }
+
+        const scopedDocs = getDocsForCategory(category);
+
+        const originalTokens = splitTokens(normalizedQuery);
+        const phraseSet = new Set();
+        if (originalTokens.length > 1) {
+            phraseSet.add(normalizedQuery);
+            for (let i = 0; i < originalTokens.length - 1; i += 1) {
+                phraseSet.add(`${originalTokens[i]} ${originalTokens[i + 1]}`);
+            }
+        }
+
+        const expanded = expandQuery(originalTokens, [...phraseSet]);
+        const candidateIdxSet = new Set();
+
+        for (const token of expanded.tokens) {
+            const posting = docsIndex.invertedIndex.get(token);
+            if (!posting) continue;
+            for (const idx of posting) candidateIdxSet.add(idx);
+        }
+
+        const candidates = candidateIdxSet.size
+            ? [...candidateIdxSet]
+                .map((idx) => docsIndex.normalizedDocs[idx])
+                .filter((doc) => category === 'All' || doc.category === category)
+            : scopedDocs;
+
+        const queryContext = {
+            originalTokens,
+            originalPhrase: normalizedQuery,
+            tokens: [...new Set(expanded.tokens)],
+            phrases: [...new Set(expanded.phrases)],
+            expansionMap: expanded.expansionMap
+        };
+
+        const scored = [];
+        for (const doc of candidates) {
+            const score = scoreDoc(doc, queryContext);
+            if (score > 0) scored.push({ doc, score });
+        }
+
+        sortScoredResults(scored, sortMode);
+
+        const topResults = scored.slice(0, 20);
+        const highlightTerms = [...new Set([...originalTokens, ...expanded.tokens])]
+            .filter((term) => term.length >= 2)
+            .slice(0, 24);
+
+        const suggestions = scored.length ? [] : collectDidYouMean(queryContext.originalTokens);
+
+        return {
+            mode: topResults.length ? 'results' : 'no-results',
+            query: rawQuery,
+            totalMatches: scored.length,
+            results: topResults,
+            highlightTerms,
+            suggestions,
+            category,
+            sortMode
+        };
+    }
+
+    function collectDidYouMean(originalTokens) {
+        const suggestions = [];
+        const used = new Set();
+
+        for (const token of originalTokens) {
+            if (token.length < 3) continue;
+            if (docsIndex.termLexicon.has(token)) continue;
+
+            const localCandidates = [];
+            for (const term of docsIndex.termLexicon) {
+                if (Math.abs(term.length - token.length) > 2) continue;
+                if (token[0] && term[0] && token[0] !== term[0]) continue;
+                const distance = editDistanceWithin(token, term, 2);
+                if (distance <= 2) {
+                    localCandidates.push({ term, distance });
+                }
+            }
+
+            localCandidates
+                .sort((a, b) => a.distance - b.distance || a.term.length - b.term.length || a.term.localeCompare(b.term))
+                .slice(0, 3)
+                .forEach((candidate) => {
+                    if (!used.has(candidate.term)) {
+                        used.add(candidate.term);
+                        suggestions.push(candidate.term);
+                    }
+                });
+        }
+
+        return suggestions.slice(0, 6);
+    }
+
+    function escapeHtml(text) {
+        return String(text)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;');
+    }
+
+    function escapeRegExp(text) {
+        return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightText(text, terms) {
+        const escaped = escapeHtml(text);
+        if (!terms || !terms.length) return escaped;
+
+        const normalizedTerms = [...new Set(terms.map((term) => normalizeText(term)).filter((term) => term.length >= 2))]
+            .sort((a, b) => b.length - a.length);
+
+        if (!normalizedTerms.length) return escaped;
+        const pattern = normalizedTerms.map((term) => escapeRegExp(escapeHtml(term))).join('|');
+        if (!pattern) return escaped;
+
+        return escaped.replace(new RegExp(`(${pattern})`, 'gi'), '<mark class="docs-mark">$1</mark>');
+    }
+
+    function truncateCode(content, maxLines = 10) {
+        const lines = content.split('\n');
+        if (lines.length <= maxLines) {
+            return { text: content, truncated: false };
+        }
+        return { text: lines.slice(0, maxLines).join('\n'), truncated: true };
+    }
+
+    function renderDocCard(result, index, highlightTerms) {
+        const { doc, score } = result;
+        const activeClass = index === docsState.activeIndex ? ' active' : '';
+        const expanded = docsState.expandedIds.has(doc.id);
+        const preview = expanded ? { text: doc.content, truncated: false } : truncateCode(doc.content, 10);
+        const codeClass = !expanded && preview.truncated ? 'docs-code collapsed' : 'docs-code';
+        const expandLabel = expanded ? 'Collapse' : 'Expand';
+
+        return `
+            <article class="docs-card${activeClass}" data-result-index="${index}" data-doc-id="${escapeHtml(doc.id)}">
+                <div class="docs-card-top">
+                    <h3 class="docs-title">${highlightText(doc.title, highlightTerms)}</h3>
+                    <div class="docs-badges">
+                        <span class="docs-badge">${escapeHtml(doc.category)}</span>
+                        <span class="docs-badge docs-level">${escapeHtml(doc.level)}</span>
+                        ${Number.isFinite(score) ? `<span class="docs-badge docs-score">Score ${Math.round(score)}</span>` : ''}
+                    </div>
+                </div>
+                <p class="docs-summary">${highlightText(doc.summary, highlightTerms)}</p>
+                <div class="docs-tag-row">
+                    ${doc.tags.map((tag) => `<span class="docs-tag">${highlightText(tag, highlightTerms)}</span>`).join('')}
+                </div>
+                <pre class="${codeClass}"><code>${escapeHtml(preview.text)}</code></pre>
+                <div class="docs-card-actions">
+                    ${!expanded && preview.truncated ? '<span class="docs-truncate-note">Preview shown. Press Enter to expand.</span>' : '<span></span>'}
+                    <div class="docs-action-group">
+                        <button class="docs-copy-btn" type="button" data-action="copy-code" data-doc-id="${escapeHtml(doc.id)}">Copy Code</button>
+                        <button class="docs-expand-btn" type="button" data-action="toggle-expand" data-doc-id="${escapeHtml(doc.id)}">${expandLabel}</button>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+    function renderNoResults(query, suggestions) {
+        if (!docsResults || !docsSuggestions) return;
+
+        docsResults.innerHTML = `
+            <div class="docs-empty">
+                <h4 class="docs-empty-title">No results for "${escapeHtml(query)}"</h4>
+                <p>Try a shorter keyword, a synonym, or a spelling variation.</p>
+            </div>
+        `;
+
+        if (suggestions.length) {
+            docsSuggestions.innerHTML = suggestions
+                .map((suggestion) => `<button type="button" class="docs-suggestion-btn" data-suggestion="${escapeHtml(suggestion)}">${escapeHtml(suggestion)}</button>`)
+                .join('');
+        } else {
+            docsSuggestions.innerHTML = '';
+        }
+    }
+
+    function getQuickStartResults(category = 'All', sortMode = 'relevance') {
+        if (category === 'All') {
+            const baseResults = quickStartIds
+                .map((id) => docsById.get(id))
+                .filter(Boolean)
+                .map((doc) => ({ doc, score: null }));
+
+            if (sortMode === 'title') {
+                baseResults.sort((a, b) => a.doc.title.localeCompare(b.doc.title));
+            }
+            return baseResults;
+        }
+
+        const categoryDocs = pythonDocs
+            .filter((doc) => doc.category === category)
+            .sort((a, b) => {
+                if (sortMode === 'title') return a.title.localeCompare(b.title);
+                return a.level.localeCompare(b.level) || a.title.localeCompare(b.title);
+            })
+            .slice(0, 8);
+
+        return categoryDocs.map((doc) => ({ doc, score: null }));
+    }
+
+    function renderCategoryFilters() {
+        if (!docsCategoryFilters) return;
+        docsCategoryFilters.innerHTML = categoryOrder
+            .map((category) => {
+                const count = docsCategoryCounts[category] || 0;
+                const isActive = docsState.activeCategory === category ? ' active' : '';
+                return `<button type="button" class="docs-category-btn${isActive}" data-category="${escapeHtml(category)}">${escapeHtml(category)} (${count})</button>`;
+            })
+            .join('');
+    }
+
+    function getScopeMetaSuffix() {
+        const scope = docsState.activeCategory === 'All' ? 'All Categories' : docsState.activeCategory;
+        const sortLabel = docsState.sortMode === 'title' ? 'Title Sort' : 'Relevance Sort';
+        return `${scope} • ${sortLabel}`;
+    }
+
+    function renderQuickStart() {
+        docsState.mode = 'quickstart';
+        docsState.query = '';
+        docsState.results = getQuickStartResults(docsState.activeCategory, docsState.sortMode);
+        docsState.totalMatches = docsState.results.length;
+        docsState.activeIndex = docsState.results.length ? 0 : -1;
+        docsState.highlightTerms = [];
+        docsState.suggestions = [];
+        renderDocsState(docsState);
+    }
+
+    function updateClearButtonState() {
+        if (!docsClearButton || !docsSearchInput) return;
+        if (docsSearchInput.value.trim()) {
+            docsClearButton.classList.remove('hidden');
+        } else {
+            docsClearButton.classList.add('hidden');
+        }
+    }
+
+    async function copyDocCode(docId, button) {
+        const doc = docsById.get(docId);
+        if (!doc) return;
+        const text = doc.content;
+
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            if (button) {
+                const original = button.textContent;
+                button.textContent = 'Copied';
+                setTimeout(() => {
+                    button.textContent = original;
+                }, 1000);
+            }
+        } catch (error) {
+            console.warn('Failed to copy snippet:', error);
+        }
+    }
+
+    function renderDocsState(state) {
+        if (!docsResults || !docsMeta || !docsSuggestions) return;
+
+        renderCategoryFilters();
+        docsSuggestions.innerHTML = '';
+
+        if (state.mode === 'quickstart') {
+            const scopeLabel = state.activeCategory === 'All' ? 'Quick Start' : `${state.activeCategory} • Quick Start`;
+            docsMeta.textContent = `${scopeLabel} • ${state.results.length} snippets • ${getScopeMetaSuffix()}`;
+            docsResults.innerHTML = state.results
+                .map((result, index) => renderDocCard(result, index, []))
+                .join('');
+        } else if (state.mode === 'no-results') {
+            docsMeta.textContent = `0 matches • showing top 0 • ${getScopeMetaSuffix()}`;
+            renderNoResults(state.query, state.suggestions);
+        } else {
+            docsMeta.textContent = `${state.totalMatches} matches • showing top ${state.results.length} • ${getScopeMetaSuffix()}`;
+            docsResults.innerHTML = state.results
+                .map((result, index) => renderDocCard(result, index, state.highlightTerms))
+                .join('');
+        }
+
+        updateClearButtonState();
+    }
+
+    function setActiveIndex(nextIndex) {
+        if (!docsState.results.length) {
+            docsState.activeIndex = -1;
+            return;
+        }
+        const length = docsState.results.length;
+        const wrapped = ((nextIndex % length) + length) % length;
+        docsState.activeIndex = wrapped;
+        renderDocsState(docsState);
+
+        const activeCard = docsResults?.querySelector(`.docs-card[data-result-index="${wrapped}"]`);
+        if (activeCard) activeCard.scrollIntoView({ block: 'nearest' });
+    }
+
+    function toggleExpandedByActiveIndex() {
+        const activeResult = docsState.results[docsState.activeIndex];
+        if (!activeResult) return;
+        const { id } = activeResult.doc;
+        if (docsState.expandedIds.has(id)) docsState.expandedIds.delete(id);
+        else docsState.expandedIds.add(id);
+        renderDocsState(docsState);
+    }
+
+    function applySearchFromInput() {
+        if (!docsSearchInput) return;
+        const rawQuery = docsSearchInput.value;
+        const next = searchDocs(rawQuery, {
+            category: docsState.activeCategory,
+            sortMode: docsState.sortMode
+        });
+
+        docsState.query = rawQuery;
+        docsState.expandedIds.clear();
+
+        if (next.mode === 'quickstart') {
+            renderQuickStart();
+            return;
+        }
+
+        docsState.mode = next.mode;
+        docsState.activeCategory = next.category;
+        docsState.sortMode = next.sortMode;
+        docsState.totalMatches = next.totalMatches;
+        docsState.results = next.results;
+        docsState.activeIndex = next.results.length ? 0 : -1;
+        docsState.highlightTerms = next.highlightTerms;
+        docsState.suggestions = next.suggestions;
+        renderDocsState(docsState);
+    }
+
+    function debounce(fn, wait) {
+        let timer = null;
+        return function debounced(...args) {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), wait);
+        };
+    }
+
+    const debouncedSearch = debounce(applySearchFromInput, 80);
+
+    function clearSearchAndRender() {
+        if (!docsSearchInput) return;
+        docsSearchInput.value = '';
+        docsState.expandedIds.clear();
+        renderQuickStart();
+        docsSearchInput.focus();
+    }
+
+    if (docsSearchInput && docsResults && docsMeta && docsSuggestions && docsClearButton && docsCategoryFilters && docsSortSelect) {
+        docsSortSelect.value = docsState.sortMode;
+        docsSearchInput.addEventListener('input', debouncedSearch);
+
+        docsSearchInput.addEventListener('keydown', (event) => {
+            if (!docsState.results.length && event.key !== 'Escape') return;
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setActiveIndex(docsState.activeIndex + 1);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setActiveIndex(docsState.activeIndex - 1);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                toggleExpandedByActiveIndex();
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                clearSearchAndRender();
+            }
+        });
+
+        docsClearButton.addEventListener('click', clearSearchAndRender);
+
+        docsCategoryFilters.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-category]');
+            if (!button) return;
+            const category = button.getAttribute('data-category');
+            if (!category || category === docsState.activeCategory) return;
+            docsState.activeCategory = category;
+            docsState.expandedIds.clear();
+            applySearchFromInput();
+        });
+
+        docsSortSelect.addEventListener('change', () => {
+            const nextSort = docsSortSelect.value === 'title' ? 'title' : 'relevance';
+            if (nextSort === docsState.sortMode) return;
+            docsState.sortMode = nextSort;
+            docsState.expandedIds.clear();
+            applySearchFromInput();
+        });
+
+        docsSuggestions.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-suggestion]');
+            if (!button || !docsSearchInput) return;
+            const suggestion = button.getAttribute('data-suggestion');
+            if (!suggestion) return;
+            docsSearchInput.value = suggestion;
+            docsSearchInput.focus();
+            applySearchFromInput();
+        });
+
+        docsResults.addEventListener('click', (event) => {
+            const copyButton = event.target.closest('[data-action="copy-code"]');
+            if (copyButton) {
+                const docId = copyButton.getAttribute('data-doc-id');
+                if (!docId) return;
+                copyDocCode(docId, copyButton);
+                return;
+            }
+
+            const expandButton = event.target.closest('[data-action="toggle-expand"]');
+            if (expandButton) {
+                const docId = expandButton.getAttribute('data-doc-id');
+                if (!docId) return;
+                if (docsState.expandedIds.has(docId)) docsState.expandedIds.delete(docId);
+                else docsState.expandedIds.add(docId);
+                renderDocsState(docsState);
+                return;
+            }
+
+            const card = event.target.closest('.docs-card');
+            if (!card) return;
+            const index = Number(card.getAttribute('data-result-index'));
+            if (Number.isInteger(index)) {
+                docsState.activeIndex = index;
+                renderDocsState(docsState);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== '/') return;
+            const target = event.target;
+            const isInputLike = target instanceof HTMLElement
+                && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+            if (isInputLike) return;
+            event.preventDefault();
+            docsSearchInput.focus();
+            docsSearchInput.select();
+        });
+
+        renderQuickStart();
+    }
+</script>
+<script src="../scripts/site.js" defer></script>
+
+
+</body>
+</html>
