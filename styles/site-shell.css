@@ -3,6 +3,9 @@
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-semibold-latin.woff2') format('woff2');font-style:normal;font-weight:600 700;font-display:swap}
 :root{color-scheme:dark;--bg:#000;--text:#f2f2ee;--muted:#a1a1a1;--line:#303030;--accent:#ff6b2c;--mono:'IBM Plex Mono',monospace;--display:'Jersey 10',monospace;--max-width:1320px}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
+/* Hide page and nested scrollbars without disabling scrolling. */
+*{scrollbar-width:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:16px;line-height:1.6}
 *,*::before,*::after{box-sizing:border-box}
 ::selection{background:var(--accent);color:#000}
