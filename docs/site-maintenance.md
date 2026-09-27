@@ -32,7 +32,7 @@ Review the generated `dist/` output only when debugging the build. It is not sou
 ## Visual language
 
 - Black `#000000` backgrounds, off-white `#F2F2EE` text and ASCII, gray `#A1A1A1` secondary text, `#303030` dividers, and signal orange `#FF6B2C` actions.
-- `styles/site-shell.css` owns tokens, local font faces, navigation, footer and responsive menu. `styles/main.css` styles the homepage, About and errors. The workshop guides keep their original embedded CSS, with palette overrides in `styles/workshop-theme.css`.
+- `styles/site-shell.css` owns tokens, local font faces, navigation, footer and responsive menu. `styles/main.css` styles the homepage, About and errors. `styles/mobile.css` is the phone and tablet layer for the home and about pages. The workshop guides keep their original embedded CSS, with palette overrides in `styles/workshop-theme.css`.
 - Jersey 10 is the pixel display face; IBM Plex Mono is for body text and controls. Both are self-hosted in `styles/fonts/` with their OFL licenses.
 - `images/ascii/beaver-crt.txt` is the editable 156 × 91 text artwork, currently restored to the supplied export including its original keyboard. An unchanged backup remains in `images/ascii/beaver-crt-original.txt`, alongside the earlier PNG reference.
 - Use flat surfaces, square controls, clear focus outlines and simple separators. Keep long instructional text readable; reserve the pixel font for headings.
@@ -65,4 +65,37 @@ Web navigation timing does not expose a separate hard-refresh type. Browser-menu
 
 Workshop visual changes belong in `styles/workshop-theme.css`, imported through each document’s existing CSS block. Preserve the original workshop HTML, headings, navigation, code samples, tool markup and scripts during styling passes. These pages intentionally retain their original typography, scale and layout rather than the homepage’s pixel-heading treatment. The override adjusts the dark palette, focus colors and narrow-screen containment only.
 
-The About title uses the lower-density `images/ascii/club-logo-small.txt` export (20×14 visible cells after trimming the empty border), rendered as orange text beside the heading. The original `@` background cells become spaces. Its width scales from 56px to 90px; the title scales down on phones so the logo stays to its right. The homepage `.crt-beaver` glyphs use the same accent orange, while `.crt-power` stays red.
+The About title uses the lower-density `images/ascii/club-logo-small.txt` export (20×14 visible cells after trimming the empty border), rendered as orange text beside the heading. The original `@` background cells become spaces. Its width scales from 56px to 90px; the title scales down on phones so the logo stays to its right. On phones the logo steps above the title instead of beside it, so the headline keeps a readable line length. The homepage `.crt-beaver` glyphs use the same accent orange, while `.crt-power` stays red.
+
+## Mobile experience
+
+`styles/mobile.css` holds every phone and tablet override for the home and about pages. It is linked as a normal stylesheet after `styles/main.css` — keep that order. Do not convert it to an `@import`: CSS ignores `@import` that appears after other rules, so the mobile layer would silently lose the cascade to the desktop rules it is overriding.
+
+Every rule in that file is wrapped in `@media (max-width: 860px)`, which is the same breakpoint `styles/site-shell.css` uses for the mobile menu. Above that width the desktop rendering is untouched, and `tests/mobile-shell.test.mjs` guards this. The home hero stacks as artwork, then club identity, then invitation and action; that order comes from CSS `order` on the existing markup. Do not reorder the hero blocks in the DOM or in `scripts/site.js` — the desktop hero is a three-column grid, so moving a block in the markup changes which column it occupies.
+
+The workshop pages keep desktop layouts and are deliberately not offered in the mobile menu (`.site-header .nav-dropdown` is hidden below the breakpoint). They remain published and reachable by direct URL. Any change that makes those pages phone-friendly should revisit that decision.
+
+### Homepage hero on a phone
+
+In portrait the hero is exactly one screen tall, with its contents centred, so the club story and its photo begin at the fold: a first-time visitor sees the whole welcome and no part of the photo. Landscape is deliberately excluded, because there is not enough height there for a full-screen hero; it keeps a natural height and scrolls.
+
+The artwork is sized from the screen height, not the text column, which is what leaves the hero its breathing room. Two details are load-bearing and easy to break:
+
+- `.hero-art` needs `min-width: 0` and `min-height: 0`. It is a flex item, and the CRT artwork inside it is intentionally drawn wider than its box, so without them it sizes to that inflated content instead of the box the CSS asks for.
+- `--hero-gap` owns the spacing between the stacked hero blocks. Do not reintroduce `margin-top` on `.hero-identity` or `.hero-invite`: `main.css` still carries margins for them at its 480px breakpoint, and the mobile layer resets them for that reason.
+
+To check the fold and the vertical rhythm at several device sizes:
+
+```bash
+node scripts/dev-server.mjs &
+node scripts/hero-check.mjs
+```
+
+To check the mobile layer in a real browser:
+
+```bash
+node scripts/dev-server.mjs &
+node scripts/mobile-check.mjs
+```
+
+`scripts/mobile-check.mjs` needs Playwright; it is not a dependency of this site, so set `PLAYWRIGHT_PATH` to any Playwright install if the default does not resolve. It writes screenshots to `output/mobile-audit/`.

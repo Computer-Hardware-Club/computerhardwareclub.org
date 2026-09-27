@@ -195,3 +195,56 @@ Remaining limits: existing Tailwind/Lucide and Google Font dependencies are reta
 Added the supplied ASCII beaver to the right of “About the clerb.” During review the user provided a new lower-density `-small` export; this supersedes the initial dense version. The active logo comes from `images/ascii/club-logo-small.txt`, with its empty `@` border trimmed to a 20×14 visible grid. Its text uses the site orange, and its 56–90px width stays beside a responsively sized title. The homepage CRT beaver also uses accent orange; the red power cells are unchanged.
 
 Verified the small logo at 390px without overflow and measured both orange logos as rgb(255,107,44), with the CRT power light rgb(255,72,72). All 51 tests and the build passed. Changed the About markup, logo source assets, `styles/main.css`, `styles/intro.css`, and homepage stylesheet version. Final result: passed.
+
+## Mobile experience for the home and about pages
+
+final result: passed
+
+The user reported that the site looked good on desktop but not on a phone, and asked for a proper mobile version of the home and about pages only. Workshop pages stay desktop-only and are no longer offered in the mobile navigation.
+
+**What was actually wrong.** An audit at 320–860px found the narrow-screen CSS was a set of squeezed desktop grids rather than a mobile design:
+
+- [P1] Between 481 and 860px the hero staged the 550px ASCII CRT above two text columns separated by 260–547px of dead space, stranding the primary action at the bottom right and visually detaching it from the copy it belongs to.
+- [P1] On phones the live “Join on Discord” action rendered *before* the club’s own name, because the stacking order put the invitation above the identity block.
+- [P2] Reading copy fell to 13px and officer role labels to 9px, both below a comfortable phone size.
+- [P2] The two-column officer grid gave each portrait a 163px cell, breaking names mid-word (“Garison / Hofstede”) and shrinking faces below legibility.
+- [P2] Footer links were 15px tall and the brand link 24px — well under a reliable tap target.
+
+**Approach.** One additive stylesheet, `styles/mobile.css`, loaded as a normal last-position `<link>` on the two pages and entirely wrapped in `@media (max-width: 860px)`. Desktop rules were not edited. The stylesheet stacks the hero into one column ordered artwork → identity → invitation, composes the officer grid as one full-width card per person, raises body copy to 16px and role labels to 11px, gives footer links 44px rows and primary actions 56px, and turns the header into a sticky bar with a bordered menu panel. `viewport-fit=cover` plus safe-area padding keeps the bar clear of a notch.
+
+The stacked hero order is expressed with CSS `order` on the existing markup. An earlier iteration reordered the hero blocks in `scripts/site.js`; that was removed because the desktop hero is a three-column grid, so moving a block in the DOM changes which column it lands in and moved the desktop composition. `scripts/site.js` now only marks the current page with `aria-current` and returns focus to the menu button when Escape closes the menu.
+
+**Verification.** `node scripts/mobile-check.mjs` (Playwright, ~40s) checks both pages at 320, 390, 430, 768 and 860px: no horizontal page scroll, no element escaping the viewport, no control under 32px, the hero stacked in the intended order, and no console errors. It also confirms the mobile menu opens with a usable About link, and that the first-visit CRT intro still runs `waiting → power → loading → scanning → ready` with all 750 beaver glyphs settled, on both a phone and desktop viewport.
+
+The desktop rendering was confirmed unchanged by sampling every element’s geometry, colour, background and font size at 1280, 1440 and 1600px against a clean checkout of `dd659eb` in a separate worktree: 801 elements at every width with zero added, zero removed and identical values.
+
+Evidence is in `output/mobile-audit/`: `index_html-{320,390,430,768,860}.png`, `about_index_html-{320,390,430,768,860}.png`, `index_html-menu-open.png`, `index_html-desktop-{1280,1440}.png`, and `intro-{mobile,desktop}-{waiting,power,loading,scanning,ready}.png`.
+
+`tests/mobile-shell.test.mjs` locks the arrangement down without a browser: the stylesheet must load after the desktop stylesheets (an `@import` would be ignored after other rules and lose the cascade), must stay scoped to narrow widths, must carry the hero orders and officer column, and the shared script must not restructure the hero. All 69 tests pass; `npm run build` publishes `dist/styles/mobile.css`. The four pre-existing failures in `crt-art` and `workshop-preservation` were confirmed present on `dd659eb` before any change and are unrelated.
+
+Remaining limits: the mobile layer targets the home and about pages only. Workshop pages keep their desktop layouts and are withheld from the mobile menu; they remain published and reachable by direct link at their existing URLs. Verification used Chromium at emulated device metrics, not physical iOS or Android hardware.
+
+### Hero vertical rhythm and the fold
+
+The user reviewed the mobile homepage and asked for the welcome section to be vertically centred with more room to breathe, and for the club photo below it to be off screen when the page first opens.
+
+Measured before changing anything: the hero was a fixed 689px block on a 390×844 screen, leaving 90px of dead space under the button and putting the club photo inside the first screen.
+
+Changes in `styles/mobile.css` only:
+
+- The hero is now a full screen in portrait (`height: calc(100svh - var(--header-height))`) with its contents centred, so the `club-story` section begins exactly at the fold and the photo stays off screen. Landscape is excluded: there is no room for a full-screen hero there, so it keeps its natural height and the page scrolls.
+- The artwork is sized from the screen height (`clamp(240px, 40dvh, 400px)`, squared by `aspect-ratio`) instead of the text column. At 390×844 the CRT drops from 376px to 338px tall, which is the source of the added breathing room, and the stack now clears the screen instead of overflowing it.
+- One `--hero-gap` owns the spacing between the heading, artwork, identity block and invitation, replacing a mixture of margins.
+
+Four interacting CSS faults surfaced while tuning, each of which had to be fixed for the layout to respond at all:
+
+1. `.hero-art` was a flex item that sized to its content, and the CRT artwork inside it is deliberately drawn wider than its box. It therefore took an inflated height instead of the box the CSS asked for. `min-width: 0` and `min-height: 0` are required.
+2. The artwork's width was still resolving against the pre-shrink column, so the height budget never applied. Sizing it from `dvh` directly removes the circularity.
+3. Legacy rules in `main.css` at its 480px breakpoint added `margin-top` to `.hero-identity` and `.hero-invite`, double-spacing the stack. The mobile layer now resets those margins, because the stage owns the spacing.
+4. `100dvh` and `100svh` resolve identically in a desktop browser with no dynamic toolbar, so the fold was verified with `svh` (smallest viewport, i.e. with browser chrome showing): the photo is below the fold whether or not the address bar is hidden.
+
+Verified with `node scripts/hero-check.mjs` across 360×640, 375×667, 390×844, 430×932, 768×1024 and 740×360 landscape: the hero fits one screen, the block inside it is balanced (13–46px above, 45–78px below on phones), every club photo is fully below the fold, and no part of the next section is meaningfully visible. Evidence: `output/mobile-audit/hero/`.
+
+Note on the artwork size: on a 375×667 or 360×640 phone the height-driven artwork is genuinely small (about 220–230px across) because the heading, copy and action need that room. That is the trade-off that makes the fold clean on a short screen; on a 390×844 or larger screen it stays comfortably large. Say the word if you would rather keep the artwork bigger and let the photo sit just below the fold with a little scroll.
+
+`tests/mobile-shell.test.mjs` covers the mobile layer without a browser. All 59 passing tests and the build are unchanged; the four pre-existing `crt-art` and `workshop-preservation` failures remain unrelated.
