@@ -47,6 +47,33 @@ function createVisit(options = {}) {
     };
     const loader = { textContent: '' };
     const art = {};
+    const animations = [];
+    const heroArt = {
+        rects: options.heroRects ?? [],
+        rectIndex: 0,
+        getBoundingClientRect() {
+            const rect = this.rects[Math.min(this.rectIndex, this.rects.length - 1)] ?? { left: 0, top: 0 };
+            this.rectIndex += 1;
+            return rect;
+        },
+        animate(keyframes, timing) {
+            animations.push({ keyframes, timing });
+            return { finished: Promise.resolve() };
+        }
+    };
+    const homeHero = {
+        boxes: options.heroBoxes ?? [],
+        boxIndex: 0,
+        getBoundingClientRect() {
+            const height = this.boxes[Math.min(this.boxIndex, this.boxes.length - 1)] ?? 0;
+            this.boxIndex += 1;
+            return { left: 0, top: 0, width: 0, height };
+        },
+        animate(keyframes, timing) {
+            animations.push({ target: 'hero', keyframes, timing });
+            return { finished: Promise.resolve() };
+        }
+    };
     const fonts = {
         get ready() {
             fontWaits += 1;
@@ -74,6 +101,8 @@ function createVisit(options = {}) {
         querySelector(selector) {
             if (selector === '.crt-ascii') return options.missingArt ? null : art;
             if (selector === '.crt-loader') return options.missingLoader ? null : loader;
+            if (selector === '.hero-art') return options.missingHeroArt ? null : heroArt;
+            if (selector === '.home-hero') return options.missingHero ? null : homeHero;
             throw new Error(`Unexpected selector: ${selector}`);
         }
     });
@@ -91,7 +120,7 @@ function createVisit(options = {}) {
     runInNewContext(source, { window, document, sessionStorage, location: { hash: options.hash ?? '' }, Date: { now: () => options.now ?? 10000 } });
 
     return {
-        root, loader, window, document, reducedMotion, storage, timers,
+        root, loader, window, document, reducedMotion, storage, timers, animations,
         get fontWaits() { return fontWaits; },
         async advance(milliseconds = 0) {
             // Font readiness resumes on a microtask before the browser's next timer.
@@ -149,6 +178,45 @@ test('first visit boots the CRT in order, fills the loader, and fades in the pag
     await visit.advance(600);
     visit.assertOpen();
     visit.assertClean();
+});
+
+test('reveal glides the viewport-centered artwork into its flow position', async () => {
+    const visit = createVisit({
+        heroRects: [{ left: 132, top: 428 }, { left: 300, top: 196 }],
+        heroBoxes: [824, 668]
+    });
+    await visit.advance(7199);
+    assert.equal(visit.root.classList.contains('intro-revealing'), false, 'glide waits for the fade trigger');
+    assert.equal(visit.animations.length, 0);
+    await visit.advance(1);
+    assert.equal(visit.root.classList.contains('intro-revealing'), true);
+    const [art, hero] = visit.animations;
+    assert.equal(visit.animations.length, 2, 'one artwork glide plus one hero settle');
+    assert.equal(art.keyframes[0].transform, 'translate(-168px, 232px)');
+    assert.equal(art.keyframes[1].transform, 'translate(0px, 0px)');
+    assert.equal(art.timing.duration, 500);
+    assert.equal(hero.keyframes[0].height, '824px');
+    assert.equal(hero.keyframes[1].height, '668px');
+    assert.equal(hero.timing.duration, 500);
+    await visit.advance(600);
+    visit.assertOpen();
+    visit.assertClean();
+});
+
+test('glides only run for the elements and motion the layout actually shifts', async () => {
+    const cases = [
+        { options: {}, expected: [] },
+        { options: { heroRects: [{ left: 0, top: 0 }, { left: 240, top: 240 }], heroBoxes: [824, 823] }, expected: ['art'] },
+        { options: { reducedMotion: true, heroRects: [{ left: 0, top: 0 }, { left: 240, top: 240 }], heroBoxes: [824, 668] }, expected: [] },
+        { options: { missingHeroArt: true, heroRects: [{ left: 0, top: 0 }, { left: 240, top: 240 }], heroBoxes: [824, 668] }, expected: ['hero'] }
+    ];
+    for (const { options, expected } of cases) {
+        const visit = createVisit(options);
+        await visit.advance(7800);
+        assert.deepEqual(visit.animations.map(a => a.target ?? 'art'), expected);
+        visit.assertOpen();
+        visit.assertClean();
+    }
 });
 
 test('same-tab return does not replay after completion or a skip', async () => {
