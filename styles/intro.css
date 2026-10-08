@@ -36,12 +36,32 @@
 .crt-power { color: #ff4848; }
 [data-intro-phase='waiting'] .crt-power { color: #333; }
 .intro-pending .crt-beaver { visibility: hidden; }
-.intro-pending :is(.site-header, .hero-heading, .hero-identity, .hero-invite) {
+.intro-pending .site-header {
     opacity: 0;
     visibility: hidden;
 }
+/* Viewport isolation: while the page is pending, the booting CRT owns the whole
+   screen. The header keeps its 76px layout box (visually hidden) and the hero
+   text collapses, so the artwork — laid out at exactly its flow size inside the
+   unchanged .hero-stage grid — centers in the remaining viewport for any screen
+   size or aspect ratio. On reveal, intro.js glides the artwork to its flow
+   position with a FLIP transform while the page fades in. */
+.intro-pending .home-hero {
+    display: grid;
+    align-content: center;
+    min-height: calc(100vh - 76px);
+    min-height: calc(100dvh - 76px);
+}
+.intro-pending :is(.hero-heading, .hero-identity, .hero-invite) {
+    display: none;
+}
+/* With the side cells hidden, grid auto-placement would drop the artwork into a
+   1fr side column; pin it so its pending box matches the flow box exactly. */
+.intro-pending .hero-art { grid-column: 2; pointer-events: none; }
+@media(max-width:1100px){
+.intro-pending .hero-art { grid-column: 1/-1; grid-row: 1; }
+}
 /* Native scrolling stays available throughout, including the page fade. */
-.intro-pending .hero-art { pointer-events: none; }
 [data-intro-phase='power'] .crt-power {
     animation: crt-power-on 800ms steps(1, end) both;
 }

@@ -248,3 +248,12 @@ Verified with `node scripts/hero-check.mjs` across 360×640, 375×667, 390×844,
 Note on the artwork size: on a 375×667 or 360×640 phone the height-driven artwork is genuinely small (about 220–230px across) because the heading, copy and action need that room. That is the trade-off that makes the fold clean on a short screen; on a 390×844 or larger screen it stays comfortably large. Say the word if you would rather keep the artwork bigger and let the photo sit just below the fold with a little scroll.
 
 `tests/mobile-shell.test.mjs` covers the mobile layer without a browser. All 59 passing tests and the build are unchanged; the four pre-existing `crt-art` and `workshop-preservation` failures remain unrelated.
+## Viewport-isolated CRT reveal
+
+While `intro-pending` is set, the booting CRT owns the whole screen: the header keeps its 76px layout box but fades out, the hero heading/identity/invite collapse, and the ASCII artwork centers in `calc(100dvh - 76px)` for any viewport size or aspect ratio, desktop and mobile. Skips, reduced motion, the deep-link bypass and the seven-second failsafe remove the isolation instantly; lower page content stays scrollable throughout.
+
+The pending layout is size-identical to the flow layout: the artwork stays in its real `.hero-stage` grid cell (pinned with `grid-column` because auto-placement drops it into a side column once the neighbor cells are removed), so the 500ms FLIP is a pure translate between two positions of one fixed-size box. Two earlier revisions failed visibly: a translate-only FLIP over a `display: block; width: min(600px, 100%)` pending stage resized the artwork 600×749→600×569 in frame one (the reported "text pushes it, then it falls back"), and without the hero-box height glide the returning text expanded the hero instantly, snapping lower sections up ~150px.
+
+Per-frame sampling after the fix: exactly one artwork size exists during the entire reveal at both 1440×900 and 390×844; content below the hero moves at most 17px/frame (11px mobile) and settles at the flow position with zero page errors and no horizontal overflow.
+
+Files: `styles/intro.css`, `scripts/intro.js`, `tests/intro.test.mjs`, `index.html` asset versions, `docs/site-maintenance.md`.

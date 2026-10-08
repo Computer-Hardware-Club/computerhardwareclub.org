@@ -65,6 +65,13 @@
         timers.forEach(timer => window.clearTimeout(timer));
         timers.clear();
     };
+    const safeRect = node => {
+        try {
+            return node?.getBoundingClientRect?.() ?? null;
+        } catch {
+            return null;
+        }
+    };
     const cleanup = () => {
         clearTimers();
         listeners.splice(0).forEach(remove => remove());
@@ -77,10 +84,49 @@
         if (finished && !root.classList.contains('intro-revealing')) return;
         finished = true;
         clearTimers();
+        const motion = animate && !reducedMotion.matches;
+        const glide = motion ? document.querySelector('.hero-art') : null;
+        const hero = motion ? document.querySelector('.home-hero') : null;
+        const first = glide ? safeRect(glide) : null;
+        const heroFirst = hero ? safeRect(hero) : null;
         root.classList.remove('intro-pending');
         delete root.dataset.introPhase;
-        if (animate && !reducedMotion.matches) {
+        if (motion) {
             root.classList.add('intro-revealing');
+            // FLIP: the isolated layout just centered the artwork in the viewport.
+            // Slide it to its flow position, and glide the hero box from its
+            // viewport-filling height down to its flow height so the sections
+            // below settle with the fade instead of snapping up when the text
+            // returns to the layout.
+            const last = glide ? safeRect(glide) : null;
+            if (first && last && typeof glide.animate === 'function') {
+                const dx = first.left - last.left;
+                const dy = first.top - last.top;
+                if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+                    try {
+                        glide.animate(
+                            [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0px, 0px)' }],
+                            { duration: 500, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }
+                        );
+                    } catch {
+                        // A missing animation only costs the glide, never the reveal.
+                    }
+                }
+            }
+            const heroLast = hero ? safeRect(hero) : null;
+            if (heroFirst && heroLast && typeof hero.animate === 'function') {
+                const settle = heroFirst.height - heroLast.height;
+                if (settle > 2) {
+                    try {
+                        hero.animate(
+                            [{ height: `${heroFirst.height}px` }, { height: `${heroLast.height}px` }],
+                            { duration: 500, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }
+                        );
+                    } catch {
+                        // Layout keeps its final size; only the glide is lost.
+                    }
+                }
+            }
             later(() => {
                 root.classList.remove('intro-revealing');
                 cleanup();
