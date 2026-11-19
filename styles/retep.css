@@ -1,0 +1,122 @@
+body .retep-page {
+  max-width: 1120px;
+}
+
+.retep-page :is(h1, h2, h3) {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.retep-page h1 {
+  font-size: clamp(3.25rem, 8vw, 6.5rem);
+  text-wrap: balance;
+}
+
+.retep-page h2 {
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+}
+
+.retep-page p {
+  max-width: 70ch;
+  margin: 14px 0 0;
+  color: var(--muted);
+}
+
+.retep-page :is(h1 span, .retep-box dt) {
+  color: var(--accent);
+}
+
+.retep-mission {
+  padding-block: clamp(28px, 5vw, 60px) 36px;
+  border-bottom: 1px solid var(--line);
+}
+
+.retep-portal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 22px;
+  padding: 8px 14px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.retep-portal:hover {
+  text-decoration: underline;
+}
+
+.retep-command {
+  width: fit-content;
+  max-width: 100%;
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: #101010;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.retep-page :is(code, kbd, pre) {
+  font-family: inherit;
+}
+
+.retep-page p code {
+  color: var(--text);
+}
+
+.retep-reference,
+.retep-finish {
+  margin-top: 38px;
+}
+
+.retep-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.retep-box {
+  padding: clamp(16px, 2.5vw, 26px);
+  border: 1px solid var(--line);
+  background: #0b0b0b;
+}
+
+.retep-box h3 {
+  margin-bottom: 16px;
+  font-size: 2rem;
+}
+
+.retep-box dl {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.retep-box dt {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.retep-box dd {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.retep-box dd + dt {
+  margin-top: 12px;
+}
+
+.retep-finish {
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 790px) {
+  .retep-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

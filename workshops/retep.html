@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Investigate the Peter incident and restore a Linux system in this Computer Hardware Club workshop.">
+  <title>RETEP: The Peter Incident | Computer Hardware Club</title>
+  <link rel="icon" href="../images/tabicon.ico">
+  <link rel="stylesheet" href="../styles/site-shell.css">
+  <link rel="stylesheet" href="../styles/retep.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="site-nav container" aria-label="Primary navigation">
+    <a class="brand" href="../" aria-label="Computer Hardware Club home"><span class="brand-host">chc</span><span>@oregonstate:~</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../about/" >About</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-controls="workshop-links">Workshops</button>
+        <ul class="nav-dropdown-list" id="workshop-links">
+          <li><a href="../workshops/primes.html">1-Second Prime Showdown</a></li>
+          <li><a href="../workshops/troubleshoot.html">Troubleshooting Workshop</a></li>
+          <li><a href="../workshops/retep.html" aria-current="page">RETEP: The Peter Incident</a></li>
+          <li><a href="../workshops/serverbuild.html">Server Build Competition</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main" class="container retep-page">
+  <section class="retep-mission" aria-labelledby="retep-title">
+    <h1 id="retep-title"><span>RETEP:</span> The Peter Incident</h1>
+    <p>Run the suspicious installer in your team’s Linux VM, investigate what changed, and get Peter back to normal.</p>
+    <a class="retep-portal" href="https://workshop.computerhardwareclub.org/">Open workshop terminal</a>
+    <p>Sign in with your team credentials and run this as your team user.</p>
+    <pre class="retep-command"><code>cd ~/Downloads &amp;&amp; ./GTA-VI-Installer.run</code></pre>
+    <p>Keep the investigation in your team’s VM. AI assistance is off for this workshop. Club officers can help with terminal syntax.</p>
+  </section>
+
+  <section class="retep-reference" aria-labelledby="reference-title">
+    <h2 id="reference-title">Command reference</h2>
+    <p>Replace uppercase placeholders with values from your VM.</p>
+
+    <div class="retep-grid">
+      <section class="retep-box" aria-labelledby="basics-title">
+        <h3 id="basics-title">Basics</h3>
+        <dl>
+          <dt><code>pwd</code></dt>
+          <dd>Print the current directory.</dd>
+          <dt><code>ls -la</code></dt>
+          <dd>List files, including hidden ones, with details.</dd>
+          <dt><code>cd DIR</code></dt>
+          <dd>Change directories. Use <code>cd ~</code> to go home.</dd>
+          <dt><code>less FILE</code></dt>
+          <dd>Read a file one screen at a time. Press <kbd>q</kbd> to quit.</dd>
+          <dt><code>grep -n 'PATTERN' FILE</code></dt>
+          <dd>Show matching lines and their line numbers.</dd>
+          <dt><code>sudo COMMAND</code></dt>
+          <dd>Run a command with administrator privileges.</dd>
+        </dl>
+      </section>
+
+      <section class="retep-box" aria-labelledby="permissions-title">
+        <h3 id="permissions-title">Permissions</h3>
+        <dl>
+          <dt><code>ls -l FILE</code></dt>
+          <dd>Show permissions, owner, and group.</dd>
+          <dt><code>stat FILE</code></dt>
+          <dd>Show detailed file metadata, including the numeric mode.</dd>
+          <dt><code>id USER</code></dt>
+          <dd>Show a user’s ID and group memberships.</dd>
+          <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
+          <dd>Change the owner and group.</dd>
+          <dt><code>sudo chmod MODE FILE</code></dt>
+          <dd>Change access permissions.</dd>
+        </dl>
+      </section>
+
+      <section class="retep-box" aria-labelledby="processes-title">
+        <h3 id="processes-title">Processes &amp; services</h3>
+        <dl>
+          <dt><code>top</code></dt>
+          <dd>Watch live process activity. Press <kbd>q</kbd> to quit.</dd>
+          <dt><code>free -h</code></dt>
+          <dd>Show memory usage in readable units.</dd>
+          <dt><code>ps aux</code></dt>
+          <dd>List running processes and their command lines.</dd>
+          <dt><code>systemctl list-units --type=service</code></dt>
+          <dd>List active and failed service units.</dd>
+          <dt><code>systemctl list-unit-files --type=service</code></dt>
+          <dd>List installed service units and their enablement states.</dd>
+          <dt><code>systemctl is-enabled SERVICE</code></dt>
+          <dd>Show a service’s enablement state.</dd>
+          <dt><code>sudo systemctl stop SERVICE</code></dt>
+          <dd>Stop a running service.</dd>
+          <dt><code>sudo systemctl disable SERVICE</code></dt>
+          <dd>Remove a service’s enablement links for automatic startup.</dd>
+        </dl>
+      </section>
+
+      <section class="retep-box" aria-labelledby="configuration-title">
+        <h3 id="configuration-title">Configuration</h3>
+        <dl>
+          <dt><code>systemctl --failed</code></dt>
+          <dd>List failed units.</dd>
+          <dt><code>systemctl status SERVICE</code></dt>
+          <dd>Show a service’s state and recent log messages.</dd>
+          <dt><code>systemctl cat SERVICE</code></dt>
+          <dd>Show the unit definition and any overrides.</dd>
+          <dt><code>sudo journalctl -u SERVICE -n 20 --no-pager</code></dt>
+          <dd>Print the last 20 log entries for a service.</dd>
+          <dt><code>diff -u FILE_A FILE_B</code></dt>
+          <dd>Compare two files and show what differs.</dd>
+          <dt><code>sudo nano FILE</code></dt>
+          <dd>Edit a protected file. Use <kbd>Ctrl+O</kbd> to write and <kbd>Ctrl+X</kbd> to exit.</dd>
+          <dt><code>sudo systemctl restart SERVICE</code></dt>
+          <dd>Restart a service.</dd>
+        </dl>
+      </section>
+    </div>
+  </section>
+
+  <section class="retep-finish" aria-labelledby="finish-title">
+    <h2 id="finish-title">Check your work</h2>
+    <pre class="retep-command"><code>check-system</code></pre>
+    <p>When it prints <code>RESULT: COMPLETE</code>, show a club officer what you found, what you changed, and how you verified the repair.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span data-year>2026</span> Computer Hardware Club</p>
+    <ul class="footer-links">
+      <li><a href="https://github.com/Computer-Hardware-Club" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+      <li><a href="mailto:computerhardware.clubs@oregonstate.edu">Email ↗</a></li>
+      <li><a href="https://discord.gg/bfxjgvzCSf" target="_blank" rel="noopener noreferrer">Discord ↗</a></li>
+    </ul>
+  </div>
+</footer>
+<script src="../scripts/site.js" defer></script>
+</body>
+</html>
