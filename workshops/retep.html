@@ -65,6 +65,27 @@
         </dl>
       </section>
 
+      <section class="retep-box" aria-labelledby="configuration-title">
+        <h3 id="configuration-title">Configuration</h3>
+        <p>A config file is a program’s settings panel in text form. The system journal is its activity history, where services can record errors and other messages.</p>
+        <dl>
+          <dt><code>systemctl --failed</code></dt>
+          <dd>List failed units.</dd>
+          <dt><code>systemctl status SERVICE</code></dt>
+          <dd>Show a service’s state and recent log messages.</dd>
+          <dt><code>systemctl cat SERVICE</code></dt>
+          <dd>Show the unit definition and any overrides.</dd>
+          <dt><code>sudo journalctl -u SERVICE -n 20 --no-pager</code></dt>
+          <dd>Print the last 20 log entries for a service.</dd>
+          <dt><code>diff -u FILE_A FILE_B</code></dt>
+          <dd>Compare two files and show what differs.</dd>
+          <dt><code>sudo nano FILE</code></dt>
+          <dd>Edit a protected file. Press <kbd>Ctrl+O</kbd>, then <kbd>Enter</kbd> to save. Press <kbd>Ctrl+X</kbd> to exit.</dd>
+          <dt><code>sudo systemctl restart SERVICE</code></dt>
+          <dd>Restart a service.</dd>
+        </dl>
+      </section>
+
       <section class="retep-box" aria-labelledby="permissions-title">
         <h3 id="permissions-title">Permissions</h3>
         <p>File permissions work like keycard access. Linux tracks who can read, write, or run a file using separate rules for its owner, its group, and everyone else.</p>
@@ -102,27 +123,6 @@
           <dd>Stop a running service.</dd>
           <dt><code>sudo systemctl disable SERVICE</code></dt>
           <dd>Remove the links that enable a service to start automatically.</dd>
-        </dl>
-      </section>
-
-      <section class="retep-box" aria-labelledby="configuration-title">
-        <h3 id="configuration-title">Configuration</h3>
-        <p>A config file is a program’s settings panel in text form. The system journal is its activity history, where services can record errors and other messages.</p>
-        <dl>
-          <dt><code>systemctl --failed</code></dt>
-          <dd>List failed units.</dd>
-          <dt><code>systemctl status SERVICE</code></dt>
-          <dd>Show a service’s state and recent log messages.</dd>
-          <dt><code>systemctl cat SERVICE</code></dt>
-          <dd>Show the unit definition and any overrides.</dd>
-          <dt><code>sudo journalctl -u SERVICE -n 20 --no-pager</code></dt>
-          <dd>Print the last 20 log entries for a service.</dd>
-          <dt><code>diff -u FILE_A FILE_B</code></dt>
-          <dd>Compare two files and show what differs.</dd>
-          <dt><code>sudo nano FILE</code></dt>
-          <dd>Edit a protected file. Press <kbd>Ctrl+O</kbd>, then <kbd>Enter</kbd> to save. Press <kbd>Ctrl+X</kbd> to exit.</dd>
-          <dt><code>sudo systemctl restart SERVICE</code></dt>
-          <dd>Restart a service.</dd>
         </dl>
       </section>
     </div>
