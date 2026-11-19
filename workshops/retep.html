@@ -48,6 +48,7 @@
     <div class="retep-grid">
       <section class="retep-box" aria-labelledby="basics-title">
         <h3 id="basics-title">Basics</h3>
+        <p>The terminal has a current folder, just like a file browser. You can move between folders, open files, and search their contents from the prompt.</p>
         <dl>
           <dt><code>pwd</code></dt>
           <dd>Print the current directory.</dd>
@@ -66,6 +67,7 @@
 
       <section class="retep-box" aria-labelledby="permissions-title">
         <h3 id="permissions-title">Permissions</h3>
+        <p>File permissions work like keycard access. Linux tracks who can read, write, or run a file using separate rules for its owner, its group, and everyone else.</p>
         <dl>
           <dt><code>ls -l FILE</code></dt>
           <dd>Show permissions, owner, and group.</dd>
@@ -82,6 +84,7 @@
 
       <section class="retep-box" aria-labelledby="processes-title">
         <h3 id="processes-title">Processes &amp; services</h3>
+        <p>A process is a running program. Systemd acts like a supervisor for services. It can start them at boot, track whether they’re running, and restart them if configured to do so.</p>
         <dl>
           <dt><code>top</code></dt>
           <dd>Watch live process activity. Press <kbd>q</kbd> to quit.</dd>
@@ -94,16 +97,17 @@
           <dt><code>systemctl list-unit-files --type=service</code></dt>
           <dd>List installed service units and their enablement states.</dd>
           <dt><code>systemctl is-enabled SERVICE</code></dt>
-          <dd>Show a service’s enablement state.</dd>
+          <dd>Check whether a service is enabled to start automatically.</dd>
           <dt><code>sudo systemctl stop SERVICE</code></dt>
           <dd>Stop a running service.</dd>
           <dt><code>sudo systemctl disable SERVICE</code></dt>
-          <dd>Remove a service’s enablement links for automatic startup.</dd>
+          <dd>Remove the links that enable a service to start automatically.</dd>
         </dl>
       </section>
 
       <section class="retep-box" aria-labelledby="configuration-title">
         <h3 id="configuration-title">Configuration</h3>
+        <p>A config file is a program’s settings panel in text form. The system journal is its activity history, where services can record errors and other messages.</p>
         <dl>
           <dt><code>systemctl --failed</code></dt>
           <dd>List failed units.</dd>
@@ -116,7 +120,7 @@
           <dt><code>diff -u FILE_A FILE_B</code></dt>
           <dd>Compare two files and show what differs.</dd>
           <dt><code>sudo nano FILE</code></dt>
-          <dd>Edit a protected file. Use <kbd>Ctrl+O</kbd> to write and <kbd>Ctrl+X</kbd> to exit.</dd>
+          <dd>Edit a protected file. Press <kbd>Ctrl+O</kbd>, then <kbd>Enter</kbd> to save. Press <kbd>Ctrl+X</kbd> to exit.</dd>
           <dt><code>sudo systemctl restart SERVICE</code></dt>
           <dd>Restart a service.</dd>
         </dl>

@@ -91,6 +91,10 @@ body .retep-page {
   font-size: 2rem;
 }
 
+.retep-page .retep-box > p {
+  margin: 0 0 18px;
+}
+
 .retep-box dl {
   margin: 0;
   font-size: 0.875rem;
