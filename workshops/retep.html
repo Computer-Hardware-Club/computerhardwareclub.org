@@ -157,29 +157,30 @@
   <section id="background-activity" class="retep-stage" aria-labelledby="activity-title">
     <div class="retep-guidance">
       <h2 id="activity-title">Investigate the slowdown</h2>
-      <p>With Peter’s service back, look at what’s using CPU and memory. Compare the process names and command lines with the installed services to see what’s managing the activity.</p>
+      <p>With Peter’s service back, use <code>top</code> to see what’s using CPU and memory. Note the command and PID of the process you want to investigate.</p>
 
-      <h3>Check what can start it again</h3>
-      <p>A process is a running program. Systemd acts like a supervisor for services and can start them at boot or restart them when they exit. Once you’ve tied the unexpected process to a service, check both whether it’s running now and whether it’s enabled.</p>
+      <h3>Watch what happens after it exits</h3>
+      <p>Quit <code>top</code>, kill the PID you recorded, and open <code>top</code> again. Give it a few seconds. Look for the same command with a new PID before changing any services.</p>
 
-      <p class="retep-next">After making a change, check resource usage again and confirm the service’s startup setting.</p>
+      <h3>Find what started it again</h3>
+      <p>A new PID means a new instance of the program started. Systemd can restart a service when its process exits. Use the command name and the service lists to find what’s managing it.</p>
+
+      <p class="retep-next">After stopping and disabling the service, check resource usage again and confirm the startup setting in the installed service list.</p>
     </div>
 
     <div class="retep-tools">
       <h3>Process and service commands</h3>
       <dl class="retep-commands">
         <dt><code>top</code></dt>
-        <dd>Watch CPU and memory use by process. Press <kbd>q</kbd> to quit.</dd>
-        <dt><code>free -h</code></dt>
-        <dd>Show memory usage and how much is available.</dd>
-        <dt><code>ps aux</code></dt>
-        <dd>Take a snapshot of running processes and their command lines.</dd>
+        <dd>Find unusual CPU or memory use. Record the PID and command. Press <kbd>q</kbd> to quit.</dd>
+        <dt><code>kill PID</code></dt>
+        <dd>Send a termination signal to the process with that PID.</dd>
+        <dt><code>top</code></dt>
+        <dd>Watch for the same command to reappear with a different PID.</dd>
         <dt><code>systemctl list-units --type=service</code></dt>
         <dd>List active and failed service units.</dd>
         <dt><code>systemctl list-unit-files --type=service</code></dt>
         <dd>List installed service definitions and their startup settings.</dd>
-        <dt><code>systemctl is-enabled SERVICE</code></dt>
-        <dd>Check whether a service is enabled to start automatically.</dd>
         <dt><code>sudo systemctl stop SERVICE</code></dt>
         <dd>Stop a running service.</dd>
         <dt><code>sudo systemctl disable SERVICE</code></dt>
