@@ -119,29 +119,45 @@
   <section id="file-access" class="retep-stage" aria-labelledby="access-title">
     <div class="retep-guidance">
       <h2 id="access-title">Check file access</h2>
-      <p>If the journal says the service can’t open a file, inspect the path in the error. Compare its owner, group, and permissions with the corresponding file in the verified backup or with the metadata recorded alongside it.</p>
+      <p>If the journal says the service is denied access to a file, run <code>stat</code> on the path from the error. Compare it with the corresponding file in the verified backup. The backup’s snapshot notes may also record the original owner, group, and mode.</p>
+
+      <h3>Read the <code>stat</code> output</h3>
+      <p>In the full output, look for the <code>Access</code> line with a mode in parentheses. On that line, <code>Uid</code> identifies the owner and <code>Gid</code> identifies the group. The later <code>Access</code> line is a timestamp. The compact command prints those same fields in one line. Here’s an example from an unrelated file.</p>
+      <pre class="retep-command"><code>660  -rw-rw----  alex:editors</code></pre>
+      <dl class="retep-commands">
+        <dt><code>660</code></dt>
+        <dd>The last three digits give the permissions for the owner, group, and everyone else. Read is 4, write is 2, and execute is 1. Add those values for each digit.</dd>
+        <dt><code>-rw-rw----</code></dt>
+        <dd>Skip the first character, which marks the file type. Split the rest into three groups of three. Here <code>rw-</code> gives read and write access to the owner and group, and <code>---</code> gives everyone else no access.</dd>
+        <dt><code>alex:editors</code></dt>
+        <dd><code>alex</code> owns the file and <code>editors</code> is its group.</dd>
+      </dl>
 
       <h3>Check who needs access</h3>
-      <p>File permissions work like keycard access. Each file has separate rules for its owner, its group, and everyone else. Check the service definition for the account it runs under, then work out which rules apply to it.</p>
+      <p>Find <code>User=</code> and <code>Group=</code> in the service definition. Work out which permission bits apply to that account, then use the backup to decide which settings to restore.</p>
 
-      <p class="retep-next">After repairing access, restart the service and look for a successful startup in the journal.</p>
+      <p class="retep-next">Test that the service account can read the file. Then restart the service and check the journal for a successful startup.</p>
     </div>
 
     <div class="retep-tools">
       <h3>File access commands</h3>
       <dl class="retep-commands">
         <dt><code>stat FILE</code></dt>
-        <dd>Show the owner, group, and permissions, including the numeric mode.</dd>
-        <dt><code>ls -l FILE</code></dt>
-        <dd>Show ownership and permissions in a single line.</dd>
+        <dd>Show the full file metadata, including ownership, permissions, and timestamps.</dd>
+        <dt><code>stat -c '%a  %A  %U:%G' FILE</code></dt>
+        <dd>Print the mode, permission letters, owner, and group on one line. Use it for both the live file and the backup.</dd>
         <dt><code>systemctl cat SERVICE</code></dt>
         <dd>Show the service definition and any overrides. Look for <code>User=</code> and <code>Group=</code>.</dd>
         <dt><code>id USER</code></dt>
         <dd>Show the account’s user ID and group memberships.</dd>
+        <dt><code>sudo chgrp GROUP FILE</code></dt>
+        <dd>Change the file’s group.</dd>
         <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
         <dd>Set the file’s owner and group.</dd>
         <dt><code>sudo chmod MODE FILE</code></dt>
         <dd>Set the file’s access permissions.</dd>
+        <dt><code>sudo -u USER -g GROUP test -r FILE &amp;&amp; echo readable || echo unreadable</code></dt>
+        <dd>Check read access using the service’s user and group.</dd>
       </dl>
     </div>
   </section>
