@@ -92,7 +92,7 @@
       <p>Find the service that failed and read the journal entries from its latest startup. The journal is the service’s activity history. Use the first error from that attempt to decide what to inspect.</p>
 
       <h3>Check Peter’s backups</h3>
-      <p>Look in Peter’s home directory for maintenance notes and backups. Find a verified snapshot for the installed version, then compare its config with the live one. Use the diff and the journal error together to decide what to change.</p>
+      <p>Look for Peter’s maintenance notes and backups in your home directory (<code>~</code>). Find a verified snapshot for the installed version, then compare its config with the live one. Use the diff and the journal error together to decide what to change.</p>
 
       <p class="retep-next">Restart the service after editing and read the newest log entries. If the error changes, follow the new message.</p>
     </div>
@@ -122,7 +122,7 @@
       <p>If the journal says the service can’t open a file, inspect the path in the error. Compare its owner, group, and permissions with the corresponding file in the verified backup or with the metadata recorded alongside it.</p>
 
       <h3>Check who needs access</h3>
-      <p>File permissions work like keycard access. The service runs under a Linux account of its own. Check the service definition for its user and group, then work out which permissions apply to that account.</p>
+      <p>File permissions work like keycard access. Each file has separate rules for its owner, its group, and everyone else. Check the service definition for the account it runs under, then work out which rules apply to it.</p>
 
       <p class="retep-next">After repairing access, restart the service and look for a successful startup in the journal.</p>
     </div>
@@ -183,7 +183,7 @@
   <section class="retep-finish" aria-labelledby="finish-title">
     <div>
       <h2 id="finish-title">Verify recovery</h2>
-      <p>When the check prints <code>RESULT: COMPLETE</code>, show a club officer what tipped you off, what you changed, and how you verified the fixes.</p>
+      <p>Run the check in your workshop terminal. When it prints <code>RESULT: COMPLETE</code>, show a club officer what tipped you off, what you changed, and how you verified the fixes.</p>
     </div>
     <pre class="retep-command"><code>check-system</code></pre>
   </section>
