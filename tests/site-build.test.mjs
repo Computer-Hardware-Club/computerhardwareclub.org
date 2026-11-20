@@ -40,10 +40,10 @@ test('build.mjs creates the core static site bundle', () => {
         'dist/images/officers/vicepresident-error-diffusion.webp',
         'dist/images/officers/treasurer-error-diffusion.webp',
         'dist/images/officers/workshop_coordinator-error-diffusion.webp',
-        'dist/workshops/primes.html',
-        'dist/workshops/troubleshoot.html',
-        'dist/workshops/retep.html',
-        'dist/workshops/serverbuild.html'
+        'dist/workshops/prime.html',
+        'dist/workshops/troubleshooting.html',
+        'dist/workshops/malware.html',
+        'dist/workshops/build.html'
     ];
 
     expectedFiles.forEach((relativePath) => {
@@ -56,10 +56,10 @@ test('build.mjs creates the core static site bundle', () => {
 
     const homePage = readFileSync(join(projectRoot, 'dist/index.html'), 'utf8');
     const aboutPage = readFileSync(join(projectRoot, 'dist/about/index.html'), 'utf8');
-    const troubleshootPage = readFileSync(join(projectRoot, 'dist/workshops/troubleshoot.html'), 'utf8');
-    const serverbuildPage = readFileSync(join(projectRoot, 'dist/workshops/serverbuild.html'), 'utf8');
-    const primesPage = readFileSync(join(projectRoot, 'dist/workshops/primes.html'), 'utf8');
-    const malwarePage = readFileSync(join(projectRoot, 'dist/workshops/retep.html'), 'utf8');
+    const troubleshootingPage = readFileSync(join(projectRoot, 'dist/workshops/troubleshooting.html'), 'utf8');
+    const buildPage = readFileSync(join(projectRoot, 'dist/workshops/build.html'), 'utf8');
+    const primePage = readFileSync(join(projectRoot, 'dist/workshops/prime.html'), 'utf8');
+    const malwarePage = readFileSync(join(projectRoot, 'dist/workshops/malware.html'), 'utf8');
     const cname = readFileSync(join(projectRoot, 'dist/CNAME'), 'utf8').trim();
 
     assert.match(homePage, /Computer Hardware Club/);
@@ -71,24 +71,24 @@ test('build.mjs creates the core static site bundle', () => {
     assert.equal(cname, 'computerhardwareclub.org');
 
     // All workshop pages have nav-dropdown
-    assert.match(troubleshootPage, /nav-dropdown/, 'Troubleshoot page should have nav-dropdown');
-    assert.match(serverbuildPage, /nav-dropdown/, 'Server Build page should have nav-dropdown');
-    assert.match(primesPage, /nav-dropdown/, 'Primes page should have nav-dropdown');
-    assert.match(malwarePage, /nav-dropdown/, 'Malware Workshop page should have nav-dropdown');
+    assert.match(troubleshootingPage, /nav-dropdown/, 'Troubleshooting page should have nav-dropdown');
+    assert.match(buildPage, /nav-dropdown/, 'Build page should have nav-dropdown');
+    assert.match(primePage, /nav-dropdown/, 'Prime page should have nav-dropdown');
+    assert.match(malwarePage, /nav-dropdown/, 'Malware page should have nav-dropdown');
 
-    const workshopNames = ['1-Second Prime Showdown', 'Troubleshooting Workshop', 'Malware Workshop', 'Server Build Competition'];
+    const workshopNames = ['Prime', 'Troubleshooting', 'Malware', 'Build'];
     workshopNames.forEach((name) => {
-        assert.ok(troubleshootPage.includes(name), `Troubleshoot dropdown should link to ${name}`);
-        assert.ok(serverbuildPage.includes(name), `Server Build dropdown should link to ${name}`);
-        assert.ok(primesPage.includes(name), `Primes dropdown should link to ${name}`);
-        assert.ok(malwarePage.includes(name), `Malware Workshop dropdown should link to ${name}`);
+        assert.ok(troubleshootingPage.includes(name), `Troubleshooting dropdown should link to ${name}`);
+        assert.ok(buildPage.includes(name), `Build dropdown should link to ${name}`);
+        assert.ok(primePage.includes(name), `Prime dropdown should link to ${name}`);
+        assert.ok(malwarePage.includes(name), `Malware dropdown should link to ${name}`);
     });
 
     // Unified footer links on all pages
     const footerLinks = [/GitHub/, /Discord/, /Email/];
-    const allPages = [homePage, aboutPage, troubleshootPage, serverbuildPage, primesPage, malwarePage];
+    const allPages = [homePage, aboutPage, troubleshootingPage, buildPage, primePage, malwarePage];
     allPages.forEach((page, i) => {
-        const pageName = ['Home', 'About', 'Troubleshoot', 'Server Build', 'Primes', 'Malware Workshop'][i];
+        const pageName = ['Home', 'About', 'Troubleshooting', 'Build', 'Prime', 'Malware'][i];
         footerLinks.forEach((link) => {
             assert.match(page, link, `${pageName} page should have footer link matching ${link.source}`);
         });
@@ -96,8 +96,8 @@ test('build.mjs creates the core static site bundle', () => {
 
     // Keep the home shell consistent in source and published pages, including errors.
     const pagePaths = ['index.html', 'about/index.html',
-        '404.html', '500.html', 'workshops/primes.html',
-        'workshops/troubleshoot.html', 'workshops/serverbuild.html', 'workshops/retep.html'];
+        '404.html', '500.html', 'workshops/prime.html',
+        'workshops/troubleshooting.html', 'workshops/build.html', 'workshops/malware.html'];
     const canonicalHeader = (page, path) => page.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0]
         .replace(/href="([^"]+)"/g, (_, href) => `href="${new URL(href, `https://computerhardwareclub.org/${path}`).pathname}"`)
         .replace(/ aria-current="page"/g, '')

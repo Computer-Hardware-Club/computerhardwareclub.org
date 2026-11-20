@@ -82,7 +82,7 @@ test('shared navigation defers workshop links to desktop and marks the current p
     // grid column each block lands in and move the desktop composition.
     assert.doesNotMatch(siteJs, /hero-stage|hero-art|hero-identity|hero-invite/, 'the shared script must not restructure the hero');
     // Workshop pages stay published and directly linkable.
-    const workshopPages = ['workshops/primes.html', 'workshops/troubleshoot.html', 'workshops/serverbuild.html'];
+    const workshopPages = ['workshops/prime.html', 'workshops/troubleshooting.html', 'workshops/build.html'];
     workshopPages.forEach(page => {
         assert.ok(read(page).length > 0, `${page} should still be published`);
     });
