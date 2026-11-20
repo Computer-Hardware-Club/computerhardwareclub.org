@@ -47,8 +47,9 @@
     </div>
   </section>
 
-  <nav class="retep-route" aria-label="Investigation sections">
-    <ol>
+  <nav class="retep-route" aria-label="Workshop sections">
+    <ol start="0">
+      <li><a href="#terminal-basics">Terminal basics</a></li>
       <li><a href="#logs-and-config">Logs &amp; configuration</a></li>
       <li><a href="#file-access">File access</a></li>
       <li><a href="#background-activity">Processes &amp; services</a></li>
@@ -201,12 +202,20 @@
     </div>
   </section>
 
-  <section class="retep-finish" aria-labelledby="finish-title">
-    <div>
+  <section class="retep-stage retep-finish" aria-labelledby="finish-title">
+    <div class="retep-guidance">
       <h2 id="finish-title">Verify recovery</h2>
-      <p>Run the check in your workshop terminal. When it prints <code>RESULT: COMPLETE</code>, show a club officer what tipped you off, what you changed, and how you verified the fixes.</p>
+      <p>Run the final command in your workshop terminal. When it prints <code>RESULT: COMPLETE</code>, show a club officer the result and explain what you found, what you changed, and how you verified it.</p>
     </div>
-    <pre class="retep-command"><code>check-system</code></pre>
+
+    <div class="retep-tools">
+      <h3>Final command</h3>
+      <div class="retep-check-row">
+        <code id="retep-check-command">check-system</code>
+        <button type="button" id="retep-copy-check" class="retep-copy-button" aria-label="Copy check-system command" hidden>Copy</button>
+      </div>
+      <p id="retep-copy-status" class="retep-copy-status" role="status"></p>
+    </div>
   </section>
 </main>
 
@@ -221,5 +230,6 @@
   </div>
 </footer>
 <script src="../scripts/site.js" defer></script>
+<script src="../scripts/retep.js" defer></script>
 </body>
 </html>
