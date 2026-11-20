@@ -134,9 +134,9 @@
       </dl>
 
       <h3>Check who needs access</h3>
-      <p>Find <code>User=</code> and <code>Group=</code> in the service definition. Work out which permission bits apply to that account, then use the backup to decide which settings to restore.</p>
+      <p>Peter’s maintenance notes name the account that runs the service. An account can get access through a group it belongs to. Use the backup to decide which ownership and permissions to restore.</p>
 
-      <p class="retep-next">Test that the service account can read the file. Then restart the service and check the journal for a successful startup.</p>
+      <p class="retep-next">Restart the service and read the latest journal entries to verify it opens the file and starts successfully.</p>
     </div>
 
     <div class="retep-tools">
@@ -146,18 +146,10 @@
         <dd>Show the full file metadata, including ownership, permissions, and timestamps.</dd>
         <dt><code>stat -c '%a  %A  %U:%G' FILE</code></dt>
         <dd>Print the mode, permission letters, owner, and group on one line. Use it for both the live file and the backup.</dd>
-        <dt><code>systemctl cat SERVICE</code></dt>
-        <dd>Show the service definition and any overrides. Look for <code>User=</code> and <code>Group=</code>.</dd>
-        <dt><code>id USER</code></dt>
-        <dd>Show the account’s user ID and group memberships.</dd>
-        <dt><code>sudo chgrp GROUP FILE</code></dt>
-        <dd>Change the file’s group.</dd>
         <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
         <dd>Set the file’s owner and group.</dd>
         <dt><code>sudo chmod MODE FILE</code></dt>
         <dd>Set the file’s access permissions.</dd>
-        <dt><code>sudo -u USER -g GROUP test -r FILE &amp;&amp; echo readable || echo unreadable</code></dt>
-        <dd>Check read access using the service’s user and group.</dd>
       </dl>
     </div>
   </section>
