@@ -196,6 +196,11 @@ body .retep-page {
   overflow-wrap: anywhere;
 }
 
+.retep-command-tag {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .retep-commands dd {
   margin: 2px 0 0;
   color: var(--muted);

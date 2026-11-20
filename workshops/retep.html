@@ -119,10 +119,10 @@
   <section id="file-access" class="retep-stage" aria-labelledby="access-title">
     <div class="retep-guidance">
       <h2 id="access-title">Check file access</h2>
-      <p>If the journal says the service is denied access to a file, run <code>stat</code> on the path from the error. Compare it with the corresponding file in the verified backup. The backup’s snapshot notes may also record the original owner, group, and mode.</p>
+      <p>If the journal says the service is denied access to a file, use the recommended <code>stat -c</code> command on the path from the error. Run the same command on the corresponding file in the verified backup and compare the results. The backup’s snapshot notes may also record the original owner, group, and mode.</p>
 
-      <h3>Read the <code>stat</code> output</h3>
-      <p>In the full output, look for the <code>Access</code> line with a mode in parentheses. On that line, <code>Uid</code> identifies the owner and <code>Gid</code> identifies the group. The later <code>Access</code> line is a timestamp. The compact command prints those same fields in one line. Here’s an example from an unrelated file.</p>
+      <h3>Read the <code>stat -c</code> output</h3>
+      <p>The recommended command prints three fields on one line. Here’s sample output for an unrelated file.</p>
       <pre class="retep-command"><code>660  -rw-rw----  alex:editors</code></pre>
       <dl class="retep-commands">
         <dt><code>660</code></dt>
@@ -142,9 +142,9 @@
     <div class="retep-tools">
       <h3>File access commands</h3>
       <dl class="retep-commands">
-        <dt><code>stat FILE</code></dt>
+        <dt><code>stat FILE</code> <span class="retep-command-tag">(advanced)</span></dt>
         <dd>Show the full file metadata, including ownership, permissions, and timestamps.</dd>
-        <dt><code>stat -c '%a  %A  %U:%G' FILE</code></dt>
+        <dt><code>stat -c '%a  %A  %U:%G' FILE</code> <span class="retep-command-tag">(recommended)</span></dt>
         <dd>Print the mode, permission letters, owner, and group on one line. Use it for both the live file and the backup.</dd>
         <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
         <dd>Set the file’s owner and group.</dd>
