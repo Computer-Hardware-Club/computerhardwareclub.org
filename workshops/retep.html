@@ -35,16 +35,14 @@
   <section class="retep-mission" aria-labelledby="retep-title">
     <div>
       <h1 id="retep-title"><span>RETEP:</span> The Peter Incident</h1>
-      <p>A suspicious installer has turned up on Peter. Run it in your team’s Linux VM, follow the evidence, and get Peter back to normal.</p>
+      <p>A suspicious installer has turned up on Peter. First, <a href="#terminal-basics">get to know your team’s VM</a>. Then run the installer, follow the evidence, and get Peter back to normal.</p>
       <p class="retep-rules">AI assistance is off for this workshop. Club officers can help with terminal syntax.</p>
     </div>
 
     <div class="retep-launch">
-      <h2>Get your bearings</h2>
-      <p>Sign in with your team credentials.</p>
+      <h2>Start the incident</h2>
+      <p>Sign in with your team credentials, then run the installer as your team user inside the workshop VM.</p>
       <a class="retep-portal" href="https://workshop.computerhardwareclub.org/" target="_blank" rel="noopener" aria-label="Open workshop terminal in a new tab">Open workshop terminal</a>
-      <p>Before running the installer, spend a minute poking around your home directory while the system is still healthy. Try <code>ls</code> to see what’s there and <code>cat FILE</code> to read a text file that catches your eye.</p>
-      <p>Once you’ve looked around, run the installer as your team user inside the workshop VM.</p>
       <pre class="retep-command"><code>cd ~/Downloads &amp;&amp; ./GTA-VI-Installer.run</code></pre>
     </div>
   </section>
@@ -57,36 +55,43 @@
     </ol>
   </nav>
 
-  <details class="retep-basics">
-    <summary>Terminal basics</summary>
-    <p>The terminal has a current folder, just like a file browser. Replace uppercase placeholders in the guide with the names or values you find in the VM.</p>
-    <dl class="retep-commands">
-      <div>
-        <dt><code>pwd</code></dt>
-        <dd>Print the current directory.</dd>
-      </div>
-      <div>
-        <dt><code>ls</code></dt>
-        <dd>List files and directories in the current folder.</dd>
-      </div>
-      <div>
-        <dt><code>cd DIR</code></dt>
-        <dd>Change directories. Use <code>cd ~</code> to go home.</dd>
-      </div>
-      <div>
-        <dt><code>cat FILE</code></dt>
-        <dd>Print a file’s contents to the terminal.</dd>
-      </div>
-      <div>
-        <dt><code>nano FILE</code></dt>
-        <dd>Open a file in the Nano terminal editor.</dd>
-      </div>
-      <div>
-        <dt><code>sudo COMMAND</code></dt>
-        <dd>Run a command with administrator privileges.</dd>
-      </div>
-    </dl>
-  </details>
+  <section id="terminal-basics" class="retep-stage retep-basics" aria-labelledby="basics-title">
+    <div class="retep-guidance">
+      <h2 id="basics-title">Terminal basics</h2>
+      <p>Before running the installer, spend a minute poking around your home directory while the system is still healthy. List what’s there and read a few text files that catch your eye.</p>
+      <p>Replace uppercase placeholders in the guide with the names or values you find in the VM.</p>
+    </div>
+
+    <div class="retep-tools">
+      <h3>Basic commands</h3>
+      <dl class="retep-commands">
+        <div>
+          <dt><code>pwd</code></dt>
+          <dd>Print the current directory.</dd>
+        </div>
+        <div>
+          <dt><code>ls</code></dt>
+          <dd>List files and directories in the current folder.</dd>
+        </div>
+        <div>
+          <dt><code>cd DIR</code></dt>
+          <dd>Change directories. Use <code>cd ~</code> to go home.</dd>
+        </div>
+        <div>
+          <dt><code>cat FILE</code></dt>
+          <dd>Print a file’s contents to the terminal.</dd>
+        </div>
+        <div>
+          <dt><code>nano FILE</code></dt>
+          <dd>Open a file in the Nano terminal editor.</dd>
+        </div>
+        <div>
+          <dt><code>sudo COMMAND</code></dt>
+          <dd>Run a command with administrator privileges.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
 
   <section id="logs-and-config" class="retep-stage" aria-labelledby="logs-title">
     <div class="retep-guidance">
@@ -118,42 +123,49 @@
     </div>
   </section>
 
-  <section id="file-access" class="retep-stage" aria-labelledby="access-title">
+  <section id="file-access" class="retep-stage retep-access" aria-labelledby="access-title">
     <div class="retep-guidance">
       <h2 id="access-title">Check file access</h2>
-      <p>If the journal says the service is denied access to a file, use the recommended <code>stat -c</code> command on the path from the error. Run the same command on the corresponding file in the verified backup and compare the results. The backup’s snapshot notes may also record the original owner, group, and mode.</p>
-
-      <h3>Read the <code>stat -c</code> output</h3>
-      <p>The recommended command prints three fields on one line. Here’s sample output for an unrelated file.</p>
-      <pre class="retep-command"><code>660  -rw-rw----  alex:editors</code></pre>
-      <dl class="retep-commands">
-        <dt><code>660</code></dt>
-        <dd>The last three digits give the permissions for the owner, group, and everyone else. Read is 4, write is 2, and execute is 1. Add those values for each digit.</dd>
-        <dt><code>-rw-rw----</code></dt>
-        <dd>Skip the first character, which marks the file type. Split the rest into three groups of three. Here <code>rw-</code> gives read and write access to the owner and group, and <code>---</code> gives everyone else no access.</dd>
-        <dt><code>alex:editors</code></dt>
-        <dd><code>alex</code> owns the file and <code>editors</code> is its group.</dd>
-      </dl>
+      <p>If the journal reports a permissions error, use <code>stat -c</code> on the file it names. Compare the owner, group, and mode with the same file in the verified backup or with its snapshot notes.</p>
 
       <h3>Check who needs access</h3>
-      <p>Peter’s maintenance notes name the account that runs the service. An account can get access through a group it belongs to. Use the backup to decide which ownership and permissions to restore.</p>
+      <p>Peter’s maintenance notes name the service account. That account can get access through a group it belongs to. Use the backup to decide which settings to restore.</p>
 
-      <p class="retep-next">Restart the service and read the latest journal entries to verify it opens the file and starts successfully.</p>
+      <p class="retep-next">Restart the service and check the journal for a successful startup.</p>
     </div>
 
     <div class="retep-tools">
       <h3>File access commands</h3>
       <dl class="retep-commands">
         <dt><code>stat FILE</code> <span class="retep-command-tag">(advanced)</span></dt>
-        <dd>Show the full file metadata, including ownership, permissions, and timestamps.</dd>
+        <dd>Show file metadata, including ownership, permissions, and timestamps.</dd>
         <dt><code>stat -c '%a  %A  %U:%G' FILE</code> <span class="retep-command-tag">(recommended)</span></dt>
-        <dd>Print the mode, permission letters, owner, and group on one line. Use it for both the live file and the backup.</dd>
+        <dd>Show the mode, permission letters, owner, and group on one line.</dd>
         <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
         <dd>Set the file’s owner and group.</dd>
         <dt><code>sudo chmod MODE FILE</code></dt>
         <dd>Set the file’s access permissions.</dd>
       </dl>
     </div>
+
+    <section class="retep-stat-example" aria-labelledby="stat-example-title">
+      <h3 id="stat-example-title">Sample <code>stat -c</code> output</h3>
+      <pre class="retep-command"><code>660  -rw-rw----  alex:editors</code></pre>
+      <dl class="retep-commands retep-stat-fields">
+        <div>
+          <dt><code>660</code></dt>
+          <dd>Mode for owner, group, and others. Each digit adds read (4), write (2), and execute (1) as applicable.</dd>
+        </div>
+        <div>
+          <dt><code>-rw-rw----</code></dt>
+          <dd>After the file type, read the permissions in threes. <code>rw-</code> means read/write and <code>---</code> means no access.</dd>
+        </div>
+        <div>
+          <dt><code>alex:editors</code></dt>
+          <dd><code>alex</code> is the owner. <code>editors</code> is the group.</dd>
+        </div>
+      </dl>
+    </section>
   </section>
 
   <section id="background-activity" class="retep-stage" aria-labelledby="activity-title">
