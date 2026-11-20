@@ -113,14 +113,11 @@ body .retep-page {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 44px;
+  column-gap: 24px;
   margin: 0;
-  padding: 8px 0 8px 3ch;
+  padding: 8px 0;
   font-size: 0.9375rem;
-}
-
-.retep-route li {
-  padding-left: 4px;
+  list-style-position: inside;
 }
 
 .retep-route li::marker {
@@ -225,16 +222,17 @@ body .retep-page {
   .retep-stage {
     grid-template-columns: minmax(0, 1fr);
   }
+}
 
+@media (max-width: 640px) {
   .retep-route ol {
-    column-gap: 24px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 520px) {
-  .retep-route ol,
   .retep-basics .retep-commands {
-    display: grid;
     grid-template-columns: minmax(0, 1fr);
   }
 }
