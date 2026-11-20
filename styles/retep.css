@@ -42,8 +42,7 @@ body .retep-page {
 }
 
 .retep-mission,
-.retep-stage,
-.retep-stat-example {
+.retep-stage {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   align-items: start;
@@ -155,7 +154,12 @@ body .retep-page {
 
 .retep-stat-example {
   grid-column: 1 / -1;
-  row-gap: 16px;
+}
+
+.retep-stat-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 24px;
 }
 
 .retep-guidance h3 {
@@ -199,23 +203,6 @@ body .retep-page {
   margin-top: 12px;
 }
 
-.retep-stat-fields {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-}
-
-.retep-stat-fields > div {
-  display: grid;
-  grid-template-columns: 13ch minmax(0, 1fr);
-  align-items: baseline;
-  gap: 2px 12px;
-}
-
-.retep-stat-fields dd {
-  margin: 0;
-}
-
 .retep-finish {
   margin-top: clamp(32px, 6vw, 72px);
   padding: clamp(30px, 6vw, 72px) 16px;
@@ -240,7 +227,7 @@ body .retep-page {
 .retep-check-content code {
   max-width: 100%;
   color: var(--accent);
-  font-size: clamp(2rem, 8vw, 5.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 600;
   line-height: 1.1;
   overflow-wrap: anywhere;
@@ -279,8 +266,7 @@ body .retep-page {
 
 @media (max-width: 780px) {
   .retep-mission,
-  .retep-stage,
-  .retep-stat-example {
+  .retep-stage {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -289,11 +275,14 @@ body .retep-page {
   .retep-route ol {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .retep-stat-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 520px) {
-  .retep-basics .retep-commands,
-  .retep-stat-fields > div {
+  .retep-basics .retep-commands {
     grid-template-columns: minmax(0, 1fr);
   }
 }
