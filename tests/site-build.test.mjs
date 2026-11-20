@@ -59,7 +59,7 @@ test('build.mjs creates the core static site bundle', () => {
     const troubleshootPage = readFileSync(join(projectRoot, 'dist/workshops/troubleshoot.html'), 'utf8');
     const serverbuildPage = readFileSync(join(projectRoot, 'dist/workshops/serverbuild.html'), 'utf8');
     const primesPage = readFileSync(join(projectRoot, 'dist/workshops/primes.html'), 'utf8');
-    const retepPage = readFileSync(join(projectRoot, 'dist/workshops/retep.html'), 'utf8');
+    const malwarePage = readFileSync(join(projectRoot, 'dist/workshops/retep.html'), 'utf8');
     const cname = readFileSync(join(projectRoot, 'dist/CNAME'), 'utf8').trim();
 
     assert.match(homePage, /Computer Hardware Club/);
@@ -74,21 +74,21 @@ test('build.mjs creates the core static site bundle', () => {
     assert.match(troubleshootPage, /nav-dropdown/, 'Troubleshoot page should have nav-dropdown');
     assert.match(serverbuildPage, /nav-dropdown/, 'Server Build page should have nav-dropdown');
     assert.match(primesPage, /nav-dropdown/, 'Primes page should have nav-dropdown');
-    assert.match(retepPage, /nav-dropdown/, 'RETEP page should have nav-dropdown');
+    assert.match(malwarePage, /nav-dropdown/, 'Malware Workshop page should have nav-dropdown');
 
-    const workshopNames = ['1-Second Prime Showdown', 'Troubleshooting Workshop', 'RETEP: The Peter Incident', 'Server Build Competition'];
+    const workshopNames = ['1-Second Prime Showdown', 'Troubleshooting Workshop', 'Malware Workshop', 'Server Build Competition'];
     workshopNames.forEach((name) => {
         assert.ok(troubleshootPage.includes(name), `Troubleshoot dropdown should link to ${name}`);
         assert.ok(serverbuildPage.includes(name), `Server Build dropdown should link to ${name}`);
         assert.ok(primesPage.includes(name), `Primes dropdown should link to ${name}`);
-        assert.ok(retepPage.includes(name), `RETEP dropdown should link to ${name}`);
+        assert.ok(malwarePage.includes(name), `Malware Workshop dropdown should link to ${name}`);
     });
 
     // Unified footer links on all pages
     const footerLinks = [/GitHub/, /Discord/, /Email/];
-    const allPages = [homePage, aboutPage, troubleshootPage, serverbuildPage, primesPage, retepPage];
+    const allPages = [homePage, aboutPage, troubleshootPage, serverbuildPage, primesPage, malwarePage];
     allPages.forEach((page, i) => {
-        const pageName = ['Home', 'About', 'Troubleshoot', 'Server Build', 'Primes', 'RETEP'][i];
+        const pageName = ['Home', 'About', 'Troubleshoot', 'Server Build', 'Primes', 'Malware Workshop'][i];
         footerLinks.forEach((link) => {
             assert.match(page, link, `${pageName} page should have footer link matching ${link.source}`);
         });
