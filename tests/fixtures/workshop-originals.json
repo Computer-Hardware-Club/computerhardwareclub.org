@@ -1,5 +1,5 @@
 {
-  "primes": {
+  "prime": {
     "main": "8af80c8717df06682c3fbda619f68714d11eff0d332468c5ffb057c8c08a03e5",
     "scripts": [
       "c67a73c01e95b93aa66f2d5c2c4899d678a22021c92db59e005e6c850fd1f0e6",
@@ -12,15 +12,15 @@
       "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap",
       "../",
       "../about/",
-      "primes.html",
-      "troubleshoot.html",
-      "serverbuild.html",
+      "prime.html",
+      "troubleshooting.html",
+      "build.html",
       "https://github.com/Computer-Hardware-Club",
       "mailto:computerhardware.clubs@oregonstate.edu",
       "https://discord.gg/bfxjgvzCSf"
     ]
   },
-  "serverbuild": {
+  "build": {
     "main": "c569ebec5028966a228954b5f086ad2413b4d898a133e4a28b331721c0f94d21",
     "scripts": [
       "101e9a0602a03dd4126a52f2c46055558fb6c71812c0771826ad5dbfec83e19b",
@@ -33,15 +33,15 @@
       "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap",
       "../",
       "../about/",
-      "primes.html",
-      "troubleshoot.html",
-      "serverbuild.html",
+      "prime.html",
+      "troubleshooting.html",
+      "build.html",
       "https://github.com/Computer-Hardware-Club",
       "mailto:computerhardware.clubs@oregonstate.edu",
       "https://discord.gg/bfxjgvzCSf"
     ]
   },
-  "troubleshoot": {
+  "troubleshooting": {
     "main": "e5487956ca26cbc0d6af2b7ca3494f1f6fa6ae726cc9ad5d977766dcd83d5238",
     "scripts": [
       "101e9a0602a03dd4126a52f2c46055558fb6c71812c0771826ad5dbfec83e19b",
@@ -54,9 +54,9 @@
       "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap",
       "../",
       "../about/",
-      "primes.html",
-      "troubleshoot.html",
-      "serverbuild.html",
+      "prime.html",
+      "troubleshooting.html",
+      "build.html",
       "https://github.com/Computer-Hardware-Club",
       "mailto:computerhardware.clubs@oregonstate.edu",
       "https://discord.gg/bfxjgvzCSf"

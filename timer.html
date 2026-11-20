@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="A big, dumb countdown timer. Type a duration in H:MM:SS, hit Start, and let the room see it burn.">
+  <title>Timer | Computer Hardware Club</title>
+  <link rel="icon" href="images/tabicon.ico">
+  <link rel="preload" href="styles/fonts/jersey-10-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="styles/fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles/main.css?v=6">
+  <link rel="stylesheet" href="styles/mobile.css?v=1">
+  <link rel="stylesheet" href="styles/timer.css?v=1">
+</head>
+<body class="timer-body">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="site-nav container" aria-label="Primary navigation">
+    <a class="brand" href="./" aria-label="Computer Hardware Club home"><span class="brand-host">chc</span><span>@oregonstate:~</span></a>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="about/" >About</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-btn" type="button" aria-expanded="false" aria-controls="workshop-links">Workshops</button>
+        <ul class="nav-dropdown-list" id="workshop-links">
+          <li><a href="workshops/prime.html">Prime</a></li>
+          <li><a href="workshops/troubleshooting.html">Troubleshooting</a></li>
+          <li><a href="workshops/malware.html">Malware</a></li>
+          <li><a href="workshops/build.html">Build</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+<main id="main" class="timer-stage">
+  <p class="timer-display" id="timer-display" role="timer" data-state="idle">00:10:00</p>
+  <form class="timer-controls" id="timer-controls" autocomplete="off">
+    <label class="timer-label" for="timer-input">Duration (HH:MM:SS)</label>
+    <input class="timer-input" id="timer-input" name="duration" value="00:10:00" inputmode="numeric" spellcheck="false" aria-describedby="timer-hint">
+    <button class="btn timer-button" id="timer-button" type="submit">Start</button>
+    <p class="timer-hint" id="timer-hint" hidden></p>
+    <p class="sr-only" id="timer-status" role="status" aria-live="polite"></p>
+  </form>
+</main>
+<script src="scripts/site.js" defer></script>
+<script type="module" src="scripts/timer.mjs"></script>
+</body>
+</html>
