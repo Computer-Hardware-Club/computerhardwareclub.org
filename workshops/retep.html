@@ -204,20 +204,13 @@
     </div>
   </section>
 
-  <section class="retep-stage retep-finish" aria-labelledby="finish-title">
-    <div class="retep-guidance">
-      <h2 id="finish-title">Verify recovery</h2>
-      <p>Run the final command in your workshop terminal. When it prints <code>RESULT: COMPLETE</code>, show a club officer the result and explain what you found, what you changed, and how you verified it.</p>
+  <section class="retep-finish" aria-labelledby="finish-title">
+    <h2 id="finish-title">Final command</h2>
+    <div class="retep-check-content">
+      <code id="retep-check-command">check-system</code>
+      <button type="button" id="retep-copy-check" class="retep-copy-button" aria-label="Copy check-system command" hidden>Copy</button>
     </div>
-
-    <div class="retep-tools">
-      <h3>Final command</h3>
-      <div class="retep-check-row">
-        <code id="retep-check-command">check-system</code>
-        <button type="button" id="retep-copy-check" class="retep-copy-button" aria-label="Copy check-system command" hidden>Copy</button>
-      </div>
-      <p id="retep-copy-status" class="retep-copy-status" role="status"></p>
-    </div>
+    <p id="retep-copy-status" class="retep-copy-status" role="status"></p>
   </section>
 </main>
 
