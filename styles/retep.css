@@ -149,17 +149,22 @@ body .retep-page {
 }
 
 .retep-access {
-  row-gap: clamp(18px, 3vw, 28px);
+  row-gap: clamp(14px, 2vw, 20px);
 }
 
 .retep-stat-example {
   grid-column: 1 / -1;
 }
 
-.retep-stat-fields {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px 24px;
+.retep-stat-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+
+.retep-stat-heading .retep-command {
+  margin: 0;
 }
 
 .retep-guidance h3 {
@@ -181,6 +186,13 @@ body .retep-page {
 .retep-commands {
   margin: 16px 0 0;
   font-size: 0.875rem;
+}
+
+.retep-stat-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 24px;
+  margin-top: 10px;
 }
 
 .retep-commands dt {
