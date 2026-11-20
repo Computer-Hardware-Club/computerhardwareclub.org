@@ -8,8 +8,9 @@ const HOURS = 3600000;
 const MINUTES = 60000;
 const SECONDS = 1000;
 
-// "H:MM:SS" -> milliseconds. Hours take one or two digits; minutes and seconds
-// must be zero-padded pairs, which keeps the field's format unambiguous.
+// "HH:MM:SS" -> milliseconds. Hours take one or two digits; minutes and seconds
+// must be zero-padded pairs, which keeps the format unambiguous. The field masks
+// input to digits, but this stays the single source of truth for validity.
 export function parseDuration(text) {
     const match = /^(\d{1,2}):([0-5]\d):([0-5]\d)$/.exec(String(text).trim());
     if (!match) return null;
@@ -20,6 +21,28 @@ export function parseDuration(text) {
 export function formatDuration(millis) {
     const total = Math.max(0, Math.ceil(millis / SECONDS));
     return `${pad(Math.floor(total / 3600))}:${pad(Math.floor(total / 60) % 60)}:${pad(total % 60)}`;
+}
+
+// The field takes digits only: every non-digit is dropped and the two colons
+// are inserted for the user, so "12" reads as 12 hours and "123456" as
+// 12:34:56. `caret` is a count of digits before the cursor, kept across the
+// rewrite so typing and backspacing stay put.
+export function maskDuration(text, caret = null) {
+    const digits = String(text).replace(/\D/g, '').slice(0, 6);
+    const groups = [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 6)].filter(part => part !== '');
+    const value = groups.join(':');
+    // A value already in canonical form needs no rewrite, so a caret sitting
+    // beside an auto-inserted colon stays exactly where the user put it.
+    if (value === String(text)) return { value, caret: typeof caret === 'number' ? caret : value.length };
+    if (typeof caret !== 'number') return { value, caret: value.length };
+    const before = String(text).slice(0, caret);
+    const digitsBefore = Math.min(before.replace(/\D/g, '').length, digits.length);
+    let seen = 0;
+    for (let index = 0; index <= value.length; index += 1) {
+        if (seen === digitsBefore) return { value, caret: index };
+        if (index < value.length && /\d/.test(value[index])) seen += 1;
+    }
+    return { value, caret: value.length };
 }
 
 export class Countdown {
@@ -108,7 +131,7 @@ function mount({ display, form, input, button, hint, status }) {
         if (millis === null) {
             input.setAttribute('aria-invalid', 'true');
             hint.hidden = false;
-            hint.textContent = 'Use HH:MM:SS, like 00:10:00.';
+            hint.textContent = 'Type all six digits, like 00:10:00.';
             input.focus();
             return;
         }
@@ -121,7 +144,19 @@ function mount({ display, form, input, button, hint, status }) {
         announce('Running.');
     });
 
+    // Letters never reach the field: keydown rejects them outright, and the
+    // input handler catches what keydown cannot see (paste, drag, IME, autofill).
+    input.addEventListener('keydown', event => {
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        if (event.key.length === 1 && !/^\d$/.test(event.key)) event.preventDefault();
+    });
+
     input.addEventListener('input', () => {
+        const masked = maskDuration(input.value, input.selectionStart);
+        if (masked.value !== input.value) {
+            input.value = masked.value;
+            input.setSelectionRange(masked.caret, masked.caret);
+        }
         input.removeAttribute('aria-invalid');
         hint.hidden = true;
         hint.textContent = '';

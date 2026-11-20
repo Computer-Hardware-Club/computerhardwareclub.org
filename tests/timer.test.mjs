@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { Countdown, formatDuration, parseDuration } from '../scripts/timer.mjs';
+import { Countdown, formatDuration, maskDuration, parseDuration } from '../scripts/timer.mjs';
 
 test('parseDuration accepts H:MM:SS and rejects anything else', () => {
     assert.equal(parseDuration('0:10:00'), 600_000);
@@ -40,6 +40,28 @@ test('the countdown runs on the wall clock, survives throttling, and pauses exac
     clock.tick(62_000);
     assert.equal(clock.state, 'over');
     assert.equal(clock.tick(99_000), 0);
+});
+
+test('maskDuration keeps digits only and places the colons itself', () => {
+    assert.deepEqual(maskDuration(''), { value: '', caret: 0 });
+    assert.deepEqual(maskDuration('12'), { value: '12', caret: 2 });
+    assert.deepEqual(maskDuration('123'), { value: '12:3', caret: 4 });
+    assert.deepEqual(maskDuration('123456'), { value: '12:34:56', caret: 8 });
+    assert.deepEqual(maskDuration('abc'), { value: '', caret: 0 });
+    assert.deepEqual(maskDuration('ab12c34d56e'), { value: '12:34:56', caret: 8 });
+    assert.deepEqual(maskDuration('12:34:56'), { value: '12:34:56', caret: 8 });
+    // Only six digits exist in the format; later ones are discarded.
+    assert.deepEqual(maskDuration('12345678'), { value: '12:34:56', caret: 8 });
+
+    // The caret follows the same number of digits across the rewrite.
+    assert.equal(maskDuration('', 0).caret, 0, 'an empty field keeps the caret home');
+    assert.equal(maskDuration('a', 1).caret, 0, 'a lone dropped letter returns home');
+    assert.equal(maskDuration('1a', 2).caret, 1, 'caret after a dropped letter lands after the 1');
+    assert.equal(maskDuration('12', 2).caret, 2);
+    assert.equal(maskDuration('12:3', 4).caret, 4, 'a stable value keeps its caret');
+    assert.equal(maskDuration('123', 3).caret, 4, 'the caret moves past the inserted colon');
+    assert.equal(maskDuration('12:34', 3).caret, 3, 'a caret beside an auto-inserted colon stays put');
+    assert.equal(maskDuration('12:34', 6).caret, 6, 'a caret at the end stays at the end');
 });
 
 test('zero-length and repeated transitions keep the state machine honest', () => {
