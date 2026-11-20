@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statS
 import { dirname, join } from 'node:path';
 
 const distDir = 'dist';
-const siteEntries = ['404.html', '500.html', 'CNAME', 'about', 'workshops', 'images', 'index.html', 'scripts', 'styles'];
+const siteEntries = ['404.html', '500.html', 'CNAME', 'about', 'timer.html', 'workshops', 'images', 'index.html', 'scripts', 'styles'];
 
 const shouldCopyFile = (filePath) => !filePath.endsWith('.ts') && !filePath.endsWith('.tsx');
 

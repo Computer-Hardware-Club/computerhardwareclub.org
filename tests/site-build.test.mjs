@@ -20,6 +20,9 @@ test('build.mjs creates the core static site bundle', () => {
         'dist/about/index.html',
         'dist/500.html',
         'dist/CNAME',
+        'dist/timer.html',
+        'dist/styles/timer.css',
+        'dist/scripts/timer.mjs',
         'dist/styles/main.css',
         'dist/styles/site-shell.css',
         'dist/styles/retep.css',
@@ -85,7 +88,7 @@ test('build.mjs creates the core static site bundle', () => {
     });
 
     // Unified footer links on all pages
-    const footerLinks = [/GitHub/, /Discord/, /Email/];
+    const footerLinks = [/Timer/, /GitHub/, /Discord/, /Email/];
     const allPages = [homePage, aboutPage, troubleshootingPage, buildPage, primePage, malwarePage];
     allPages.forEach((page, i) => {
         const pageName = ['Home', 'About', 'Troubleshooting', 'Build', 'Prime', 'Malware'][i];
@@ -95,8 +98,10 @@ test('build.mjs creates the core static site bundle', () => {
     });
 
     // Keep the home shell consistent in source and published pages, including errors.
+    // The timer page is a full-screen tool: it shares the header and script but
+    // deliberately has no footer, so the clock owns every pixel below the nav.
     const pagePaths = ['index.html', 'about/index.html',
-        '404.html', '500.html', 'workshops/prime.html',
+        '404.html', '500.html', 'timer.html', 'workshops/prime.html',
         'workshops/troubleshooting.html', 'workshops/build.html', 'workshops/malware.html'];
     const canonicalHeader = (page, path) => page.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0]
         .replace(/href="([^"]+)"/g, (_, href) => `href="${new URL(href, `https://computerhardwareclub.org/${path}`).pathname}"`)
@@ -108,8 +113,13 @@ test('build.mjs creates the core static site bundle', () => {
             const page = readFileSync(join(projectRoot, prefix + path), 'utf8');
             assert.doesNotMatch(page, /href="[^"\s]*utilities(?:[/?#"])/i, `${path}: no links to removed Utilities page`);
             assert.equal(canonicalHeader(page, path), canonicalHeader(homePage, 'index.html'), `${prefix + path}: home navigation`);
-            assert.equal(canonicalFooter(page), canonicalFooter(homePage), `${prefix + path}: home footer`);
-            assert.equal([...page.matchAll(/<footer\b/g)].length, 1, `${path}: one site footer`);
+            if (path === 'timer.html') {
+                assert.equal(canonicalFooter(page), undefined, `${prefix + path}: the full-screen timer keeps no footer`);
+                assert.equal([...page.matchAll(/<footer\b/g)].length, 0, `${prefix + path}: timer page has no footer`);
+            } else {
+                assert.equal(canonicalFooter(page), canonicalFooter(homePage), `${prefix + path}: home footer`);
+                assert.equal([...page.matchAll(/<footer\b/g)].length, 1, `${path}: one site footer`);
+            }
             assert.match(page, /<script src="(?:\.\.\/|\/)?scripts\/site\.js" defer><\/script>/, `${path}: shared menu behavior`);
             assert.doesNotMatch(page, /document\.querySelectorAll\('\.nav-dropdown-btn'\)/, `${path}: no competing menu handler`);
         }
