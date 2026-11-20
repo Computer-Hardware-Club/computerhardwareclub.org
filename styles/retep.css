@@ -154,8 +154,6 @@ body .retep-page {
 
 .retep-stat-example {
   grid-column: 1 / -1;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
 }
 
 .retep-stat-fields {
