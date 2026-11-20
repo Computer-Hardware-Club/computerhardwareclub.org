@@ -10,37 +10,81 @@ body .retep-page {
 }
 
 .retep-page h1 {
-  font-size: clamp(3.25rem, 8vw, 6.5rem);
+  font-size: clamp(3.75rem, 7vw, 6rem);
   text-wrap: balance;
 }
 
+.retep-page h1 span {
+  display: block;
+  color: var(--accent);
+}
+
 .retep-page h2 {
-  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  font-size: clamp(2.5rem, 4.5vw, 3.5rem);
+}
+
+.retep-page h3 {
+  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
 }
 
 .retep-page p {
-  max-width: 70ch;
+  max-width: 64ch;
   margin: 14px 0 0;
   color: var(--muted);
 }
 
-.retep-page :is(h1 span, .retep-box dt) {
-  color: var(--accent);
+.retep-page :is(code, kbd, pre) {
+  font-family: inherit;
+}
+
+.retep-page :is(p, dd) :is(code, kbd) {
+  color: var(--text);
+}
+
+.retep-mission,
+.retep-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(22px, 5vw, 64px);
 }
 
 .retep-mission {
-  padding-block: clamp(28px, 5vw, 60px) 36px;
-  border-bottom: 1px solid var(--line);
+  padding-block: clamp(28px, 5vw, 58px) 34px;
+}
+
+.retep-mission .retep-rules {
+  font-size: 0.875rem;
+}
+
+.retep-launch,
+.retep-tools {
+  padding: clamp(18px, 2.5vw, 28px);
+  border: 1px solid var(--line);
+  background: #101010;
+}
+
+.retep-launch {
+  border-top: 2px solid var(--accent);
+}
+
+.retep-launch h2 {
+  font-size: clamp(2rem, 3.25vw, 2.75rem);
+}
+
+.retep-launch p {
+  font-size: 0.9375rem;
 }
 
 .retep-portal {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  margin-top: 22px;
+  margin-top: 16px;
   padding: 8px 14px;
   background: var(--accent);
   color: var(--bg);
+  font-size: 0.9375rem;
   font-weight: 600;
   text-decoration: none;
 }
@@ -52,75 +96,145 @@ body .retep-page {
 .retep-command {
   width: fit-content;
   max-width: 100%;
-  margin: 10px 0 0;
+  margin: 14px 0 0;
   padding: 10px 14px;
   border: 1px solid var(--line);
-  background: #101010;
+  background: var(--bg);
+  font-size: 0.9375rem;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.retep-page :is(code, kbd, pre) {
-  font-family: inherit;
+.retep-route {
+  border-block: 1px solid var(--line);
 }
 
-.retep-page p code {
+.retep-route ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 36px;
+  margin: 0;
+  padding: 8px 0 8px 2ch;
+  font-size: 0.9375rem;
+}
+
+.retep-route li {
+  padding-left: 4px;
+}
+
+.retep-route li::marker {
+  color: var(--accent);
+}
+
+.retep-route a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 4px;
+}
+
+.retep-route a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.retep-basics {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+}
+
+.retep-basics summary {
+  min-height: 48px;
+  padding-block: 12px;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.retep-basics summary::marker {
+  color: var(--accent);
+}
+
+.retep-basics p {
+  margin: 0;
+}
+
+.retep-basics .retep-commands {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px;
+  max-width: 860px;
+  margin-bottom: 18px;
+}
+
+.retep-stage {
+  padding-block: clamp(32px, 5vw, 58px);
+  border-bottom: 1px solid var(--line);
+}
+
+.retep-guidance h3 {
+  margin-top: 26px;
+}
+
+.retep-guidance .retep-next {
+  margin-top: 24px;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
   color: var(--text);
 }
 
-.retep-reference,
-.retep-finish {
-  margin-top: 38px;
+.retep-tools h3 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
 }
 
-.retep-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 22px;
-}
-
-.retep-box {
-  padding: clamp(16px, 2.5vw, 26px);
-  border: 1px solid var(--line);
-  background: #0b0b0b;
-}
-
-.retep-box h3 {
-  margin-bottom: 16px;
-  font-size: 2rem;
-}
-
-.retep-page .retep-box > p {
-  margin: 0 0 18px;
-}
-
-.retep-box dl {
-  margin: 0;
+.retep-commands {
+  margin: 16px 0 0;
   font-size: 0.875rem;
 }
 
-.retep-box dt {
+.retep-commands dt {
+  color: var(--accent);
   font-weight: 600;
   overflow-wrap: anywhere;
 }
 
-.retep-box dd {
+.retep-commands dd {
   margin: 2px 0 0;
   color: var(--muted);
 }
 
-.retep-box dd + dt {
+.retep-commands dd + dt {
   margin-top: 12px;
 }
 
 .retep-finish {
-  padding-top: 32px;
-  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 36px;
+  margin-top: 36px;
+  padding: clamp(18px, 3vw, 32px);
+  border-left: 2px solid var(--accent);
+  background: #101010;
 }
 
-@media (max-width: 790px) {
-  .retep-grid {
+@media (max-width: 780px) {
+  .retep-mission,
+  .retep-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .retep-route ol {
+    column-gap: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .retep-route ol,
+  .retep-basics .retep-commands {
+    display: grid;
     grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -33,105 +33,159 @@
 
 <main id="main" class="container retep-page">
   <section class="retep-mission" aria-labelledby="retep-title">
-    <h1 id="retep-title"><span>RETEP:</span> The Peter Incident</h1>
-    <p>Run the suspicious installer in your team’s Linux VM, investigate what changed, and get Peter back to normal.</p>
-    <a class="retep-portal" href="https://workshop.computerhardwareclub.org/">Open workshop terminal</a>
-    <p>Sign in with your team credentials and run this as your team user.</p>
-    <pre class="retep-command"><code>cd ~/Downloads &amp;&amp; ./GTA-VI-Installer.run</code></pre>
-    <p>Keep the investigation in your team’s VM. AI assistance is off for this workshop. Club officers can help with terminal syntax.</p>
+    <div>
+      <h1 id="retep-title"><span>RETEP:</span> The Peter Incident</h1>
+      <p>A suspicious installer has turned up on Peter. Run it in your team’s Linux VM, follow the evidence, and get Peter back to normal.</p>
+      <p class="retep-rules">AI assistance is off for this workshop. Club officers can help with terminal syntax.</p>
+    </div>
+
+    <div class="retep-launch">
+      <h2>Start the incident</h2>
+      <p>Sign in with your team credentials. Run the installer as your team user inside the workshop VM.</p>
+      <pre class="retep-command"><code>cd ~/Downloads &amp;&amp; ./GTA-VI-Installer.run</code></pre>
+      <a class="retep-portal" href="https://workshop.computerhardwareclub.org/" target="_blank" rel="noopener" aria-label="Open workshop terminal in a new tab">Open workshop terminal</a>
+    </div>
   </section>
 
-  <section class="retep-reference" aria-labelledby="reference-title">
-    <h2 id="reference-title">Command reference</h2>
-    <p>Replace uppercase placeholders with values from your VM.</p>
+  <nav class="retep-route" aria-label="Investigation sections">
+    <ol>
+      <li><a href="#logs-and-config">Logs &amp; configuration</a></li>
+      <li><a href="#file-access">File access</a></li>
+      <li><a href="#background-activity">Processes &amp; services</a></li>
+    </ol>
+  </nav>
 
-    <div class="retep-grid">
-      <section class="retep-box" aria-labelledby="basics-title">
-        <h3 id="basics-title">Basics</h3>
-        <p>The terminal has a current folder, just like a file browser. You can move between folders, open files, and search their contents from the prompt.</p>
-        <dl>
-          <dt><code>pwd</code></dt>
-          <dd>Print the current directory.</dd>
-          <dt><code>ls -la</code></dt>
-          <dd>List files, including hidden ones, with details.</dd>
-          <dt><code>cd DIR</code></dt>
-          <dd>Change directories. Use <code>cd ~</code> to go home.</dd>
-          <dt><code>less FILE</code></dt>
-          <dd>Read a file one screen at a time. Press <kbd>q</kbd> to quit.</dd>
-          <dt><code>grep -n 'PATTERN' FILE</code></dt>
-          <dd>Show matching lines and their line numbers.</dd>
-          <dt><code>sudo COMMAND</code></dt>
-          <dd>Run a command with administrator privileges.</dd>
-        </dl>
-      </section>
+  <details class="retep-basics">
+    <summary>Terminal basics</summary>
+    <p>The terminal has a current folder, just like a file browser. Replace uppercase placeholders in the guide with the names or values you find in the VM.</p>
+    <dl class="retep-commands">
+      <div>
+        <dt><code>pwd</code></dt>
+        <dd>Print the current directory.</dd>
+      </div>
+      <div>
+        <dt><code>ls -la</code></dt>
+        <dd>List files, including hidden ones, with details.</dd>
+      </div>
+      <div>
+        <dt><code>cd DIR</code></dt>
+        <dd>Change directories. Use <code>cd ~</code> to go home.</dd>
+      </div>
+      <div>
+        <dt><code>less FILE</code></dt>
+        <dd>Read a file one screen at a time. Press <kbd>q</kbd> to quit.</dd>
+      </div>
+      <div>
+        <dt><code>grep -n 'PATTERN' FILE</code></dt>
+        <dd>Show matching lines and their line numbers.</dd>
+      </div>
+      <div>
+        <dt><code>sudo COMMAND</code></dt>
+        <dd>Run a command with administrator privileges.</dd>
+      </div>
+    </dl>
+  </details>
 
-      <section class="retep-box" aria-labelledby="configuration-title">
-        <h3 id="configuration-title">Configuration</h3>
-        <p>A config file is a program’s settings panel in text form. The system journal is its activity history, where services can record errors and other messages.</p>
-        <dl>
-          <dt><code>systemctl --failed</code></dt>
-          <dd>List failed units.</dd>
-          <dt><code>systemctl status SERVICE</code></dt>
-          <dd>Show a service’s state and recent log messages.</dd>
-          <dt><code>systemctl cat SERVICE</code></dt>
-          <dd>Show the unit definition and any overrides.</dd>
-          <dt><code>sudo journalctl -u SERVICE -n 20 --no-pager</code></dt>
-          <dd>Print the last 20 log entries for a service.</dd>
-          <dt><code>diff -u FILE_A FILE_B</code></dt>
-          <dd>Compare two files and show what differs.</dd>
-          <dt><code>sudo nano FILE</code></dt>
-          <dd>Edit a protected file. Press <kbd>Ctrl+O</kbd>, then <kbd>Enter</kbd> to save. Press <kbd>Ctrl+X</kbd> to exit.</dd>
-          <dt><code>sudo systemctl restart SERVICE</code></dt>
-          <dd>Restart a service.</dd>
-        </dl>
-      </section>
+  <section id="logs-and-config" class="retep-stage" aria-labelledby="logs-title">
+    <div class="retep-guidance">
+      <h2 id="logs-title">Start with the logs</h2>
+      <p>Find the service that failed and read the journal entries from its latest startup. The journal is the service’s activity history. Use the first error from that attempt to decide what to inspect.</p>
 
-      <section class="retep-box" aria-labelledby="permissions-title">
-        <h3 id="permissions-title">Permissions</h3>
-        <p>File permissions work like keycard access. Linux tracks who can read, write, or run a file using separate rules for its owner, its group, and everyone else.</p>
-        <dl>
-          <dt><code>ls -l FILE</code></dt>
-          <dd>Show permissions, owner, and group.</dd>
-          <dt><code>stat FILE</code></dt>
-          <dd>Show detailed file metadata, including the numeric mode.</dd>
-          <dt><code>id USER</code></dt>
-          <dd>Show a user’s ID and group memberships.</dd>
-          <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
-          <dd>Change the owner and group.</dd>
-          <dt><code>sudo chmod MODE FILE</code></dt>
-          <dd>Change access permissions.</dd>
-        </dl>
-      </section>
+      <h3>Check Peter’s backups</h3>
+      <p>Look in Peter’s home directory for maintenance notes and backups. Find a verified snapshot for the installed version, then compare its config with the live one. Use the diff and the journal error together to decide what to change.</p>
 
-      <section class="retep-box" aria-labelledby="processes-title">
-        <h3 id="processes-title">Processes &amp; services</h3>
-        <p>A process is a running program. Systemd acts like a supervisor for services. It can start them at boot, track whether they’re running, and restart them if configured to do so.</p>
-        <dl>
-          <dt><code>top</code></dt>
-          <dd>Watch live process activity. Press <kbd>q</kbd> to quit.</dd>
-          <dt><code>free -h</code></dt>
-          <dd>Show memory usage in readable units.</dd>
-          <dt><code>ps aux</code></dt>
-          <dd>List running processes and their command lines.</dd>
-          <dt><code>systemctl list-units --type=service</code></dt>
-          <dd>List active and failed service units.</dd>
-          <dt><code>systemctl list-unit-files --type=service</code></dt>
-          <dd>List installed service units and their enablement states.</dd>
-          <dt><code>systemctl is-enabled SERVICE</code></dt>
-          <dd>Check whether a service is enabled to start automatically.</dd>
-          <dt><code>sudo systemctl stop SERVICE</code></dt>
-          <dd>Stop a running service.</dd>
-          <dt><code>sudo systemctl disable SERVICE</code></dt>
-          <dd>Remove the links that enable a service to start automatically.</dd>
-        </dl>
-      </section>
+      <p class="retep-next">Restart the service after editing and read the newest log entries. If the error changes, follow the new message.</p>
+    </div>
+
+    <div class="retep-tools">
+      <h3>Logs &amp; configuration commands</h3>
+      <dl class="retep-commands">
+        <dt><code>systemctl --failed</code></dt>
+        <dd>List failed units.</dd>
+        <dt><code>systemctl status SERVICE</code></dt>
+        <dd>Show the service’s state and recent log messages.</dd>
+        <dt><code>sudo journalctl -u SERVICE -n 20 --no-pager</code></dt>
+        <dd>Read the last 20 journal entries for the service.</dd>
+        <dt><code>diff -u LIVE_CONFIG BACKUP_CONFIG</code></dt>
+        <dd>Compare the settings in two files.</dd>
+        <dt><code>sudo nano FILE</code></dt>
+        <dd>Edit a protected file. Press <kbd>Ctrl+O</kbd>, then <kbd>Enter</kbd> to save. Press <kbd>Ctrl+X</kbd> to exit.</dd>
+        <dt><code>sudo systemctl restart SERVICE</code></dt>
+        <dd>Restart the service so it reads the updated config.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="file-access" class="retep-stage" aria-labelledby="access-title">
+    <div class="retep-guidance">
+      <h2 id="access-title">Check file access</h2>
+      <p>If the journal says the service can’t open a file, inspect the path in the error. Compare its owner, group, and permissions with the corresponding file in the verified backup or with the metadata recorded alongside it.</p>
+
+      <h3>Check who needs access</h3>
+      <p>File permissions work like keycard access. The service runs under a Linux account of its own. Check the service definition for its user and group, then work out which permissions apply to that account.</p>
+
+      <p class="retep-next">After repairing access, restart the service and look for a successful startup in the journal.</p>
+    </div>
+
+    <div class="retep-tools">
+      <h3>File access commands</h3>
+      <dl class="retep-commands">
+        <dt><code>stat FILE</code></dt>
+        <dd>Show the owner, group, and permissions, including the numeric mode.</dd>
+        <dt><code>ls -l FILE</code></dt>
+        <dd>Show ownership and permissions in a single line.</dd>
+        <dt><code>systemctl cat SERVICE</code></dt>
+        <dd>Show the service definition and any overrides. Look for <code>User=</code> and <code>Group=</code>.</dd>
+        <dt><code>id USER</code></dt>
+        <dd>Show the account’s user ID and group memberships.</dd>
+        <dt><code>sudo chown OWNER:GROUP FILE</code></dt>
+        <dd>Set the file’s owner and group.</dd>
+        <dt><code>sudo chmod MODE FILE</code></dt>
+        <dd>Set the file’s access permissions.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section id="background-activity" class="retep-stage" aria-labelledby="activity-title">
+    <div class="retep-guidance">
+      <h2 id="activity-title">Investigate the slowdown</h2>
+      <p>With Peter’s service back, look at what’s using CPU and memory. Compare the process names and command lines with the installed services to see what’s managing the activity.</p>
+
+      <h3>Check what can start it again</h3>
+      <p>A process is a running program. Systemd acts like a supervisor for services and can start them at boot or restart them when they exit. Once you’ve tied the unexpected process to a service, check both whether it’s running now and whether it’s enabled.</p>
+
+      <p class="retep-next">After making a change, check resource usage again and confirm the service’s startup setting.</p>
+    </div>
+
+    <div class="retep-tools">
+      <h3>Process and service commands</h3>
+      <dl class="retep-commands">
+        <dt><code>top</code></dt>
+        <dd>Watch CPU and memory use by process. Press <kbd>q</kbd> to quit.</dd>
+        <dt><code>free -h</code></dt>
+        <dd>Show memory usage and how much is available.</dd>
+        <dt><code>ps aux</code></dt>
+        <dd>Take a snapshot of running processes and their command lines.</dd>
+        <dt><code>systemctl list-units --type=service</code></dt>
+        <dd>List active and failed service units.</dd>
+        <dt><code>systemctl list-unit-files --type=service</code></dt>
+        <dd>List installed service definitions and their startup settings.</dd>
+        <dt><code>systemctl is-enabled SERVICE</code></dt>
+        <dd>Check whether a service is enabled to start automatically.</dd>
+        <dt><code>sudo systemctl stop SERVICE</code></dt>
+        <dd>Stop a running service.</dd>
+        <dt><code>sudo systemctl disable SERVICE</code></dt>
+        <dd>Remove the links that enable a service to start automatically.</dd>
+      </dl>
     </div>
   </section>
 
   <section class="retep-finish" aria-labelledby="finish-title">
-    <h2 id="finish-title">Check your work</h2>
+    <div>
+      <h2 id="finish-title">Verify recovery</h2>
+      <p>When the check prints <code>RESULT: COMPLETE</code>, show a club officer what tipped you off, what you changed, and how you verified the fixes.</p>
+    </div>
     <pre class="retep-command"><code>check-system</code></pre>
-    <p>When it prints <code>RESULT: COMPLETE</code>, show a club officer what you found, what you changed, and how you verified the repair.</p>
   </section>
 </main>
 
