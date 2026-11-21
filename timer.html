@@ -11,7 +11,7 @@
   <link rel="preload" href="styles/fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles/main.css?v=6">
   <link rel="stylesheet" href="styles/mobile.css?v=1">
-  <link rel="stylesheet" href="styles/timer.css?v=1">
+  <link rel="stylesheet" href="styles/timer.css?v=2">
 </head>
 <body class="timer-body">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -39,6 +39,8 @@
     <label class="timer-label" for="timer-input">Duration (HH:MM:SS)</label>
     <input class="timer-input" id="timer-input" name="duration" value="00:10:00" inputmode="numeric" spellcheck="false" aria-describedby="timer-hint">
     <button class="btn timer-button" id="timer-button" type="submit">Start</button>
+    <button class="btn btn-outline timer-fullscreen" id="timer-fullscreen" type="button" hidden>Fullscreen</button>
+    <p class="timer-hint" id="timer-fullscreen-status" role="status" hidden></p>
     <p class="timer-hint" id="timer-hint" hidden></p>
     <p class="sr-only" id="timer-status" role="status" aria-live="polite"></p>
   </form>
