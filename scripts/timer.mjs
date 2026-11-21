@@ -174,6 +174,27 @@ function mount({ display, form, input, button, hint, status }) {
     show();
 }
 
+function mountFullscreen(stage, button, status) {
+    if (!document.fullscreenEnabled || typeof stage.requestFullscreen !== 'function') return;
+
+    button.hidden = false;
+    document.addEventListener('fullscreenchange', () => {
+        button.textContent = document.fullscreenElement === stage ? 'Exit fullscreen' : 'Fullscreen';
+    });
+
+    button.addEventListener('click', async () => {
+        const active = document.fullscreenElement === stage;
+        status.hidden = true;
+        try {
+            if (active) await document.exitFullscreen();
+            else await stage.requestFullscreen();
+        } catch {
+            status.textContent = active ? 'Could not exit fullscreen.' : 'Could not enter fullscreen.';
+            status.hidden = false;
+        }
+    });
+}
+
 if (typeof document !== 'undefined' && document.getElementById('timer-display')) {
     mount({
         display: document.getElementById('timer-display'),
@@ -183,4 +204,9 @@ if (typeof document !== 'undefined' && document.getElementById('timer-display'))
         hint: document.getElementById('timer-hint'),
         status: document.getElementById('timer-status')
     });
+    mountFullscreen(
+        document.getElementById('main'),
+        document.getElementById('timer-fullscreen'),
+        document.getElementById('timer-fullscreen-status')
+    );
 }

@@ -1,5 +1,4 @@
-/* Countdown timer: one huge readout, one button. The shared shell provides the
-   header and footer; everything inside #main is this page's own layout. */
+/* The shared shell provides the header. The timer stage owns the countdown and controls. */
 
 .timer-body {
     /* The stage is exactly one viewport tall, so the readout never scrolls. */
@@ -19,6 +18,13 @@
     padding: 24px clamp(16px, 4vw, 48px) calc(24px + env(safe-area-inset-bottom));
 }
 
+.timer-stage:fullscreen {
+    --timer-fullscreen-space: 72px;
+    background: var(--bg);
+    justify-content: safe center;
+    overflow: auto;
+}
+
 .timer-display {
     margin: 0;
     font-family: var(--display);
@@ -28,8 +34,8 @@
        keeps eight glyphs inside the stage gutters. The height term spends what
        the header, the controls row and their gaps leave over. svh second so
        browsers without it keep the vh value. */
-    font-size: min(calc((100vw - 96px) / 2.4914), calc((100vh - 300px) / .82));
-    font-size: min(calc((100vw - 96px) / 2.4914), calc((100svh - 300px) / .82));
+    font-size: min(calc((100vw - 96px) / 2.4914), calc((100vh - 300px + var(--timer-fullscreen-space, 0px)) / .82));
+    font-size: min(calc((100vw - 96px) / 2.4914), calc((100svh - 300px + var(--timer-fullscreen-space, 0px)) / .82));
     letter-spacing: -.01em;
     color: var(--text);
     font-variant-numeric: tabular-nums;
@@ -95,8 +101,17 @@
     letter-spacing: .08em;
 }
 
-.timer-hint {
+.timer-fullscreen {
     order: 4;
+    gap: 0;
+    padding-inline: 16px;
+    font-size: 14px;
+}
+
+.timer-fullscreen[hidden] { display: none; }
+
+.timer-hint {
+    order: 5;
     width: 100%;
     margin: 0;
     text-align: center;
@@ -120,11 +135,12 @@
 @media (max-width: 860px) {
     .timer-stage { padding-inline: 20px; }
     .timer-display {
-        font-size: min(calc((100vw - 40px) / 2.4914), calc((100vh - 260px) / .82));
-        font-size: min(calc((100vw - 40px) / 2.4914), calc((100svh - 260px) / .82));
+        font-size: min(calc((100vw - 40px) / 2.4914), calc((100vh - 260px + var(--timer-fullscreen-space, 0px)) / .82));
+        font-size: min(calc((100vw - 40px) / 2.4914), calc((100svh - 260px + var(--timer-fullscreen-space, 0px)) / .82));
     }
     .timer-input { font-size: 18px; min-height: 48px; width: calc(9ch + 30px); }
     .timer-button { width: 100%; max-width: 320px; min-height: 56px; }
+    .timer-fullscreen { min-height: 48px; padding-block: 8px; }
 }
 
 /* Short screens (landscape phones, netbooks): keep the controls to one row so
@@ -136,15 +152,16 @@
     }
 
     .timer-display {
-        font-size: min(calc((100vw - 40px) / 2.4914), calc((100vh - 150px) / .82));
-        font-size: min(calc((100vw - 40px) / 2.4914), calc((100svh - 150px) / .82));
+        font-size: min(calc((100vw - 40px) / 2.4914), calc((100vh - 150px + var(--timer-fullscreen-space, 0px)) / .82));
+        font-size: min(calc((100vw - 40px) / 2.4914), calc((100svh - 150px + var(--timer-fullscreen-space, 0px)) / .82));
     }
 
     .timer-controls { align-items: center; gap: 10px; }
     .timer-label { order: 0; width: auto; font-size: 10px; }
     .timer-input { min-height: 40px; padding: 8px 10px; font-size: 16px; width: calc(9ch + 22px); }
     .timer-button { width: auto; max-width: none; min-height: 40px; min-width: 118px; padding: 8px 18px; font-size: 14px; }
-    .timer-hint { order: 5; min-height: 0; font-size: 12px; }
+    .timer-fullscreen { min-height: 40px; padding-block: 8px; }
+    .timer-hint { min-height: 0; font-size: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
